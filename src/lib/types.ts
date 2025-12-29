@@ -27,6 +27,10 @@ export interface Reservation {
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  tracking_code: string | null;
+  contract_accepted: boolean | null;
+  contract_accepted_at: string | null;
+  contract_ip: string | null;
   guest?: Guest;
 }
 

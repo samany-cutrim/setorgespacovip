@@ -43,7 +43,9 @@ import {
   MessageCircle,
   Send,
   Bell,
-  CreditCard
+  CreditCard,
+  FileCheck,
+  FileX
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -209,6 +211,7 @@ export default function AdminReservations() {
                     <TableHead>Check-out</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Contrato</TableHead>
                     <TableHead>Pagamento</TableHead>
                     <TableHead>WhatsApp</TableHead>
                     <TableHead className="w-12"></TableHead>
@@ -236,6 +239,19 @@ export default function AdminReservations() {
                         <Badge variant="outline" className={statusColors[reservation.status]}>
                           {statusLabels[reservation.status]}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {reservation.contract_accepted ? (
+                          <Badge variant="outline" className="bg-success/10 text-success border-success/20 gap-1">
+                            <FileCheck className="h-3 w-3" />
+                            Aceito
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="bg-warning/10 text-warning border-warning/20 gap-1">
+                            <FileX className="h-3 w-3" />
+                            Pendente
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={paymentStatusColors[reservation.payment_status]}>
