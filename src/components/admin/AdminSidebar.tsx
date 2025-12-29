@@ -25,6 +25,7 @@ import {
   LogOut,
   Waves,
   Home,
+  Settings,
 } from 'lucide-react';
 
 const menuItems = [
@@ -34,6 +35,7 @@ const menuItems = [
   { title: 'Hóspedes', url: '/admin/guests', icon: Users },
   { title: 'Financeiro', url: '/admin/finance', icon: DollarSign },
   { title: 'Preços', url: '/admin/pricing', icon: Tag },
+  { title: 'Configurações', url: '/admin/settings', icon: Settings },
 ];
 
 export function AdminSidebar() {
