@@ -54,14 +54,14 @@ jobs:
                 // Fetch the SPA index and inject it so the router can handle client-side routes
                 (async () => {
                   try {
-                    const res = await fetch('/poolside-planner/index.html');
+                    const res = await fetch('/setorgespacovip/index.html');
                     const html = await res.text();
                     document.open();
                     document.write(html);
                     document.close();
                   } catch (err) {
                     // Fallback: redirect to root
-                    location.replace('/poolside-planner/');
+                    location.replace('/setorgespacovip/');
                   }
                 })();
               </script>
