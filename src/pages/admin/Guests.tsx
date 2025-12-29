@@ -105,7 +105,7 @@ export default function AdminGuests() {
           full_name: formData.full_name,
           phone: formData.phone,
           email: formData.email || null,
-          document: formData.document || null,
+          document: formData.document,
           notes: formData.notes || null,
         });
         toast({ title: 'Hóspede atualizado' });
@@ -114,7 +114,7 @@ export default function AdminGuests() {
           full_name: formData.full_name,
           phone: formData.phone,
           email: formData.email || null,
-          document: formData.document || null,
+          document: formData.document,
           notes: formData.notes || null,
         });
         toast({ title: 'Hóspede cadastrado' });
@@ -298,11 +298,12 @@ export default function AdminGuests() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="document">Documento (CPF/RG)</Label>
+              <Label htmlFor="document">CPF *</Label>
               <Input
                 id="document"
                 value={formData.document}
                 onChange={(e) => setFormData(prev => ({ ...prev, document: e.target.value }))}
+                required
               />
             </div>
             <div className="space-y-2">
