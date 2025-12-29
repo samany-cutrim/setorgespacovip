@@ -212,6 +212,9 @@ export type Database = {
         Row: {
           check_in: string
           check_out: string
+          contract_accepted: boolean | null
+          contract_accepted_at: string | null
+          contract_ip: string | null
           created_at: string
           created_by: string | null
           guest_id: string | null
@@ -227,6 +230,9 @@ export type Database = {
         Insert: {
           check_in: string
           check_out: string
+          contract_accepted?: boolean | null
+          contract_accepted_at?: string | null
+          contract_ip?: string | null
           created_at?: string
           created_by?: string | null
           guest_id?: string | null
@@ -242,6 +248,9 @@ export type Database = {
         Update: {
           check_in?: string
           check_out?: string
+          contract_accepted?: boolean | null
+          contract_accepted_at?: string | null
+          contract_ip?: string | null
           created_at?: string
           created_by?: string | null
           guest_id?: string | null
