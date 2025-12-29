@@ -148,6 +148,7 @@ export default function AdminReservations() {
     checkOut: reservation.check_out,
     totalAmount: Number(reservation.total_amount),
     propertyName: property?.name,
+    trackingCode: reservation.tracking_code || undefined,
   });
 
   return (
