@@ -370,6 +370,7 @@ export default function Index() {
                         <Label htmlFor="fullName">Nome completo *</Label>
                         <Input
                           id="fullName"
+                          autoComplete="name"
                           value={formData.fullName}
                           onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                           placeholder="Seu nome"
@@ -381,6 +382,7 @@ export default function Index() {
                         <Label htmlFor="phone">Telefone/WhatsApp *</Label>
                         <Input
                           id="phone"
+                          autoComplete="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                           placeholder="(00) 00000-0000"
@@ -393,6 +395,7 @@ export default function Index() {
                         <Input
                           id="email"
                           type="email"
+                          autoComplete="email"
                           value={formData.email}
                           onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                           placeholder="seu@email.com"
@@ -407,6 +410,7 @@ export default function Index() {
                           type="number"
                           min={1}
                           max={property?.max_guests || 10}
+                          autoComplete="off"
                           value={formData.numGuests}
                           onChange={(e) => setFormData(prev => ({ ...prev, numGuests: parseInt(e.target.value) || 1 }))}
                         />
