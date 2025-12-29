@@ -20,10 +20,9 @@ import { format, parseISO, subMonths, startOfMonth, endOfMonth } from 'date-fns'
 import { ptBR } from 'date-fns/locale';
 import { 
   ChartContainer, 
-  ChartTooltip, 
-  ChartTooltipContent 
+  ChartTooltip
 } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, LineChart, Line, CartesianGrid } from 'recharts';
+// importação removida: recharts removido por CSP
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
@@ -173,7 +172,7 @@ export default function AdminDashboard() {
     });
 
     // Occupancy Table
-    const finalY = (doc as any).lastAutoTable.finalY || 130;
+    const finalY = (doc as jsPDF & { lastAutoTable?: { finalY?: number } }).lastAutoTable?.finalY || 130;
     
     doc.setFontSize(14);
     doc.text('Taxa de Ocupação', 14, finalY + 15);
@@ -202,7 +201,8 @@ export default function AdminDashboard() {
     const totalDays = monthsInRange.reduce((sum, stat) => sum + stat.totalDays, 0);
     const avgOccupancy = totalDays > 0 ? Math.round((totalOccupied / totalDays) * 100) : 0;
 
-    const finalY2 = (doc as any).lastAutoTable.finalY || 200;
+    type DocWithAutoTable = jsPDF & { lastAutoTable?: { finalY?: number } };
+    const finalY2 = ((doc as DocWithAutoTable).lastAutoTable?.finalY) || 200;
     
     doc.setFontSize(12);
     doc.text(`Receita Total: R$ ${totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, finalY2 + 15);
@@ -276,35 +276,10 @@ export default function AdminDashboard() {
             <CardDescription>Últimos 6 meses</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={revenueChartConfig} className="h-[250px]">
-              <BarChart data={dashboardStats} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-muted" />
-                <XAxis 
-                  dataKey="monthLabel" 
-                  axisLine={false}
-                  tickLine={false}
-                  className="text-xs"
-                />
-                <YAxis 
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(value) => `R$${(value / 1000).toFixed(0)}k`}
-                  className="text-xs"
-                />
-                <ChartTooltip 
-                  content={
-                    <ChartTooltipContent 
-                      formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Receita']}
-                    />
-                  } 
-                />
-                <Bar 
-                  dataKey="revenue" 
-                  fill="hsl(var(--primary))" 
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
-            </ChartContainer>
+            {/* TODO: Substituir gráfico por alternativa segura (ex: chart.js, nivo, victory, apexcharts) */}
+            <div className="h-[250px] flex items-center justify-center text-muted-foreground border rounded-lg">
+              <span>Gráfico removido por CSP. Substitua por alternativa segura.</span>
+            </div>
           </CardContent>
         </Card>
 
@@ -317,39 +292,10 @@ export default function AdminDashboard() {
             <CardDescription>Últimos 6 meses</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={occupancyChartConfig} className="h-[250px]">
-              <LineChart data={dashboardStats} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-muted" />
-                <XAxis 
-                  dataKey="monthLabel" 
-                  axisLine={false}
-                  tickLine={false}
-                  className="text-xs"
-                />
-                <YAxis 
-                  axisLine={false}
-                  tickLine={false}
-                  tickFormatter={(value) => `${value}%`}
-                  domain={[0, 100]}
-                  className="text-xs"
-                />
-                <ChartTooltip 
-                  content={
-                    <ChartTooltipContent 
-                      formatter={(value) => [`${value}%`, 'Ocupação']}
-                    />
-                  } 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="occupancyRate" 
-                  stroke="hsl(var(--accent))" 
-                  strokeWidth={2}
-                  dot={{ fill: 'hsl(var(--accent))', strokeWidth: 2 }}
-                  activeDot={{ r: 6 }}
-                />
-              </LineChart>
-            </ChartContainer>
+            {/* TODO: Substituir gráfico por alternativa segura (ex: chart.js, nivo, victory, apexcharts) */}
+            <div className="h-[250px] flex items-center justify-center text-muted-foreground border rounded-lg">
+              <span>Gráfico removido por CSP. Substitua por alternativa segura.</span>
+            </div>
           </CardContent>
         </Card>
       </div>

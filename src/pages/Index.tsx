@@ -33,8 +33,9 @@ import { format, differenceInDays, isWithinInterval, parseISO, addDays } from 'd
 import { ptBR } from 'date-fns/locale';
 import { z } from 'zod';
 import type { DateRange } from 'react-day-picker';
+import styles from './Index.module.css';
 
-const amenityIcons: Record<string, any> = {
+const amenityIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   'Piscina': Waves,
   'Churrasqueira': Flame,
   'Wi-Fi': Wifi,
@@ -212,7 +213,7 @@ export default function Index() {
             <h1 className="animate-fade-in font-display text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
               {property?.name || 'setor g espaço vip'}
             </h1>
-            <p className="mt-6 animate-fade-in text-lg text-muted-foreground md:text-xl" style={{ animationDelay: '0.1s' }}>
+            <p className="mt-6 animate-fade-in text-lg text-muted-foreground md:text-xl fade-in-delay-1">
               {property?.description || 'Perfeita para suas férias em família ou com amigos'}
             </p>
           </div>
