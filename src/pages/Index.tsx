@@ -190,9 +190,9 @@ export default function Index() {
             <span className="font-display text-lg font-semibold">{property?.name || 'Casa com Piscina'}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/acompanhar">
+            <Link to="/cliente">
               <Button variant="ghost" size="sm">
-                Acompanhar Reserva
+                Área do Cliente
               </Button>
             </Link>
             <Link to="/auth">
@@ -288,9 +288,9 @@ export default function Index() {
                   )}
 
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Link to="/acompanhar">
+                    <Link to={`/cliente?code=${trackingCode}`}>
                       <Button variant="outline">
-                        Acompanhar Reserva
+                        Acessar Área do Cliente
                       </Button>
                     </Link>
                     <Button 
