@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useReservations, useUpdateReservation, useDeleteReservation } from '@/hooks/useReservations';
+import { useReservations, useUpdateReservation, useDeleteReservation, useCreateReservation } from '@/hooks/useReservations';
 import { usePropertySettings } from '@/hooks/usePropertySettings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { ReservationDialog, ReservationFormData } from '@/components/admin/ReservationDialog';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
@@ -45,11 +46,13 @@ import {
   Bell,
   CreditCard,
   FileCheck,
-  FileX
+  FileX,
+  Plus,
+  Pencil
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ReservationStatus, PaymentStatus } from '@/lib/types';
+import { ReservationStatus, PaymentStatus, Reservation } from '@/lib/types';
 import { 
   generateWhatsAppLink, 
   generateConfirmationMessage, 
@@ -88,12 +91,16 @@ export default function AdminReservations() {
   const { toast } = useToast();
   const { data: reservations = [], isLoading } = useReservations();
   const { data: property } = usePropertySettings();
+  const createReservation = useCreateReservation();
   const updateReservation = useUpdateReservation();
   const deleteReservation = useDeleteReservation();
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const filteredReservations = reservations.filter(r => {
     const matchesSearch = r.guest?.full_name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -137,6 +144,43 @@ export default function AdminReservations() {
     }
   };
 
+  const handleOpenDialog = (reservation?: Reservation) => {
+    setEditingReservation(reservation || null);
+    setIsDialogOpen(true);
+  };
+
+  const handleSaveReservation = async (data: ReservationFormData) => {
+    setIsSaving(true);
+    try {
+      if (editingReservation) {
+        await updateReservation.mutateAsync({
+          id: editingReservation.id,
+          ...data,
+        });
+        toast({
+          title: 'Reserva atualizada',
+          description: 'A reserva foi atualizada com sucesso.',
+        });
+      } else {
+        await createReservation.mutateAsync(data);
+        toast({
+          title: 'Reserva criada',
+          description: 'A nova reserva foi criada com sucesso.',
+        });
+      }
+      setIsDialogOpen(false);
+      setEditingReservation(null);
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro',
+        description: 'Não foi possível salvar a reserva.',
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const openWhatsApp = (phone: string, message: string) => {
     const url = generateWhatsAppLink(phone, message);
     window.open(url, '_blank');
@@ -153,11 +197,17 @@ export default function AdminReservations() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-3xl font-bold">Reservas</h1>
-        <p className="text-muted-foreground">
-          Gerencie todas as reservas do seu imóvel
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-bold">Reservas</h1>
+          <p className="text-muted-foreground">
+            Gerencie todas as reservas do seu imóvel
+          </p>
+        </div>
+        <Button onClick={() => handleOpenDialog()}>
+          <Plus className="mr-2 h-4 w-4" />
+          Nova Reserva
+        </Button>
       </div>
 
       <Card>
@@ -233,8 +283,22 @@ export default function AdminReservations() {
                       <TableCell>
                         {format(parseISO(reservation.check_out), "dd/MM/yyyy", { locale: ptBR })}
                       </TableCell>
-                      <TableCell className="font-medium">
-                        R$ {Number(reservation.total_amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      <TableCell>
+                        <div className="text-right">
+                          <p className="font-medium">
+                            R$ {(Number(reservation.total_amount) - Number(reservation.discount_amount || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </p>
+                          {Number(reservation.discount_amount || 0) > 0 && (
+                            <p className="text-xs text-success">
+                              -R$ {Number(reservation.discount_amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} desc.
+                            </p>
+                          )}
+                          {Number(reservation.deposit_amount || 0) > 0 && (
+                            <p className="text-xs text-muted-foreground">
+                              Entrada: R$ {Number(reservation.deposit_amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </p>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={statusColors[reservation.status]}>
@@ -325,6 +389,11 @@ export default function AdminReservations() {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Ações</DropdownMenuLabel>
                             <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleOpenDialog(reservation)}>
+                              <Pencil className="mr-2 h-4 w-4" />
+                              Editar reserva
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleStatusChange(reservation.id, 'confirmed')}>
                               <CheckCircle className="mr-2 h-4 w-4 text-success" />
                               Confirmar
@@ -355,6 +424,17 @@ export default function AdminReservations() {
           )}
         </CardContent>
       </Card>
+
+      <ReservationDialog
+        open={isDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) setEditingReservation(null);
+        }}
+        reservation={editingReservation}
+        onSave={handleSaveReservation}
+        isLoading={isSaving}
+      />
 
       <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>

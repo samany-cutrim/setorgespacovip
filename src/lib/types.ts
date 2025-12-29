@@ -21,6 +21,8 @@ export interface Reservation {
   check_out: string;
   num_guests: number;
   total_amount: number;
+  discount_amount: number;
+  deposit_amount: number;
   status: ReservationStatus;
   payment_status: PaymentStatus;
   notes: string | null;

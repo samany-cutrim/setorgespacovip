@@ -217,6 +217,8 @@ export type Database = {
           contract_ip: string | null
           created_at: string
           created_by: string | null
+          deposit_amount: number | null
+          discount_amount: number | null
           guest_id: string | null
           id: string
           notes: string | null
@@ -235,6 +237,8 @@ export type Database = {
           contract_ip?: string | null
           created_at?: string
           created_by?: string | null
+          deposit_amount?: number | null
+          discount_amount?: number | null
           guest_id?: string | null
           id?: string
           notes?: string | null
@@ -253,6 +257,8 @@ export type Database = {
           contract_ip?: string | null
           created_at?: string
           created_by?: string | null
+          deposit_amount?: number | null
+          discount_amount?: number | null
           guest_id?: string | null
           id?: string
           notes?: string | null
