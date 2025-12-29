@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useReservations, useUpdateReservation, useDeleteReservation } from '@/hooks/useReservations';
+import { usePropertySettings } from '@/hooks/usePropertySettings';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -38,11 +39,22 @@ import {
   CheckCircle, 
   XCircle, 
   Loader2,
-  CalendarDays
+  CalendarDays,
+  MessageCircle,
+  Send,
+  Bell,
+  CreditCard
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { ReservationStatus, PaymentStatus } from '@/lib/types';
+import { 
+  generateWhatsAppLink, 
+  generateConfirmationMessage, 
+  generateReminderMessage,
+  generatePaymentReminderMessage,
+  generateCustomMessage
+} from '@/lib/whatsapp';
 
 const statusColors: Record<ReservationStatus, string> = {
   pending: 'bg-warning/10 text-warning border-warning/20',
@@ -73,6 +85,7 @@ const paymentStatusLabels: Record<PaymentStatus, string> = {
 export default function AdminReservations() {
   const { toast } = useToast();
   const { data: reservations = [], isLoading } = useReservations();
+  const { data: property } = usePropertySettings();
   const updateReservation = useUpdateReservation();
   const deleteReservation = useDeleteReservation();
 
@@ -121,6 +134,19 @@ export default function AdminReservations() {
       setDeleteId(null);
     }
   };
+
+  const openWhatsApp = (phone: string, message: string) => {
+    const url = generateWhatsAppLink(phone, message);
+    window.open(url, '_blank');
+  };
+
+  const getReservationDetails = (reservation: typeof reservations[0]) => ({
+    guestName: reservation.guest?.full_name || 'Hóspede',
+    checkIn: reservation.check_in,
+    checkOut: reservation.check_out,
+    totalAmount: Number(reservation.total_amount),
+    propertyName: property?.name,
+  });
 
   return (
     <div className="space-y-6">
@@ -184,6 +210,7 @@ export default function AdminReservations() {
                     <TableHead>Valor</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Pagamento</TableHead>
+                    <TableHead>WhatsApp</TableHead>
                     <TableHead className="w-12"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -214,6 +241,62 @@ export default function AdminReservations() {
                         <Badge variant="outline" className={paymentStatusColors[reservation.payment_status]}>
                           {paymentStatusLabels[reservation.payment_status]}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {reservation.guest?.phone && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="sm" className="gap-2">
+                                <MessageCircle className="h-4 w-4 text-green-600" />
+                                <span className="hidden sm:inline">Enviar</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Enviar mensagem</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => openWhatsApp(
+                                  reservation.guest!.phone,
+                                  generateConfirmationMessage(getReservationDetails(reservation))
+                                )}
+                              >
+                                <Send className="mr-2 h-4 w-4 text-green-600" />
+                                Confirmação de reserva
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => openWhatsApp(
+                                  reservation.guest!.phone,
+                                  generateReminderMessage(getReservationDetails(reservation))
+                                )}
+                              >
+                                <Bell className="mr-2 h-4 w-4 text-primary" />
+                                Lembrete de check-in
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => openWhatsApp(
+                                  reservation.guest!.phone,
+                                  generatePaymentReminderMessage(
+                                    getReservationDetails(reservation),
+                                    Number(reservation.total_amount)
+                                  )
+                                )}
+                              >
+                                <CreditCard className="mr-2 h-4 w-4 text-warning" />
+                                Lembrete de pagamento
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem 
+                                onClick={() => openWhatsApp(
+                                  reservation.guest!.phone,
+                                  generateCustomMessage(reservation.guest!.full_name)
+                                )}
+                              >
+                                <MessageCircle className="mr-2 h-4 w-4" />
+                                Mensagem personalizada
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </TableCell>
                       <TableCell>
                         <DropdownMenu>
