@@ -221,6 +221,7 @@ export type Database = {
           payment_status: Database["public"]["Enums"]["payment_status"]
           status: Database["public"]["Enums"]["reservation_status"]
           total_amount: number
+          tracking_code: string | null
           updated_at: string
         }
         Insert: {
@@ -235,6 +236,7 @@ export type Database = {
           payment_status?: Database["public"]["Enums"]["payment_status"]
           status?: Database["public"]["Enums"]["reservation_status"]
           total_amount?: number
+          tracking_code?: string | null
           updated_at?: string
         }
         Update: {
@@ -249,6 +251,7 @@ export type Database = {
           payment_status?: Database["public"]["Enums"]["payment_status"]
           status?: Database["public"]["Enums"]["reservation_status"]
           total_amount?: number
+          tracking_code?: string | null
           updated_at?: string
         }
         Relationships: [

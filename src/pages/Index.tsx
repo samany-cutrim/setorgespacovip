@@ -71,6 +71,7 @@ export default function Index() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [trackingCode, setTrackingCode] = useState<string | null>(null);
 
   const totalPrice = dateRange?.from && dateRange?.to 
     ? calculateTotalPrice(dateRange.from, dateRange.to, pricingRules)
@@ -141,7 +142,7 @@ export default function Index() {
       });
 
       // Create reservation
-      await createReservation.mutateAsync({
+      const reservation = await createReservation.mutateAsync({
         guest_id: guest.id,
         check_in: format(dateRange.from, 'yyyy-MM-dd'),
         check_out: format(dateRange.to, 'yyyy-MM-dd'),
@@ -151,6 +152,7 @@ export default function Index() {
         status: 'pending',
       });
 
+      setTrackingCode(reservation.tracking_code);
       setBookingSuccess(true);
       toast({
         title: 'Reserva enviada!',
@@ -187,12 +189,19 @@ export default function Index() {
             </div>
             <span className="font-display text-lg font-semibold">{property?.name || 'Casa com Piscina'}</span>
           </div>
-          <Link to="/auth">
-            <Button variant="outline" size="sm">
-              <Lock className="mr-2 h-4 w-4" />
-              Área Administrativa
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link to="/acompanhar">
+              <Button variant="ghost" size="sm">
+                Acompanhar Reserva
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button variant="outline" size="sm">
+                <Lock className="mr-2 h-4 w-4" />
+                Área Administrativa
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -265,16 +274,36 @@ export default function Index() {
                   <p className="mt-2 text-muted-foreground">
                     Sua solicitação foi recebida. Entraremos em contato em breve para confirmar a reserva.
                   </p>
-                  <Button 
-                    className="mt-6" 
-                    onClick={() => {
-                      setBookingSuccess(false);
-                      setDateRange(undefined);
-                      setFormData({ fullName: '', phone: '', email: '', numGuests: 1, notes: '' });
-                    }}
-                  >
-                    Fazer nova reserva
-                  </Button>
+                  
+                  {trackingCode && (
+                    <div className="mt-6 rounded-lg bg-primary/5 p-4">
+                      <p className="text-sm text-muted-foreground">Seu código de acompanhamento:</p>
+                      <p className="mt-1 font-mono text-2xl font-bold tracking-widest text-primary">
+                        {trackingCode}
+                      </p>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Guarde este código para acompanhar o status da sua reserva
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Link to="/acompanhar">
+                      <Button variant="outline">
+                        Acompanhar Reserva
+                      </Button>
+                    </Link>
+                    <Button 
+                      onClick={() => {
+                        setBookingSuccess(false);
+                        setTrackingCode(null);
+                        setDateRange(undefined);
+                        setFormData({ fullName: '', phone: '', email: '', numGuests: 1, notes: '' });
+                      }}
+                    >
+                      Fazer nova reserva
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ) : (
