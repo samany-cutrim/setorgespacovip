@@ -5,6 +5,7 @@ import { usePricingRules, calculateTotalPrice } from '@/hooks/usePricingRules';
 import { useBlockedDates } from '@/hooks/useBlockedDates';
 import { useReservations, useCreateReservation } from '@/hooks/useReservations';
 import { useCreateGuest } from '@/hooks/useGuests';
+import { PropertyGallery } from '@/components/PropertyGallery';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,7 +26,8 @@ import {
   UtensilsCrossed,
   CheckCircle2,
   Loader2,
-  Lock
+  Lock,
+  Image
 } from 'lucide-react';
 import { format, differenceInDays, isWithinInterval, parseISO, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -207,6 +209,19 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Photo Gallery */}
+      {property?.images && property.images.length > 0 && (
+        <section className="py-8">
+          <div className="container">
+            <div className="mb-6 flex items-center gap-2">
+              <Image className="h-5 w-5 text-primary" />
+              <h2 className="font-display text-2xl font-bold">Galeria de Fotos</h2>
+            </div>
+            <PropertyGallery images={property.images} />
+          </div>
+        </section>
+      )}
 
       {/* Amenities */}
       <section className="border-b py-12">

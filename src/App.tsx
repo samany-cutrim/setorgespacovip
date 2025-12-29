@@ -13,6 +13,7 @@ import Guests from "./pages/admin/Guests";
 import Calendar from "./pages/admin/Calendar";
 import Finance from "./pages/admin/Finance";
 import Pricing from "./pages/admin/Pricing";
+import Settings from "./pages/admin/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
               <Route path="calendar" element={<Calendar />} />
               <Route path="finance" element={<Finance />} />
               <Route path="pricing" element={<Pricing />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
