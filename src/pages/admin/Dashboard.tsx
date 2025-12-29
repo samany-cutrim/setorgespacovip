@@ -1,6 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useReservations, useUpcomingReservations } from '@/hooks/useReservations';
 import { useMonthlyRevenue } from '@/hooks/usePayments';
+import { useDashboardStats } from '@/hooks/useDashboardStats';
 import { useGuests } from '@/hooks/useGuests';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -14,10 +15,15 @@ import {
   ArrowRight,
   Clock,
   CheckCircle,
-  AlertCircle
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { 
+  ChartContainer, 
+  ChartTooltip, 
+  ChartTooltipContent 
+} from '@/components/ui/chart';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
 
 const statusColors = {
   pending: 'bg-warning/10 text-warning border-warning/20',
@@ -33,11 +39,26 @@ const statusLabels = {
   completed: 'Concluída',
 };
 
+const revenueChartConfig = {
+  revenue: {
+    label: 'Receita',
+    color: 'hsl(var(--primary))',
+  },
+};
+
+const occupancyChartConfig = {
+  occupancyRate: {
+    label: 'Taxa de Ocupação',
+    color: 'hsl(var(--accent))',
+  },
+};
+
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { data: reservations = [] } = useReservations();
   const { data: upcomingReservations = [] } = useUpcomingReservations();
   const { data: guests = [] } = useGuests();
+  const { data: dashboardStats = [] } = useDashboardStats();
   
   const now = new Date();
   const { data: monthlyRevenue = 0 } = useMonthlyRevenue(now.getFullYear(), now.getMonth());
@@ -101,6 +122,95 @@ export default function AdminDashboard() {
             <p className="text-xs text-muted-foreground">
               {format(now, "MMMM 'de' yyyy", { locale: ptBR })}
             </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Charts */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2">
+              <DollarSign className="h-5 w-5 text-primary" />
+              Receita Mensal
+            </CardTitle>
+            <CardDescription>Últimos 6 meses</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={revenueChartConfig} className="h-[250px]">
+              <BarChart data={dashboardStats} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-muted" />
+                <XAxis 
+                  dataKey="monthLabel" 
+                  axisLine={false}
+                  tickLine={false}
+                  className="text-xs"
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(value) => `R$${(value / 1000).toFixed(0)}k`}
+                  className="text-xs"
+                />
+                <ChartTooltip 
+                  content={
+                    <ChartTooltipContent 
+                      formatter={(value) => [`R$ ${Number(value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 'Receita']}
+                    />
+                  } 
+                />
+                <Bar 
+                  dataKey="revenue" 
+                  fill="hsl(var(--primary))" 
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-accent" />
+              Taxa de Ocupação
+            </CardTitle>
+            <CardDescription>Últimos 6 meses</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer config={occupancyChartConfig} className="h-[250px]">
+              <LineChart data={dashboardStats} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-muted" />
+                <XAxis 
+                  dataKey="monthLabel" 
+                  axisLine={false}
+                  tickLine={false}
+                  className="text-xs"
+                />
+                <YAxis 
+                  axisLine={false}
+                  tickLine={false}
+                  tickFormatter={(value) => `${value}%`}
+                  domain={[0, 100]}
+                  className="text-xs"
+                />
+                <ChartTooltip 
+                  content={
+                    <ChartTooltipContent 
+                      formatter={(value) => [`${value}%`, 'Ocupação']}
+                    />
+                  } 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="occupancyRate" 
+                  stroke="hsl(var(--accent))" 
+                  strokeWidth={2}
+                  dot={{ fill: 'hsl(var(--accent))', strokeWidth: 2 }}
+                  activeDot={{ r: 6 }}
+                />
+              </LineChart>
+            </ChartContainer>
           </CardContent>
         </Card>
       </div>
