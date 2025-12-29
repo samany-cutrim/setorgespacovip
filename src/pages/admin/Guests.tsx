@@ -33,10 +33,12 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Search, Plus, Pencil, Trash2, Users, Loader2 } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2, Users, Loader2, Star } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Guest } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function AdminGuests() {
   const { toast } = useToast();
@@ -64,8 +66,16 @@ export default function AdminGuests() {
     g.email?.toLowerCase().includes(search.toLowerCase())
   );
 
-  const getGuestReservations = (guestId: string) => {
-    return reservations.filter(r => r.guest_id === guestId);
+  const getGuestStats = (guestId: string) => {
+    const guestReservations = reservations.filter(r => r.guest_id === guestId && r.status !== 'cancelled');
+    const totalSpent = guestReservations.reduce((sum, r) => sum + Number(r.total_amount), 0);
+    const completedReservations = guestReservations.filter(r => r.status === 'completed').length;
+    return {
+      count: guestReservations.length,
+      completed: completedReservations,
+      totalSpent,
+      isFrequent: completedReservations >= 2, // Cliente frequente: 2+ estadias concluídas
+    };
   };
 
   const handleOpenDialog = (guest?: Guest) => {
@@ -186,20 +196,48 @@ export default function AdminGuests() {
                     <TableHead>Nome</TableHead>
                     <TableHead>Telefone</TableHead>
                     <TableHead>Email</TableHead>
-                    <TableHead>Reservas</TableHead>
+                    <TableHead className="text-center">Reservas</TableHead>
+                    <TableHead className="text-right">Total Gasto</TableHead>
                     <TableHead>Cadastro</TableHead>
                     <TableHead className="w-24"></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredGuests.map((guest) => {
-                    const guestReservations = getGuestReservations(guest.id);
+                    const stats = getGuestStats(guest.id);
                     return (
                       <TableRow key={guest.id}>
-                        <TableCell className="font-medium">{guest.full_name}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{guest.full_name}</span>
+                            {stats.isFrequent && (
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 gap-1">
+                                      <Star className="h-3 w-3 fill-current" />
+                                      Frequente
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>{stats.completed} estadias concluídas - elegível para desconto!</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell>{guest.phone}</TableCell>
                         <TableCell>{guest.email || '-'}</TableCell>
-                        <TableCell>{guestReservations.length}</TableCell>
+                        <TableCell className="text-center">
+                          <span className="font-medium">{stats.count}</span>
+                          {stats.completed > 0 && (
+                            <span className="text-muted-foreground text-sm"> ({stats.completed} concl.)</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">
+                          R$ {stats.totalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                        </TableCell>
                         <TableCell>
                           {format(parseISO(guest.created_at), "dd/MM/yyyy", { locale: ptBR })}
                         </TableCell>
