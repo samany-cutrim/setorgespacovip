@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useReservations, useUpcomingReservations } from '@/hooks/useReservations';
 import { useMonthlyRevenue } from '@/hooks/usePayments';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
+import { useReportStats } from '@/hooks/useReportStats';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,9 +15,8 @@ import {
   ArrowRight,
   Clock,
   CheckCircle,
-  FileDown,
 } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, subMonths, startOfMonth, endOfMonth } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { 
   ChartContainer, 
@@ -26,6 +27,8 @@ import { BarChart, Bar, XAxis, YAxis, LineChart, Line, CartesianGrid } from 'rec
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
+import { ReportDateFilter } from '@/components/admin/ReportDateFilter';
+import { supabase } from '@/integrations/supabase/client';
 
 const statusColors = {
   pending: 'bg-warning/10 text-warning border-warning/20',
@@ -56,7 +59,6 @@ const occupancyChartConfig = {
 };
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
   const { data: reservations = [] } = useReservations();
   const { data: upcomingReservations = [] } = useUpcomingReservations();
   const { data: dashboardStats = [] } = useDashboardStats();
@@ -67,7 +69,72 @@ export default function AdminDashboard() {
   const pendingCount = reservations.filter(r => r.status === 'pending').length;
   const confirmedCount = reservations.filter(r => r.status === 'confirmed').length;
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async (startDate: Date, endDate: Date) => {
+    const startStr = format(startDate, 'yyyy-MM-dd');
+    const endStr = format(endDate, 'yyyy-MM-dd');
+
+    // Fetch data for the custom date range
+    const { data: payments } = await supabase
+      .from('payments')
+      .select('amount, payment_date')
+      .gte('payment_date', startStr)
+      .lte('payment_date', endStr);
+
+    const { data: reservationsData } = await supabase
+      .from('reservations')
+      .select('check_in, check_out, status')
+      .in('status', ['confirmed', 'completed'])
+      .gte('check_out', startStr)
+      .lte('check_in', endStr);
+
+    // Calculate monthly stats for the report
+    const monthsInRange: { month: string; label: string; revenue: number; occupiedDays: number; totalDays: number }[] = [];
+    let currentDate = startOfMonth(startDate);
+    
+    while (currentDate <= endDate) {
+      const monthEnd = endOfMonth(currentDate);
+      const daysInMonth = monthEnd.getDate();
+      
+      monthsInRange.push({
+        month: format(currentDate, 'yyyy-MM'),
+        label: format(currentDate, 'MMM/yy', { locale: ptBR }),
+        revenue: 0,
+        occupiedDays: 0,
+        totalDays: daysInMonth,
+      });
+      
+      currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+    }
+
+    // Calculate revenue per month
+    (payments || []).forEach(payment => {
+      const paymentMonth = format(parseISO(payment.payment_date), 'yyyy-MM');
+      const monthData = monthsInRange.find(m => m.month === paymentMonth);
+      if (monthData) {
+        monthData.revenue += Number(payment.amount);
+      }
+    });
+
+    // Calculate occupied days per month (simplified)
+    (reservationsData || []).forEach(reservation => {
+      const checkIn = parseISO(reservation.check_in);
+      const checkOut = parseISO(reservation.check_out);
+      
+      monthsInRange.forEach(monthData => {
+        const monthStart = parseISO(`${monthData.month}-01`);
+        const monthEnd = endOfMonth(monthStart);
+        
+        // Calculate overlap between reservation and month
+        const overlapStart = checkIn > monthStart ? checkIn : monthStart;
+        const overlapEnd = checkOut < monthEnd ? checkOut : monthEnd;
+        
+        if (overlapStart <= overlapEnd) {
+          const days = Math.ceil((overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          monthData.occupiedDays += days;
+        }
+      });
+    });
+
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
     
@@ -75,30 +142,30 @@ export default function AdminDashboard() {
     doc.setFontSize(20);
     doc.text('Relatório Financeiro', pageWidth / 2, 20, { align: 'center' });
     
-    // Date
+    // Date Range
     doc.setFontSize(10);
-    doc.text(`Gerado em: ${format(now, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`, pageWidth / 2, 28, { align: 'center' });
+    doc.text(`Período: ${format(startDate, "dd/MM/yyyy")} a ${format(endDate, "dd/MM/yyyy")}`, pageWidth / 2, 28, { align: 'center' });
+    doc.text(`Gerado em: ${format(now, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`, pageWidth / 2, 34, { align: 'center' });
 
     // Summary
     doc.setFontSize(14);
-    doc.text('Resumo Atual', 14, 45);
+    doc.text('Resumo Atual', 14, 50);
     
     doc.setFontSize(11);
-    doc.text(`Reservas Pendentes: ${pendingCount}`, 14, 55);
-    doc.text(`Reservas Confirmadas: ${confirmedCount}`, 14, 62);
-    doc.text(`Receita do Mês: R$ ${monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, 69);
+    doc.text(`Reservas Pendentes: ${pendingCount}`, 14, 60);
+    doc.text(`Reservas Confirmadas: ${confirmedCount}`, 14, 67);
 
     // Revenue Table
     doc.setFontSize(14);
-    doc.text('Receita Mensal (Últimos 6 meses)', 14, 85);
+    doc.text('Receita Mensal', 14, 83);
 
-    const revenueData = dashboardStats.map(stat => [
-      stat.monthLabel,
+    const revenueData = monthsInRange.map(stat => [
+      stat.label,
       `R$ ${stat.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
     ]);
 
     autoTable(doc, {
-      startY: 90,
+      startY: 88,
       head: [['Mês', 'Receita']],
       body: revenueData,
       theme: 'striped',
@@ -109,14 +176,17 @@ export default function AdminDashboard() {
     const finalY = (doc as any).lastAutoTable.finalY || 130;
     
     doc.setFontSize(14);
-    doc.text('Taxa de Ocupação (Últimos 6 meses)', 14, finalY + 15);
+    doc.text('Taxa de Ocupação', 14, finalY + 15);
 
-    const occupancyData = dashboardStats.map(stat => [
-      stat.monthLabel,
-      `${stat.occupiedDays} dias`,
-      `${stat.totalDays} dias`,
-      `${stat.occupancyRate}%`,
-    ]);
+    const occupancyData = monthsInRange.map(stat => {
+      const rate = Math.min(100, Math.round((stat.occupiedDays / stat.totalDays) * 100));
+      return [
+        stat.label,
+        `${stat.occupiedDays} dias`,
+        `${stat.totalDays} dias`,
+        `${rate}%`,
+      ];
+    });
 
     autoTable(doc, {
       startY: finalY + 20,
@@ -127,19 +197,19 @@ export default function AdminDashboard() {
     });
 
     // Totals
-    const totalRevenue = dashboardStats.reduce((sum, stat) => sum + stat.revenue, 0);
-    const avgOccupancy = dashboardStats.length > 0 
-      ? Math.round(dashboardStats.reduce((sum, stat) => sum + stat.occupancyRate, 0) / dashboardStats.length)
-      : 0;
+    const totalRevenue = monthsInRange.reduce((sum, stat) => sum + stat.revenue, 0);
+    const totalOccupied = monthsInRange.reduce((sum, stat) => sum + stat.occupiedDays, 0);
+    const totalDays = monthsInRange.reduce((sum, stat) => sum + stat.totalDays, 0);
+    const avgOccupancy = totalDays > 0 ? Math.round((totalOccupied / totalDays) * 100) : 0;
 
     const finalY2 = (doc as any).lastAutoTable.finalY || 200;
     
     doc.setFontSize(12);
-    doc.text(`Receita Total (6 meses): R$ ${totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, finalY2 + 15);
+    doc.text(`Receita Total: R$ ${totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, finalY2 + 15);
     doc.text(`Taxa Média de Ocupação: ${avgOccupancy}%`, 14, finalY2 + 23);
 
     // Save
-    doc.save(`relatorio-financeiro-${format(now, 'yyyy-MM-dd')}.pdf`);
+    doc.save(`relatorio-financeiro-${format(startDate, 'yyyy-MM-dd')}_${format(endDate, 'yyyy-MM-dd')}.pdf`);
     toast.success('Relatório exportado com sucesso!');
   };
 
@@ -152,10 +222,7 @@ export default function AdminDashboard() {
             Bem-vindo de volta! Aqui está o resumo das suas reservas.
           </p>
         </div>
-        <Button onClick={handleExportPDF} variant="outline">
-          <FileDown className="mr-2 h-4 w-4" />
-          Exportar PDF
-        </Button>
+        <ReportDateFilter onExport={handleExportPDF} />
       </div>
 
       {/* Stats */}
