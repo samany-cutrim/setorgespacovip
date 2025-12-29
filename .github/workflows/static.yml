@@ -39,8 +39,37 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Ensure 404 serves index (SPA fallback)
-        run: cp dist/index.html dist/404.html
+      - name: Create SPA 404 (robust fallback)
+        run: |
+          cat > dist/404.html <<'HTML'
+          <!doctype html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width,initial-scale=1">
+              <title>Page Not Found</title>
+            </head>
+            <body>
+              <script>
+                // Fetch the SPA index and inject it so the router can handle client-side routes
+                (async () => {
+                  try {
+                    const res = await fetch('/poolside-planner/index.html');
+                    const html = await res.text();
+                    document.open();
+                    document.write(html);
+                    document.close();
+                  } catch (err) {
+                    // Fallback: redirect to root
+                    location.replace('/poolside-planner/');
+                  }
+                })();
+              </script>
+            </body>
+          </html>
+          HTML
+      - name: List dist
+        run: ls -la dist
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
