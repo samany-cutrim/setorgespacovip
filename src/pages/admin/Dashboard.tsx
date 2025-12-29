@@ -2,14 +2,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useReservations, useUpcomingReservations } from '@/hooks/useReservations';
 import { useMonthlyRevenue } from '@/hooks/usePayments';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
-import { useGuests } from '@/hooks/useGuests';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { 
   CalendarDays, 
-  Users, 
   DollarSign, 
   TrendingUp,
   ArrowRight,
@@ -57,7 +55,6 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const { data: reservations = [] } = useReservations();
   const { data: upcomingReservations = [] } = useUpcomingReservations();
-  const { data: guests = [] } = useGuests();
   const { data: dashboardStats = [] } = useDashboardStats();
   
   const now = new Date();
@@ -76,7 +73,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Reservas Pendentes</CardTitle>
@@ -96,17 +93,6 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold">{confirmedCount}</div>
             <p className="text-xs text-muted-foreground">Próximas estadias</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Hóspedes Cadastrados</CardTitle>
-            <Users className="h-4 w-4 text-primary" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{guests.length}</div>
-            <p className="text-xs text-muted-foreground">Total de clientes</p>
           </CardContent>
         </Card>
 
