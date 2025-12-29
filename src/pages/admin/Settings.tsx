@@ -128,7 +128,7 @@ export default function AdminSettings() {
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Casa com Piscina"
+                  placeholder="setor g espaço vip"
                 />
               </div>
               <div className="space-y-2">

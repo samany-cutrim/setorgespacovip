@@ -297,7 +297,7 @@ export default function ClientArea() {
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
                 <Waves className="h-5 w-5" />
               </div>
-              <span className="font-display text-lg font-semibold">{property?.name || 'Casa com Piscina'}</span>
+              <span className="font-display text-lg font-semibold">{property?.name || 'setor g espaço vip'}</span>
             </Link>
             <Link to="/">
               <Button variant="outline" size="sm">
@@ -368,7 +368,7 @@ export default function ClientArea() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Waves className="h-5 w-5" />
             </div>
-            <span className="font-display text-lg font-semibold">{property?.name || 'Casa com Piscina'}</span>
+            <span className="font-display text-lg font-semibold">{property?.name || 'setor g espaço vip'}</span>
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
@@ -567,7 +567,7 @@ export default function ClientArea() {
                       <div className="space-y-4 text-sm">
                         <h4 className="font-semibold">CONTRATO DE LOCAÇÃO DE IMÓVEL POR TEMPORADA</h4>
                         
-                        <p><strong>LOCADOR:</strong> {property?.name || 'Casa com Piscina'}</p>
+                        <p><strong>LOCADOR:</strong> {property?.name || 'setor g espaço vip'}</p>
                         <p><strong>LOCATÁRIO:</strong> {currentReservation?.guest?.full_name}</p>
                         
                         <p><strong>PERÍODO:</strong> {currentReservation && format(parseISO(currentReservation.check_in), "dd/MM/yyyy", { locale: ptBR })} a {currentReservation && format(parseISO(currentReservation.check_out), "dd/MM/yyyy", { locale: ptBR })}</p>
@@ -613,7 +613,7 @@ export default function ClientArea() {
                   Histórico de Reservas
                 </CardTitle>
                 <CardDescription>
-                  Todas as suas reservas em {property?.name || 'Casa com Piscina'}
+                  Todas as suas reservas em {property?.name || 'setor g espaço vip' }
                 </CardDescription>
               </CardHeader>
               <CardContent>

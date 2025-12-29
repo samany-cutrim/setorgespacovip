@@ -187,7 +187,7 @@ export default function Index() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Waves className="h-5 w-5" />
             </div>
-            <span className="font-display text-lg font-semibold">{property?.name || 'Casa com Piscina'}</span>
+            <span className="font-display text-lg font-semibold">{property?.name || 'setor g espaço vip'}</span>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/cliente">
@@ -210,7 +210,7 @@ export default function Index() {
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="animate-fade-in font-display text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
-              {property?.name || 'Casa com Piscina'}
+              {property?.name || 'setor g espaço vip'}
             </h1>
             <p className="mt-6 animate-fade-in text-lg text-muted-foreground md:text-xl" style={{ animationDelay: '0.1s' }}>
               {property?.description || 'Perfeita para suas férias em família ou com amigos'}
@@ -450,7 +450,7 @@ export default function Index() {
       {/* Footer */}
       <footer className="border-t bg-muted/30 py-8">
         <div className="container text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} {property?.name || 'Casa com Piscina'}. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} {property?.name || 'setor g espaço vip'}. Todos os direitos reservados.</p>
         </div>
       </footer>
     </div>

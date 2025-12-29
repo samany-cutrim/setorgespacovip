@@ -93,7 +93,7 @@ CREATE TABLE public.blocked_dates (
 -- Tabela de configurações da propriedade
 CREATE TABLE public.property_settings (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL DEFAULT 'Casa com Piscina',
+  name TEXT NOT NULL DEFAULT 'setor g espaço vip',
   description TEXT,
   max_guests INTEGER DEFAULT 10,
   amenities TEXT[],
@@ -105,7 +105,7 @@ CREATE TABLE public.property_settings (
 -- Inserir configuração inicial
 INSERT INTO public.property_settings (name, description, max_guests, amenities)
 VALUES (
-  'Casa com Piscina',
+  'setor g espaço vip',
   'Linda casa com piscina, perfeita para suas férias em família ou com amigos. Ambiente aconchegante e completo.',
   10,
   ARRAY['Piscina', 'Churrasqueira', 'Wi-Fi', 'Estacionamento', 'Ar condicionado', 'Cozinha completa']

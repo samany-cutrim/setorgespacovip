@@ -43,7 +43,7 @@ export function generateConfirmationMessage(details: ReservationDetails): string
 
   return `Olá ${details.guestName}! 👋
 
-Sua reserva em *${details.propertyName || 'Casa com Piscina'}* foi *CONFIRMADA*! ✅
+Sua reserva em *${details.propertyName || 'setor g espaço vip'}* foi *CONFIRMADA*! ✅
 
 📅 *Check-in:* ${checkInFormatted}
 📅 *Check-out:* ${checkOutFormatted}
@@ -64,7 +64,7 @@ export function generateReminderMessage(details: ReservationDetails): string {
 
   return `Olá ${details.guestName}! 👋
 
-Lembrete: sua estadia em *${details.propertyName || 'Casa com Piscina'}* está chegando!
+Lembrete: sua estadia em *${details.propertyName || 'setor g espaço vip'}* está chegando!
 
 📅 *Check-in:* ${checkInFormatted}
 ${details.trackingCode ? `\n🔑 *Código de acompanhamento:* ${details.trackingCode}` : ''}

@@ -60,7 +60,7 @@ export function AdminSidebar() {
           </div>
           {!collapsed && (
             <div className="flex flex-col">
-              <span className="font-display font-semibold text-sidebar-foreground">Casa com Piscina</span>
+              <span className="font-display font-semibold text-sidebar-foreground">setor g espaço vip</span>
               <span className="text-xs text-sidebar-foreground/60">Gestão de Reservas</span>
             </div>
           )}

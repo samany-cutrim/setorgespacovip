@@ -71,7 +71,7 @@ export default function AuthPage() {
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <Waves className="h-6 w-6" />
         </div>
-        <h1 className="font-display text-2xl font-semibold">Casa com Piscina</h1>
+        <h1 className="font-display text-2xl font-semibold">setor g espaço vip</h1>
       </div>
 
       <Card className="w-full max-w-md shadow-card">
