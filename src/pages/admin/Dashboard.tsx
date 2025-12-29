@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Clock,
   CheckCircle,
+  FileDown,
 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -21,7 +22,10 @@ import {
   ChartTooltip, 
   ChartTooltipContent 
 } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, LineChart, Line, CartesianGrid } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, LineChart, Line, CartesianGrid } from 'recharts';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { toast } from 'sonner';
 
 const statusColors = {
   pending: 'bg-warning/10 text-warning border-warning/20',
@@ -63,13 +67,95 @@ export default function AdminDashboard() {
   const pendingCount = reservations.filter(r => r.status === 'pending').length;
   const confirmedCount = reservations.filter(r => r.status === 'confirmed').length;
 
+  const handleExportPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text('Relatório Financeiro', pageWidth / 2, 20, { align: 'center' });
+    
+    // Date
+    doc.setFontSize(10);
+    doc.text(`Gerado em: ${format(now, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}`, pageWidth / 2, 28, { align: 'center' });
+
+    // Summary
+    doc.setFontSize(14);
+    doc.text('Resumo Atual', 14, 45);
+    
+    doc.setFontSize(11);
+    doc.text(`Reservas Pendentes: ${pendingCount}`, 14, 55);
+    doc.text(`Reservas Confirmadas: ${confirmedCount}`, 14, 62);
+    doc.text(`Receita do Mês: R$ ${monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, 69);
+
+    // Revenue Table
+    doc.setFontSize(14);
+    doc.text('Receita Mensal (Últimos 6 meses)', 14, 85);
+
+    const revenueData = dashboardStats.map(stat => [
+      stat.monthLabel,
+      `R$ ${stat.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+    ]);
+
+    autoTable(doc, {
+      startY: 90,
+      head: [['Mês', 'Receita']],
+      body: revenueData,
+      theme: 'striped',
+      headStyles: { fillColor: [59, 130, 246] },
+    });
+
+    // Occupancy Table
+    const finalY = (doc as any).lastAutoTable.finalY || 130;
+    
+    doc.setFontSize(14);
+    doc.text('Taxa de Ocupação (Últimos 6 meses)', 14, finalY + 15);
+
+    const occupancyData = dashboardStats.map(stat => [
+      stat.monthLabel,
+      `${stat.occupiedDays} dias`,
+      `${stat.totalDays} dias`,
+      `${stat.occupancyRate}%`,
+    ]);
+
+    autoTable(doc, {
+      startY: finalY + 20,
+      head: [['Mês', 'Dias Ocupados', 'Total de Dias', 'Taxa']],
+      body: occupancyData,
+      theme: 'striped',
+      headStyles: { fillColor: [16, 185, 129] },
+    });
+
+    // Totals
+    const totalRevenue = dashboardStats.reduce((sum, stat) => sum + stat.revenue, 0);
+    const avgOccupancy = dashboardStats.length > 0 
+      ? Math.round(dashboardStats.reduce((sum, stat) => sum + stat.occupancyRate, 0) / dashboardStats.length)
+      : 0;
+
+    const finalY2 = (doc as any).lastAutoTable.finalY || 200;
+    
+    doc.setFontSize(12);
+    doc.text(`Receita Total (6 meses): R$ ${totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 14, finalY2 + 15);
+    doc.text(`Taxa Média de Ocupação: ${avgOccupancy}%`, 14, finalY2 + 23);
+
+    // Save
+    doc.save(`relatorio-financeiro-${format(now, 'yyyy-MM-dd')}.pdf`);
+    toast.success('Relatório exportado com sucesso!');
+  };
+
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="font-display text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Bem-vindo de volta! Aqui está o resumo das suas reservas.
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="font-display text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">
+            Bem-vindo de volta! Aqui está o resumo das suas reservas.
+          </p>
+        </div>
+        <Button onClick={handleExportPDF} variant="outline">
+          <FileDown className="mr-2 h-4 w-4" />
+          Exportar PDF
+        </Button>
       </div>
 
       {/* Stats */}
