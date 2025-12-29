@@ -92,6 +92,7 @@ export default function AuthPage() {
                 id="login-email"
                 type="email"
                 placeholder="seu@email.com"
+                autoComplete="email"
                 value={loginData.email}
                 onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
               />
@@ -102,6 +103,7 @@ export default function AuthPage() {
               <Input
                 id="login-password"
                 type="password"
+                autoComplete="current-password"
                 value={loginData.password}
                 onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
               />
