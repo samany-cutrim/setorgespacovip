@@ -48,30 +48,31 @@ export default function AdminSettings() {
         .filter(a => a.length > 0);
 
       if (property?.id) {
-        // ...remover chamada ao supabase, substituir por chamada à nova API REST...
-          .from('property_settings')
-          .update({
+        const res = await fetch(`/api/property-settings/${property.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             name: formData.name,
             description: formData.description,
             max_guests: formData.max_guests,
             amenities,
             images: formData.images,
-          })
-          .eq('id', property.id);
-
-        if (error) throw error;
+          }),
+        });
+        if (!res.ok) throw new Error('Erro ao atualizar configurações');
       } else {
-        // ...remover chamada ao supabase, substituir por chamada à nova API REST...
-          .from('property_settings')
-          .insert({
+        const res = await fetch('/api/property-settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
             name: formData.name,
             description: formData.description,
             max_guests: formData.max_guests,
             amenities,
             images: formData.images,
-          });
-
-        if (error) throw error;
+          }),
+        });
+        if (!res.ok) throw new Error('Erro ao criar configurações');
       }
 
       queryClient.invalidateQueries({ queryKey: ['property-settings'] });
