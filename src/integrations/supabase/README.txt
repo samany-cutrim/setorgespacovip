@@ -1,0 +1,1 @@
+Os arquivos desta pasta foram removidos porque o Supabase não é mais utilizado no projeto.

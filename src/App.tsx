@@ -4,18 +4,19 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import ClientArea from "./pages/ClientArea";
-import AdminLayout from "./pages/AdminLayout";
-import Dashboard from "./pages/admin/Dashboard";
-import Reservations from "./pages/admin/Reservations";
-import Guests from "./pages/admin/Guests";
-import Calendar from "./pages/admin/Calendar";
-import Finance from "./pages/admin/Finance";
-import Pricing from "./pages/admin/Pricing";
-import Settings from "./pages/admin/Settings";
-import NotFound from "./pages/NotFound";
+import { Suspense, lazy } from "react";
+const Index = lazy(() => import("./pages/Index"));
+const Auth = lazy(() => import("./pages/Auth"));
+const ClientArea = lazy(() => import("./pages/ClientArea"));
+const AdminLayout = lazy(() => import("./pages/AdminLayout"));
+const Dashboard = lazy(() => import("./pages/admin/Dashboard"));
+const Reservations = lazy(() => import("./pages/admin/Reservations"));
+const Guests = lazy(() => import("./pages/admin/Guests"));
+const Calendar = lazy(() => import("./pages/admin/Calendar"));
+const Finance = lazy(() => import("./pages/admin/Finance"));
+const Pricing = lazy(() => import("./pages/admin/Pricing"));
+const Settings = lazy(() => import("./pages/admin/Settings"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -26,21 +27,23 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/cliente" element={<ClientArea />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<Dashboard />} />
-              <Route path="reservations" element={<Reservations />} />
-              <Route path="guests" element={<Guests />} />
-              <Route path="calendar" element={<Calendar />} />
-              <Route path="finance" element={<Finance />} />
-              <Route path="pricing" element={<Pricing />} />
-              <Route path="settings" element={<Settings />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<div>Carregando...</div>}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/cliente" element={<ClientArea />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="reservations" element={<Reservations />} />
+                <Route path="guests" element={<Guests />} />
+                <Route path="calendar" element={<Calendar />} />
+                <Route path="finance" element={<Finance />} />
+                <Route path="pricing" element={<Pricing />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
