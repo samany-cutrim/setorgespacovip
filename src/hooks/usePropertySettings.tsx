@@ -6,13 +6,8 @@ export function usePropertySettings() {
   return useQuery({
     queryKey: ['property-settings'],
     queryFn: async (): Promise<PropertySettings | null> => {
-      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
-        .from('property_settings')
-        .select('*')
-        .maybeSingle();
-
-      if (error) throw error;
-      return data;
+      // TODO: Implementar chamada à API REST
+      return null;
     },
   });
 }
