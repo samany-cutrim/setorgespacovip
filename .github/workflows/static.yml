@@ -1,5 +1,71 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+ # Workflow desabilitado. Caso queira reativar, remova os comentários abaixo.
+ #
+ # name: Deploy static content to Pages
+ #
+ # on:
+ #   push:
+ #     branches: ["main"]
+ #
+ # jobs:
+ #   deploy:
+ #     runs-on: ubuntu-latest
+ #     steps:
+ #       - uses: actions/checkout@v3
+ #       - uses: actions/setup-node@v3
+ #         with:
+ #           node-version: 20
+ #       - run: npm ci
+ #       - run: npm run build
+ #       - uses: actions/upload-pages-artifact@v2
+ #         with:
+ #           path: './dist'
+ #       - uses: actions/deploy-pages@v2
+ #         id: deployment
+ #         with:
+ #           github-token: ${{ secrets.GITHUB_TOKEN }}
+ #           publish-dir: ./dist
+ #           publish-branch: gh-pages
+ #           publish-path: .
+ #
+ # permissions:
+ #   contents: read
+ #   pages: write
+ #   id-token: write
+ #
+ # concurrency:
+ #   group: "pages"
+ #   cancel-in-progress: false
+ #
+ # environment:
+ #   name: github-pages
+ #   url: ${{ steps.deployment.outputs.page_url }}
+ #
+ # steps:
+ #   - name: Checkout
+ #     uses: actions/checkout@v4
+ #   - name: Setup Node
+ #     uses: actions/setup-node@v4
+ #     with:
+ #       node-version: '18'
+ #   - name: Install dependencies
+ #     run: npm install
+ #   - name: Build
+ #     run: npm run build
+ #   - name: Create SPA 404 (robust fallback)
+ #     run: |
+ #       echo '<!doctype html><html><head><meta charset="utf-8"><title>SPA Fallback</title></head><body><script>fetch("/setorgespacovip/index.html").then(r=>r.text()).then(html=>{document.open();document.write(html);document.close();});</script></body></html>' > dist/404.html
+ #   - name: List dist
+ #     run: ls -la dist
+ #   - name: Setup Pages
+ #     uses: actions/configure-pages@v5
+ #   - name: Upload artifact
+ #     uses: actions/upload-pages-artifact@v3
+ #     with:
+ #       path: 'dist'
+ #   - name: Deploy to GitHub Pages
+ #     id: deployment
+ #     uses: actions/deploy-pages@v4
 
 on:
   # Runs on pushes targeting the default branch
