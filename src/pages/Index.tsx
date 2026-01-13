@@ -180,24 +180,24 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-white to-muted/60">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-50 border-b bg-white/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Waves className="h-5 w-5" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-accent shadow-md">
+              <Waves className="h-6 w-6 text-white" />
             </div>
-            <span className="font-display text-lg font-semibold">{property?.name || 'setor g espaço vip'}</span>
+            <span className="font-display text-xl font-bold tracking-tight text-primary drop-shadow-sm">{property?.name || 'setor g espaço vip'}</span>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/cliente">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="rounded-full px-4 font-medium hover:bg-primary/10 transition-colors">
                 Área do Cliente
               </Button>
             </Link>
             <Link to="/auth">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="rounded-full px-4 font-medium border-primary/30 hover:bg-primary/10 transition-colors">
                 <Lock className="mr-2 h-4 w-4" />
                 Área Administrativa
               </Button>
@@ -207,13 +207,13 @@ export default function Index() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 to-background py-16 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="animate-fade-in font-display text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
+            <h1 className="animate-fade-in font-display text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-primary drop-shadow-md">
               {property?.name || 'setor g espaço vip'}
             </h1>
-            <p className="mt-6 animate-fade-in text-lg text-muted-foreground md:text-xl fade-in-delay-1">
+            <p className="mt-6 animate-fade-in text-lg text-muted-foreground md:text-xl fade-in-delay-1 max-w-2xl mx-auto">
               {property?.description || 'Perfeita para suas férias em família ou com amigos'}
             </p>
           </div>
@@ -234,28 +234,28 @@ export default function Index() {
       )}
 
       {/* Amenities */}
-      <section className="border-b py-12">
+      <section className="border-b py-12 bg-white/60">
         <div className="container">
           <div className="flex flex-wrap items-center justify-center gap-6">
             {(property?.amenities || ['Piscina', 'Churrasqueira', 'Wi-Fi', 'Estacionamento']).map((amenity) => {
               const Icon = amenityIcons[amenity] || CheckCircle2;
               return (
-                <div key={amenity} className="flex items-center gap-2 text-muted-foreground">
+                <div key={amenity} className="flex items-center gap-2 rounded-lg bg-primary/5 px-3 py-1 text-muted-foreground shadow-sm">
                   <Icon className="h-5 w-5 text-primary" />
-                  <span>{amenity}</span>
+                  <span className="font-medium">{amenity}</span>
                 </div>
               );
             })}
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 rounded-lg bg-primary/5 px-3 py-1 text-muted-foreground shadow-sm">
               <Users className="h-5 w-5 text-primary" />
-              <span>Até {property?.max_guests || 10} hóspedes</span>
+              <span className="font-medium">Até {property?.max_guests || 10} hóspedes</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Booking Section */}
-      <section className="py-16" id="booking">
+      <section className="py-20" id="booking">
         <div className="container">
           <div className="mx-auto max-w-4xl">
             <div className="mb-12 text-center">
@@ -308,11 +308,11 @@ export default function Index() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-8 lg:grid-cols-2">
+              <div className="grid gap-10 lg:grid-cols-2">
                 {/* Calendar */}
-                <Card className="shadow-card">
+                <Card className="shadow-xl border-2 border-primary/10 bg-white/90">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-display">
+                    <CardTitle className="flex items-center gap-2 font-display text-primary">
                       <CalendarDays className="h-5 w-5 text-primary" />
                       Escolha as Datas
                     </CardTitle>
@@ -320,43 +320,44 @@ export default function Index() {
                       Selecione a data de entrada e saída
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <Calendar
-                      mode="range"
-                      selected={dateRange}
-                      onSelect={setDateRange}
-                      numberOfMonths={1}
-                      disabled={(date) => date < new Date() || isDateBlocked(date)}
-                      locale={ptBR}
-                      className="pointer-events-auto rounded-md border"
-                    />
-                    
-                    {dateRange?.from && dateRange?.to && (
-                      <div className="mt-6 space-y-3 rounded-lg bg-muted/50 p-4">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">Check-in</span>
-                          <span className="font-medium">{format(dateRange.from, "dd 'de' MMM, yyyy", { locale: ptBR })}</span>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">Check-out</span>
-                          <span className="font-medium">{format(dateRange.to, "dd 'de' MMM, yyyy", { locale: ptBR })}</span>
-                        </div>
-                        <Separator />
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
-                          <span className="text-xl font-bold text-primary">
-                            R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </span>
-                        </div>
+                    <CardContent>
+                      <div className="rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-white p-2 shadow-inner">
+                        <Calendar
+                          mode="range"
+                          selected={dateRange}
+                          onSelect={setDateRange}
+                          numberOfMonths={1}
+                          disabled={(date) => date < new Date() || isDateBlocked(date)}
+                          locale={ptBR}
+                          className="pointer-events-auto rounded-lg border-none"
+                        />
                       </div>
-                    )}
-                  </CardContent>
+                      {dateRange?.from && dateRange?.to && (
+                        <div className="mt-6 space-y-3 rounded-lg bg-primary/5 p-4 shadow-sm">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Check-in</span>
+                            <span className="font-medium">{format(dateRange.from, "dd 'de' MMM, yyyy", { locale: ptBR })}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Check-out</span>
+                            <span className="font-medium">{format(dateRange.to, "dd 'de' MMM, yyyy", { locale: ptBR })}</span>
+                          </div>
+                          <Separator />
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
+                            <span className="text-xl font-bold text-primary">
+                              R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
                 </Card>
 
                 {/* Form */}
-                <Card className="shadow-card">
+                <Card className="shadow-xl border-2 border-primary/10 bg-white/90">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-display">
+                    <CardTitle className="flex items-center gap-2 font-display text-primary">
                       <Users className="h-5 w-5 text-primary" />
                       Seus Dados
                     </CardTitle>
@@ -364,8 +365,8 @@ export default function Index() {
                       Preencha as informações para solicitar a reserva
                     </CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-5">
                       <div className="space-y-2">
                         <Label htmlFor="fullName">Nome completo *</Label>
                         <Input
@@ -374,6 +375,7 @@ export default function Index() {
                           value={formData.fullName}
                           onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                           placeholder="Seu nome"
+                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
                         />
                         {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
                       </div>
@@ -386,6 +388,7 @@ export default function Index() {
                           value={formData.phone}
                           onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                           placeholder="(00) 00000-0000"
+                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
                         />
                         {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
                       </div>
@@ -399,6 +402,7 @@ export default function Index() {
                           value={formData.email}
                           onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                           placeholder="seu@email.com"
+                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
                         />
                         {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                       </div>
@@ -413,6 +417,7 @@ export default function Index() {
                           autoComplete="off"
                           value={formData.numGuests}
                           onChange={(e) => setFormData(prev => ({ ...prev, numGuests: parseInt(e.target.value) || 1 }))}
+                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
                         />
                         {errors.numGuests && <p className="text-sm text-destructive">{errors.numGuests}</p>}
                       </div>
@@ -425,12 +430,13 @@ export default function Index() {
                           onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                           placeholder="Alguma informação adicional?"
                           rows={3}
+                          className="rounded-2xl border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
                         />
                       </div>
 
                       <Button 
                         type="submit" 
-                        className="w-full" 
+                        className="w-full rounded-full bg-gradient-to-tr from-primary to-accent text-white font-bold shadow-lg hover:from-accent hover:to-primary transition-all text-lg py-3"
                         size="lg"
                         disabled={isSubmitting || !dateRange?.from || !dateRange?.to}
                       >
@@ -453,7 +459,7 @@ export default function Index() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/30 py-8">
+      <footer className="border-t bg-gradient-to-t from-muted/30 to-white py-8">
         <div className="container text-center text-sm text-muted-foreground">
           <p>© {new Date().getFullYear()} {property?.name || 'setor g espaço vip'}. Todos os direitos reservados.</p>
         </div>
