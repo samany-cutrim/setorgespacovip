@@ -18,5 +18,3 @@ This project is configured to deploy to GitHub Pages via `.github/workflows/stat
 - React + TypeScript
 - Tailwind CSS
 - shadcn-ui
-
-.
