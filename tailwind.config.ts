@@ -18,7 +18,7 @@ export default {
         sans: ["'Source Sans 3'", "system-ui", "sans-serif"],
       },
       colors: {
-        border: "hsl(var(--border, 200 25% 88%))", // fallback para border-border
+        border: "#e4e4e7", // cor fixa para utilitário border-border funcionar
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
