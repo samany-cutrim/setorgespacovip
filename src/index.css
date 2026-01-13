@@ -121,7 +121,9 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    @apply antialiased;
     font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
@@ -133,7 +135,8 @@
 
 @layer utilities {
   .glass {
-    @apply bg-card/80 backdrop-blur-md;
+    background-color: hsl(var(--card) / 0.8);
+    @apply backdrop-blur-md;
   }
 
   .text-gradient {
