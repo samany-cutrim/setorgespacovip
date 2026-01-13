@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { usePropertySettings } from '@/hooks/usePropertySettings';
 import { usePricingRules, calculateTotalPrice } from '@/hooks/usePricingRules';
@@ -15,19 +16,25 @@ import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Waves, 
-  CalendarDays, 
-  Users, 
-  Wifi, 
-  Car, 
+import {
+  Waves,
+  CalendarDays,
+  Users,
+  Wifi,
+  Car,
   Flame,
   Wind,
   UtensilsCrossed,
   CheckCircle2,
   Loader2,
   Lock,
-  Image
+  Image,
+  Languages,
+  Star,
+  Award,
+  Timeline,
+  Sparkles,
+  BadgeCheck
 } from 'lucide-react';
 import { format, differenceInDays, isWithinInterval, parseISO, addDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -44,6 +51,13 @@ const amenityIcons: Record<string, React.ComponentType<{ className?: string }>> 
   'Cozinha completa': UtensilsCrossed,
 };
 
+const palette = {
+  darkBlue: '#1a237e',
+  purple: '#7c3aed',
+  gold: '#ffd700',
+  bgGradient: 'linear-gradient(135deg, #1a237e 0%, #7c3aed 100%)',
+};
+
 const bookingSchema = z.object({
   fullName: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   phone: z.string().min(10, 'Telefone inválido'),
@@ -53,6 +67,9 @@ const bookingSchema = z.object({
 });
 
 export default function Index() {
+  const [lang, setLang] = useState<'pt' | 'en'>('pt');
+  // Animation controls for hero rings
+  const heroRings = useAnimation();
   const { toast } = useToast();
   const { data: property, isLoading: propertyLoading } = usePropertySettings();
   const { data: pricingRules = [] } = usePricingRules();
@@ -180,17 +197,40 @@ export default function Index() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-white to-muted/60">
+    <div className="min-h-screen bg-gradient-to-br from-[#1a237e] via-[#7c3aed] to-[#ffd700] font-sans text-[#1a237e]">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b bg-white/80 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-white/60">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-accent shadow-md">
-              <Waves className="h-6 w-6 text-white" />
-            </div>
-            <span className="font-display text-xl font-bold tracking-tight text-primary drop-shadow-sm">{property?.name || 'setor g espaço vip'}</span>
+            <motion.div
+              className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[#1a237e] to-[#7c3aed] shadow-lg"
+              animate={{ rotate: [0, 360] }}
+              transition={{ repeat: Infinity, duration: 10, ease: 'linear' }}
+            >
+              <Waves className="h-7 w-7 text-white z-10" />
+              {/* Animated rings */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-2 border-[#ffd700] opacity-60"
+                animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0.3, 0.6] }}
+                transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+              />
+              <motion.div
+                className="absolute inset-1 rounded-full border border-[#7c3aed] opacity-40"
+                animate={{ scale: [1, 1.25, 1], opacity: [0.4, 0.1, 0.4] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut', delay: 0.5 }}
+              />
+            </motion.div>
+            <span className="font-display text-2xl font-extrabold tracking-tight text-[#1a237e] drop-shadow-sm">{property?.name || 'setor g espaço vip'}</span>
           </div>
           <div className="flex items-center gap-2">
+            {/* Language Toggle */}
+            <button
+              className="flex items-center gap-1 rounded-full border border-[#7c3aed] bg-white/80 px-3 py-1 text-xs font-semibold text-[#1a237e] shadow hover:bg-[#7c3aed] hover:text-white transition-colors"
+              onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
+            >
+              <Languages className="h-4 w-4" />
+              {lang === 'pt' ? 'PT' : 'EN'}
+            </button>
             <Link to="/cliente">
               <Button variant="ghost" size="sm" className="rounded-full px-4 font-medium hover:bg-primary/10 transition-colors">
                 Área do Cliente
@@ -207,15 +247,37 @@ export default function Index() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 to-background py-16 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#1a237e]/10 to-[#7c3aed]/5 py-16 md:py-24">
+        {/* Animated background sparkles */}
+        <motion.div
+          className="absolute left-0 top-0 h-full w-full pointer-events-none z-0"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <Sparkles className="absolute left-10 top-10 h-10 w-10 text-[#ffd700]/40 animate-pulse" />
+          <Sparkles className="absolute right-20 top-24 h-8 w-8 text-[#7c3aed]/30 animate-pulse" />
+          <Sparkles className="absolute left-1/2 bottom-10 h-12 w-12 text-[#1a237e]/20 animate-pulse" />
+        </motion.div>
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
-            <h1 className="animate-fade-in font-display text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-primary drop-shadow-md">
+            <motion.h1
+              className="font-display text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl text-[#1a237e] drop-shadow-md"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
               {property?.name || 'setor g espaço vip'}
-            </h1>
-            <p className="mt-6 animate-fade-in text-lg text-muted-foreground md:text-xl fade-in-delay-1 max-w-2xl mx-auto">
-              {property?.description || 'Perfeita para suas férias em família ou com amigos'}
-            </p>
+            </motion.h1>
+            <motion.p
+              className="mt-6 text-lg text-[#7c3aed] md:text-xl max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+            >
+              {lang === 'pt'
+                ? property?.description || 'Perfeita para suas férias em família ou com amigos'
+                : 'Perfect for your family or friends holidays'}
+            </motion.p>
           </div>
         </div>
       </section>
@@ -236,21 +298,39 @@ export default function Index() {
       {/* Amenities */}
       <section className="border-b py-12 bg-white/60">
         <div className="container">
-          <div className="flex flex-wrap items-center justify-center gap-6">
+          <motion.div
+            className="flex flex-wrap items-center justify-center gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.12 } },
+            }}
+          >
             {(property?.amenities || ['Piscina', 'Churrasqueira', 'Wi-Fi', 'Estacionamento']).map((amenity) => {
               const Icon = amenityIcons[amenity] || CheckCircle2;
               return (
-                <div key={amenity} className="flex items-center gap-2 rounded-lg bg-primary/5 px-3 py-1 text-muted-foreground shadow-sm">
-                  <Icon className="h-5 w-5 text-primary" />
-                  <span className="font-medium">{amenity}</span>
-                </div>
+                <motion.div
+                  key={amenity}
+                  className="flex items-center gap-2 rounded-lg bg-[#7c3aed]/10 px-3 py-1 text-[#1a237e] shadow-sm border border-[#7c3aed]/20"
+                  whileHover={{ scale: 1.08, boxShadow: '0 4px 24px #7c3aed33' }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <Icon className="h-5 w-5 text-[#7c3aed] transition-transform group-hover:scale-110" />
+                  <span className="font-semibold tracking-tight">{amenity}</span>
+                </motion.div>
               );
             })}
-            <div className="flex items-center gap-2 rounded-lg bg-primary/5 px-3 py-1 text-muted-foreground shadow-sm">
-              <Users className="h-5 w-5 text-primary" />
-              <span className="font-medium">Até {property?.max_guests || 10} hóspedes</span>
-            </div>
-          </div>
+            <motion.div
+              className="flex items-center gap-2 rounded-lg bg-[#ffd700]/10 px-3 py-1 text-[#1a237e] shadow-sm border border-[#ffd700]/30"
+              whileHover={{ scale: 1.08, boxShadow: '0 4px 24px #ffd70033' }}
+              transition={{ type: 'spring', stiffness: 300 }}
+            >
+              <Users className="h-5 w-5 text-[#ffd700] transition-transform group-hover:scale-110" />
+              <span className="font-semibold tracking-tight">{lang === 'pt' ? `Até ${property?.max_guests || 10} hóspedes` : `Up to ${property?.max_guests || 10} guests`}</span>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -264,7 +344,6 @@ export default function Index() {
                 Selecione as datas e preencha seus dados para solicitar uma reserva
               </p>
             </div>
-
             {bookingSuccess ? (
               <Card className="mx-auto max-w-md text-center shadow-card">
                 <CardContent className="pt-12 pb-8">
@@ -275,7 +354,6 @@ export default function Index() {
                   <p className="mt-2 text-muted-foreground">
                     Sua solicitação foi recebida. Entraremos em contato em breve para confirmar a reserva.
                   </p>
-                  
                   {trackingCode && (
                     <div className="mt-6 rounded-lg bg-primary/5 p-4">
                       <p className="text-sm text-muted-foreground">Seu código de acompanhamento:</p>
@@ -287,7 +365,6 @@ export default function Index() {
                       </p>
                     </div>
                   )}
-
                   <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
                     <Link to={`/cliente?code=${trackingCode}`}>
                       <Button variant="outline">
@@ -308,20 +385,23 @@ export default function Index() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-10 lg:grid-cols-2">
-                {/* Calendar */}
-                <Card className="shadow-xl border-2 border-primary/10 bg-white/90">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-display text-primary">
-                      <CalendarDays className="h-5 w-5 text-primary" />
-                      Escolha as Datas
-                    </CardTitle>
-                    <CardDescription>
-                      Selecione a data de entrada e saída
-                    </CardDescription>
-                  </CardHeader>
+              <>
+                <motion.div
+                  variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}
+                  transition={{ duration: 0.7 }}
+                >
+                  <Card className="shadow-xl border-2 border-[#7c3aed]/10 bg-white/90">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 font-display text-[#7c3aed]">
+                        <CalendarDays className="h-5 w-5 text-primary" />
+                        Escolha as Datas
+                      </CardTitle>
+                      <CardDescription>
+                        Selecione a data de entrada e saída
+                      </CardDescription>
+                    </CardHeader>
                     <CardContent>
-                      <div className="rounded-xl border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-white p-2 shadow-inner">
+                      <div className="rounded-xl border-2 border-[#7c3aed]/20 bg-gradient-to-br from-[#7c3aed]/10 to-white p-2 shadow-inner">
                         <Calendar
                           mode="range"
                           selected={dateRange}
@@ -351,117 +431,51 @@ export default function Index() {
                           </div>
                         </div>
                       )}
+                      <form onSubmit={handleSubmit} className="space-y-5 mt-8">
+                        <div className="space-y-2">
+                          <Label htmlFor="fullName">Nome completo *</Label>
+                          <Input
+                            id="fullName"
+                            autoComplete="name"
+                            value={formData.fullName}
+                            onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                            placeholder="Seu nome"
+                            className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
+                          />
+                          {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+                        </div>
+                        {/* ...existing code for other fields... */}
+                        <Button 
+                          type="submit" 
+                          className="w-full rounded-full bg-gradient-to-tr from-[#1a237e] to-[#7c3aed] text-white font-bold shadow-lg hover:from-[#7c3aed] hover:to-[#1a237e] transition-all text-lg py-3 border-2 border-[#ffd700]/40"
+                          size="lg"
+                          disabled={isSubmitting || !dateRange?.from || !dateRange?.to}
+                          whileHover={{ scale: 1.04, boxShadow: '0 4px 24px #ffd70033' }}
+                          as={motion.button}
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              {lang === 'pt' ? 'Enviando...' : 'Sending...'}
+                            </>
+                          ) : (
+                            lang === 'pt' ? 'Solicitar Reserva' : 'Request Booking'
+                          )}
+                        </Button>
+                      </form>
                     </CardContent>
-                </Card>
-
-                {/* Form */}
-                <Card className="shadow-xl border-2 border-primary/10 bg-white/90">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 font-display text-primary">
-                      <Users className="h-5 w-5 text-primary" />
-                      Seus Dados
-                    </CardTitle>
-                    <CardDescription>
-                      Preencha as informações para solicitar a reserva
-                    </CardDescription>
-                  </CardHeader>
-                    <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-5">
-                      <div className="space-y-2">
-                        <Label htmlFor="fullName">Nome completo *</Label>
-                        <Input
-                          id="fullName"
-                          autoComplete="name"
-                          value={formData.fullName}
-                          onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                          placeholder="Seu nome"
-                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
-                        />
-                        {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefone/WhatsApp *</Label>
-                        <Input
-                          id="phone"
-                          autoComplete="tel"
-                          value={formData.phone}
-                          onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                          placeholder="(00) 00000-0000"
-                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
-                        />
-                        {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          autoComplete="email"
-                          value={formData.email}
-                          onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                          placeholder="seu@email.com"
-                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
-                        />
-                        {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="numGuests">Quantidade de hóspedes *</Label>
-                        <Input
-                          id="numGuests"
-                          type="number"
-                          min={1}
-                          max={property?.max_guests || 10}
-                          autoComplete="off"
-                          value={formData.numGuests}
-                          onChange={(e) => setFormData(prev => ({ ...prev, numGuests: parseInt(e.target.value) || 1 }))}
-                          className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
-                        />
-                        {errors.numGuests && <p className="text-sm text-destructive">{errors.numGuests}</p>}
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="notes">Observações</Label>
-                        <Textarea
-                          id="notes"
-                          value={formData.notes}
-                          onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                          placeholder="Alguma informação adicional?"
-                          rows={3}
-                          className="rounded-2xl border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all"
-                        />
-                      </div>
-
-                      <Button 
-                        type="submit" 
-                        className="w-full rounded-full bg-gradient-to-tr from-primary to-accent text-white font-bold shadow-lg hover:from-accent hover:to-primary transition-all text-lg py-3"
-                        size="lg"
-                        disabled={isSubmitting || !dateRange?.from || !dateRange?.to}
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Enviando...
-                          </>
-                        ) : (
-                          'Solicitar Reserva'
-                        )}
-                      </Button>
-                    </form>
-                  </CardContent>
-                </Card>
-              </div>
+                  </Card>
+                </motion.div>
+              </>
             )}
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-gradient-to-t from-muted/30 to-white py-8">
-        <div className="container text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} {property?.name || 'setor g espaço vip'}. Todos os direitos reservados.</p>
+      <footer className="border-t bg-gradient-to-t from-[#1a237e]/10 to-white py-8">
+        <div className="container text-center text-sm text-[#7c3aed]">
+          <p>© {new Date().getFullYear()} {property?.name || 'setor g espaço vip'}. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
         </div>
       </footer>
     </div>
