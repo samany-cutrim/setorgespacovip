@@ -72,19 +72,13 @@ export default function AdminDashboard() {
     const startStr = format(startDate, 'yyyy-MM-dd');
     const endStr = format(endDate, 'yyyy-MM-dd');
 
-    // Fetch data for the custom date range
-    // ...remover chamada ao supabase, substituir por chamada à nova API REST...
-      .from('payments')
-      .select('amount, payment_date')
-      .gte('payment_date', startStr)
-      .lte('payment_date', endStr);
+    // Buscar pagamentos via API REST
+    const paymentsRes = await fetch(`/api/payments?start=${startStr}&end=${endStr}`);
+    const payments = paymentsRes.ok ? await paymentsRes.json() : [];
 
-    // ...remover chamada ao supabase, substituir por chamada à nova API REST...
-      .from('reservations')
-      .select('check_in, check_out, status')
-      .in('status', ['confirmed', 'completed'])
-      .gte('check_out', startStr)
-      .lte('check_in', endStr);
+    // Buscar reservas via API REST
+    const reservationsRes = await fetch(`/api/reservations?start=${startStr}&end=${endStr}&status=confirmed,completed`);
+    const reservations = reservationsRes.ok ? await reservationsRes.json() : [];
 
     // Calculate monthly stats for the report
     const monthsInRange: { month: string; label: string; revenue: number; occupiedDays: number; totalDays: number }[] = [];
