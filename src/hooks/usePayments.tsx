@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { Payment } from '@/lib/types';
 
 export function usePaymentsByReservation(reservationId: string | undefined) {
@@ -8,7 +8,7 @@ export function usePaymentsByReservation(reservationId: string | undefined) {
     queryFn: async (): Promise<Payment[]> => {
       if (!reservationId) return [];
 
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('payments')
         .select('*')
         .eq('reservation_id', reservationId)
@@ -25,7 +25,7 @@ export function useAllPayments() {
   return useQuery({
     queryKey: ['all-payments'],
     queryFn: async (): Promise<(Payment & { reservation: { check_in: string; check_out: string; guest: { full_name: string } | null } })[]> => {
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('payments')
         .select(`
           *,
@@ -48,7 +48,7 @@ export function useCreatePayment() {
 
   return useMutation({
     mutationFn: async (payment: Omit<Payment, 'id' | 'created_at'>) => {
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('payments')
         .insert(payment)
         .select()
@@ -70,7 +70,7 @@ export function useDeletePayment() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('payments')
         .delete()
         .eq('id', id);
@@ -91,7 +91,7 @@ export function useMonthlyRevenue(year: number, month: number) {
       const startDate = new Date(year, month, 1).toISOString().split('T')[0];
       const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('payments')
         .select('amount')
         .gte('payment_date', startDate)

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { PropertySettings } from '@/lib/types';
 
 export function usePropertySettings() {
   return useQuery({
     queryKey: ['property-settings'],
     queryFn: async (): Promise<PropertySettings | null> => {
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('property_settings')
         .select('*')
         .maybeSingle();

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { PricingRule, PriceType } from '@/lib/types';
 import { eachDayOfInterval, isWeekend, parseISO, format } from 'date-fns';
 

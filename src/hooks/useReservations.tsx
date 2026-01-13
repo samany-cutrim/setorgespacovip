@@ -1,12 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { Reservation, ReservationStatus, PaymentStatus } from '@/lib/types';
 
 export function useReservations() {
   return useQuery({
     queryKey: ['reservations'],
     queryFn: async (): Promise<Reservation[]> => {
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .select(`
           *,
@@ -25,7 +25,7 @@ export function useUpcomingReservations() {
     queryKey: ['upcoming-reservations'],
     queryFn: async (): Promise<Reservation[]> => {
       const today = new Date().toISOString().split('T')[0];
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .select(`
           *,
@@ -49,7 +49,7 @@ export function useReservationsByMonth(year: number, month: number) {
       const startDate = new Date(year, month, 1).toISOString().split('T')[0];
       const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .select(`
           *,
@@ -78,7 +78,7 @@ export function useCreateReservation() {
       notes?: string;
       status?: ReservationStatus;
     }) => {
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .insert(reservation)
         .select()
@@ -100,7 +100,7 @@ export function useUpdateReservation() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Reservation> & { id: string }) => {
-      const { data, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .update(updates)
         .eq('id', id)
@@ -123,7 +123,7 @@ export function useDeleteReservation() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .delete()
         .eq('id', id);

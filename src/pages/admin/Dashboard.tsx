@@ -27,7 +27,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
 import { ReportDateFilter } from '@/components/admin/ReportDateFilter';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 
 const statusColors = {
   pending: 'bg-warning/10 text-warning border-warning/20',
@@ -73,13 +73,13 @@ export default function AdminDashboard() {
     const endStr = format(endDate, 'yyyy-MM-dd');
 
     // Fetch data for the custom date range
-    const { data: payments } = await supabase
+    // ...remover chamada ao supabase, substituir por chamada à nova API REST...
       .from('payments')
       .select('amount, payment_date')
       .gte('payment_date', startStr)
       .lte('payment_date', endStr);
 
-    const { data: reservationsData } = await supabase
+    // ...remover chamada ao supabase, substituir por chamada à nova API REST...
       .from('reservations')
       .select('check_in, check_out, status')
       .in('status', ['confirmed', 'completed'])

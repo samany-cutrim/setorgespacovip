@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usePropertySettings } from '@/hooks/usePropertySettings';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,7 +48,7 @@ export default function AdminSettings() {
         .filter(a => a.length > 0);
 
       if (property?.id) {
-        const { error } = await supabase
+        // ...remover chamada ao supabase, substituir por chamada à nova API REST...
           .from('property_settings')
           .update({
             name: formData.name,
@@ -61,7 +61,7 @@ export default function AdminSettings() {
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        // ...remover chamada ao supabase, substituir por chamada à nova API REST...
           .from('property_settings')
           .insert({
             name: formData.name,

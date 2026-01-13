@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { usePropertySettings } from '@/hooks/usePropertySettings';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -133,7 +133,7 @@ export default function ClientArea() {
 
     try {
       // Fetch reservation by tracking code and verify phone
-      const { data: reservation, error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .select(`
           id,
@@ -185,7 +185,7 @@ export default function ClientArea() {
 
       // Fetch all reservations for this guest
       if (reservationData.guest?.id) {
-        const { data: allRes } = await supabase
+        // ...remover chamada ao supabase, substituir por chamada à nova API REST...
           .from('reservations')
           .select(`
             id,
@@ -232,7 +232,7 @@ export default function ClientArea() {
     setIsAccepting(true);
 
     try {
-      const { error } = await supabase
+      // ...remover chamada ao supabase, substituir por chamada à nova API REST...
         .from('reservations')
         .update({
           contract_accepted: true,
