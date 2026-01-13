@@ -234,13 +234,14 @@ export default function ClientArea() {
     setIsAccepting(true);
 
     try {
+
       // TODO: Substituir por chamada à nova API REST
       // .from('reservations')
       // .update({
       //   contract_accepted: true,
       //   contract_accepted_at: new Date().toISOString(),
       // })
-        .eq('id', currentReservation.id);
+      // .eq('id', currentReservation.id);
 
       if (error) throw error;
 
