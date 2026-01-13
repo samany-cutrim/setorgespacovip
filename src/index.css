@@ -117,7 +117,7 @@
 
 @layer base {
   * {
-    @apply border-gray-200;
+    border-color: hsl(var(--border));
   }
 
   body {

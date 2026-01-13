@@ -10,7 +10,7 @@ Simple project for managing reservations and administrative tasks for properties
 
 ## Deployment
 
-This project is configured to deploy to GitHub Pages via `.github/workflows/static.yml`. The Vite `base` is already set to `/poolside-planner/` for production builds.
+This project is set up for deployment on services like Vercel. For Vercel, no special configuration is needed as it will automatically detect the Vite setup. The `base` property in `vite.config.ts` should be `'/'` for production builds on Vercel.
 
 ## Technologies
 

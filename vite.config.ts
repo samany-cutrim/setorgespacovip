@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // Use a base path when deploying to GitHub Pages (repo hosted at /setorgespacovip/)
+  // Base path for production (Vercel uses root)
   base: '/',
   server: {
     host: "::",
