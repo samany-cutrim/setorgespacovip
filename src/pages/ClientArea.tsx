@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { usePropertySettings } from '@/hooks/usePropertySettings';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -132,26 +132,27 @@ export default function ClientArea() {
     setIsLoading(true);
 
     try {
+
       // Fetch reservation by tracking code and verify phone
-      const { data: reservation, error } = await supabase
-        .from('reservations')
-        .select(`
-          id,
-          tracking_code,
-          check_in,
-          check_out,
-          num_guests,
-          total_amount,
-          status,
-          payment_status,
-          notes,
-          created_at,
-          contract_accepted,
-          contract_accepted_at,
-          guest:guests(id, full_name, phone, email)
-        `)
-        .eq('tracking_code', trackingCode.toUpperCase().trim())
-        .maybeSingle();
+      // TODO: Substituir por chamada à nova API REST
+      // .from('reservations')
+      // .select(`
+      //   id,
+      //   tracking_code,
+      //   check_in,
+      //   check_out,
+      //   num_guests,
+      //   total_amount,
+      //   status,
+      //   payment_status,
+      //   notes,
+      //   created_at,
+      //   contract_accepted,
+      //   contract_accepted_at,
+      //   guest:guests(id, full_name, phone, email)
+      // `)
+      // .eq('tracking_code', trackingCode.toUpperCase().trim())
+      // .maybeSingle();
 
       if (error) throw error;
 
@@ -184,30 +185,31 @@ export default function ClientArea() {
       setIsAuthenticated(true);
 
       // Fetch all reservations for this guest
-      if (reservationData.guest?.id) {
-        const { data: allRes } = await supabase
-          .from('reservations')
-          .select(`
-            id,
-            tracking_code,
-            check_in,
-            check_out,
-            num_guests,
-            total_amount,
-            status,
-            payment_status,
-            notes,
-            created_at,
-            contract_accepted,
-            contract_accepted_at,
-            guest:guests(id, full_name, phone, email)
-          `)
-          .eq('guest_id', reservationData.guest.id)
-          .order('created_at', { ascending: false });
 
-        if (allRes) {
-          setAllReservations(allRes as unknown as ReservationData[]);
-        }
+      if (reservationData.guest?.id) {
+        // TODO: Substituir por chamada à nova API REST
+        // .from('reservations')
+        // .select(`
+        //   id,
+        //   tracking_code,
+        //   check_in,
+        //   check_out,
+        //   num_guests,
+        //   total_amount,
+        //   status,
+        //   payment_status,
+        //   notes,
+        //   created_at,
+        //   contract_accepted,
+        //   contract_accepted_at,
+        //   guest:guests(id, full_name, phone, email)
+        // `)
+        // .eq('guest_id', reservationData.guest.id)
+        // .order('created_at', { ascending: false });
+
+        // if (allRes) {
+        //   setAllReservations(allRes as unknown as ReservationData[]);
+        // }
       }
 
       toast({
@@ -232,13 +234,14 @@ export default function ClientArea() {
     setIsAccepting(true);
 
     try {
-      const { error } = await supabase
-        .from('reservations')
-        .update({
-          contract_accepted: true,
-          contract_accepted_at: new Date().toISOString(),
-        })
-        .eq('id', currentReservation.id);
+
+      // TODO: Substituir por chamada à nova API REST
+      // .from('reservations')
+      // .update({
+      //   contract_accepted: true,
+      //   contract_accepted_at: new Date().toISOString(),
+      // })
+      // .eq('id', currentReservation.id);
 
       if (error) throw error;
 

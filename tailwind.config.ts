@@ -9,49 +9,51 @@ export default {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
-      },
-    },
-    extend: {
-      fontFamily: {
-        display: ["'Playfair Display'", "Georgia", "serif"],
-        sans: ["'Source Sans 3'", "system-ui", "sans-serif"],
-      },
-      colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+        colors: {
+          border: {
+            DEFAULT: "#e4e4e7"
+          },
+          input: "#e4e4e7",
+          ring: "#2563eb",
+          background: "#f8fafc",
+          foreground: "#1e293b",
+          primary: {
+            DEFAULT: "#2563eb",
+            foreground: "#ffffff",
+          },
+          secondary: {
+            DEFAULT: "#f5e9da",
+            foreground: "#1e293b",
+          },
+          destructive: {
+            DEFAULT: "#ef4444",
+            foreground: "#ffffff",
+          },
+          muted: {
+            DEFAULT: "#e0e7ef",
+            foreground: "#64748b",
+          },
+          accent: {
+            DEFAULT: "#14b8a6",
+            foreground: "#ffffff",
+          },
+          success: {
+            DEFAULT: "#22c55e",
+            foreground: "#ffffff",
+          },
+          warning: {
+            DEFAULT: "#f59e42",
+            foreground: "#ffffff",
+          },
+          popover: {
+            DEFAULT: "#ffffff",
+            foreground: "#1e293b",
+          },
+          card: {
+            DEFAULT: "#ffffff",
+            foreground: "#1e293b",
+          },
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
-        },
-        warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))",
-        },
-        popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },

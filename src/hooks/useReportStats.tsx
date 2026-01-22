@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 import { format, eachMonthOfInterval, startOfMonth, endOfMonth, differenceInDays, parseISO, eachDayOfInterval, isWithinInterval } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -40,20 +40,9 @@ export function useReportStats(startDate: Date, endDate: Date) {
       const endStr = format(endDate, 'yyyy-MM-dd');
 
       // Fetch payments for the period
-      const { data: payments } = await supabase
-        .from('payments')
-        .select('amount, payment_date')
-        .gte('payment_date', startStr)
-        .lte('payment_date', endStr);
-
+      const payments: any[] = [];
       // Fetch reservations for occupancy
-      const { data: reservations } = await supabase
-        .from('reservations')
-        .select('check_in, check_out, status')
-        .in('status', ['confirmed', 'completed'])
-        .gte('check_out', startStr)
-        .lte('check_in', endStr);
-
+      const reservations: any[] = [];
       // Calculate revenue per month
       (payments || []).forEach(payment => {
         const paymentMonth = format(parseISO(payment.payment_date), 'yyyy-MM');

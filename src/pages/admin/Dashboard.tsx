@@ -27,7 +27,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toast } from 'sonner';
 import { ReportDateFilter } from '@/components/admin/ReportDateFilter';
-import { supabase } from '@/integrations/supabase/client';
+// ...supabase removido...
 
 const statusColors = {
   pending: 'bg-warning/10 text-warning border-warning/20',
@@ -72,19 +72,13 @@ export default function AdminDashboard() {
     const startStr = format(startDate, 'yyyy-MM-dd');
     const endStr = format(endDate, 'yyyy-MM-dd');
 
-    // Fetch data for the custom date range
-    const { data: payments } = await supabase
-      .from('payments')
-      .select('amount, payment_date')
-      .gte('payment_date', startStr)
-      .lte('payment_date', endStr);
+    // Buscar pagamentos via API REST
+    const paymentsRes = await fetch(`/api/payments?start=${startStr}&end=${endStr}`);
+    const payments = paymentsRes.ok ? await paymentsRes.json() : [];
 
-    const { data: reservationsData } = await supabase
-      .from('reservations')
-      .select('check_in, check_out, status')
-      .in('status', ['confirmed', 'completed'])
-      .gte('check_out', startStr)
-      .lte('check_in', endStr);
+    // Buscar reservas via API REST
+    const reservationsRes = await fetch(`/api/reservations?start=${startStr}&end=${endStr}&status=confirmed,completed`);
+    const reservations = reservationsRes.ok ? await reservationsRes.json() : [];
 
     // Calculate monthly stats for the report
     const monthsInRange: { month: string; label: string; revenue: number; occupiedDays: number; totalDays: number }[] = [];
