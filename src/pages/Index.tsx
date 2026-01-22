@@ -25,45 +25,45 @@ export default function Index() {
   const totalPrice = nights * 500; // Exemplo
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#7c3aed] via-[#1a237e] to-[#ffd700]/30 text-[#1a237e]">
+    <div className="min-h-screen bg-gradient-to-br from-[#7c3aed] via-[#5b21b6] to-[#1a237e]">
       {/* Header */}
-      <header className="flex items-center justify-between px-8 py-4 bg-white/40 shadow-md">
+      <header className="flex items-center justify-between px-8 py-4 bg-white/95 backdrop-blur-sm shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="rounded-full bg-[#ffd700]/30 p-2">
-            <CalendarDays className="h-8 w-8 text-[#ffd700]" />
+          <div className="rounded-full bg-gradient-to-br from-[#7c3aed] to-[#ffd700] p-2">
+            <CalendarDays className="h-8 w-8 text-white" />
           </div>
           <span className="font-display text-2xl font-bold text-[#1a237e]">setor g espaço vip</span>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="flex items-center gap-2" onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}>
+          <Button variant="outline" className="flex items-center gap-2 border-[#7c3aed] text-[#7c3aed] hover:bg-[#7c3aed] hover:text-white" onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}>
             <span className="text-lg">🌐</span> {lang === 'pt' ? 'PT' : 'EN'}
           </Button>
-          <Button variant="ghost">Área do Cliente</Button>
-          <Button variant="ghost">Área Administrativa</Button>
+          <Button variant="ghost" className="text-[#1a237e] hover:bg-[#7c3aed]/10">Área do Cliente</Button>
+          <Button variant="ghost" className="text-[#1a237e] hover:bg-[#7c3aed]/10">Área Administrativa</Button>
         </div>
       </header>
 
       {/* Hero */}
       <section className="py-16 text-center">
-        <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="font-display text-5xl font-bold mb-4 text-[#1a237e]">
+        <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="font-display text-5xl font-bold mb-4 text-white drop-shadow-lg">
           setor g espaço vip
         </motion.h1>
-        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="text-xl text-[#7c3aed] mb-8">
+        <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="text-xl text-white/90 mb-8 drop-shadow-md">
           {lang === 'pt' ? 'Perfeita para suas férias em família ou com amigos' : 'Perfect for your family or friends holidays'}
         </motion.p>
       </section>
 
       {/* Amenities */}
-      <section className="py-8 bg-white/60">
+      <section className="py-8 bg-white/95 backdrop-blur-sm">
         <div className="container mx-auto flex flex-wrap justify-center gap-6">
           {amenities.map(({ name, icon: Icon }) => (
-            <motion.div key={name} whileHover={{ scale: 1.08 }} className="flex items-center gap-2 rounded-lg bg-[#7c3aed]/10 px-4 py-2 text-[#1a237e] shadow-sm border border-[#7c3aed]/20">
-              <Icon className="h-5 w-5 text-[#7c3aed]" />
+            <motion.div key={name} whileHover={{ scale: 1.08 }} className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] px-6 py-3 text-white shadow-lg">
+              <Icon className="h-5 w-5" />
               <span className="font-semibold">{name}</span>
             </motion.div>
           ))}
-          <motion.div whileHover={{ scale: 1.08 }} className="flex items-center gap-2 rounded-lg bg-[#ffd700]/10 px-4 py-2 text-[#1a237e] shadow-sm border border-[#ffd700]/30">
-            <Users className="h-5 w-5 text-[#ffd700]" />
+          <motion.div whileHover={{ scale: 1.08 }} className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#ffd700] to-[#f59e0b] px-6 py-3 text-[#1a237e] shadow-lg">
+            <Users className="h-5 w-5" />
             <span className="font-semibold">{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
           </motion.div>
         </div>
@@ -73,8 +73,8 @@ export default function Index() {
       <section className="py-20" id="booking">
         <div className="container mx-auto max-w-3xl">
           <div className="mb-12 text-center">
-            <h2 className="font-display text-3xl font-bold">Faça sua Reserva</h2>
-            <p className="mt-2 text-muted-foreground">Selecione as datas e preencha seus dados para solicitar uma reserva</p>
+            <h2 className="font-display text-4xl font-bold text-white drop-shadow-lg">Faça sua Reserva</h2>
+            <p className="mt-2 text-white/80 text-lg drop-shadow-md">Selecione as datas e preencha seus dados para solicitar uma reserva</p>
           </div>
           {bookingSuccess ? (
             <Card className="mx-auto max-w-md text-center shadow-card">
@@ -99,58 +99,58 @@ export default function Index() {
             </Card>
           ) : (
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <Card className="shadow-xl border-2 border-[#7c3aed]/10 bg-white/90">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 font-display text-[#7c3aed]">
-                    <CalendarDays className="h-5 w-5 text-primary" />
+              <Card className="shadow-2xl border-2 border-white/20 bg-white">
+                <CardHeader className="bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2 font-display text-2xl">
+                    <CalendarDays className="h-6 w-6" />
                     Escolha as Datas
                   </CardTitle>
-                  <CardDescription>Selecione a data de entrada e saída</CardDescription>
+                  <CardDescription className="text-white/90">Selecione a data de entrada e saída</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="rounded-xl border-2 border-[#7c3aed]/20 bg-gradient-to-br from-[#7c3aed]/10 to-white p-2 shadow-inner">
-                    <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={1} className="pointer-events-auto rounded-lg border-none" />
+                <CardContent className="pt-6">
+                  <div className="rounded-xl border-2 border-[#7c3aed]/20 bg-gradient-to-br from-[#7c3aed]/5 to-white p-4 shadow-inner">
+                    <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={1} className="pointer-events-auto rounded-lg border-none mx-auto" />
                   </div>
                   {dateRange?.from && dateRange?.to && (
-                    <div className="mt-6 space-y-3 rounded-lg bg-primary/5 p-4 shadow-sm">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Check-in</span>
-                        <span className="font-medium">{dateRange.from.toLocaleDateString()}</span>
+                    <div className="mt-6 space-y-3 rounded-lg bg-gradient-to-r from-[#7c3aed]/10 to-[#5b21b6]/10 p-6 shadow-md border border-[#7c3aed]/20">
+                      <div className="flex items-center justify-between text-base">
+                        <span className="text-gray-600 font-medium">Check-in</span>
+                        <span className="font-semibold text-[#1a237e]">{dateRange.from.toLocaleDateString()}</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Check-out</span>
-                        <span className="font-medium">{dateRange.to.toLocaleDateString()}</span>
+                      <div className="flex items-center justify-between text-base">
+                        <span className="text-gray-600 font-medium">Check-out</span>
+                        <span className="font-semibold text-[#1a237e]">{dateRange.to.toLocaleDateString()}</span>
                       </div>
                       <Separator />
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
-                        <span className="text-xl font-bold text-primary">R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      <div className="flex items-center justify-between text-base">
+                        <span className="text-gray-600 font-medium">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
+                        <span className="text-2xl font-bold text-[#7c3aed]">R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
                     </div>
                   )}
                   <form onSubmit={e => { e.preventDefault(); setIsSubmitting(true); setTimeout(() => { setBookingSuccess(true); setTrackingCode('ABC123'); setIsSubmitting(false); }, 1500); }} className="space-y-5 mt-8">
                     <div className="space-y-2">
-                      <label htmlFor="fullName" className="block font-semibold">Nome completo *</label>
-                      <Input id="fullName" autoComplete="name" value={formData.fullName} onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))} placeholder="Seu nome" className="rounded-full border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/30 transition-all" />
+                      <label htmlFor="fullName" className="block font-semibold text-[#1a237e]">Nome completo *</label>
+                      <Input id="fullName" autoComplete="name" value={formData.fullName} onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))} placeholder="Seu nome" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="email" className="block font-semibold">Email *</label>
-                      <Input id="email" type="email" autoComplete="email" value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} placeholder="Seu email" />
+                      <label htmlFor="email" className="block font-semibold text-[#1a237e]">Email *</label>
+                      <Input id="email" type="email" autoComplete="email" value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} placeholder="Seu email" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="phone" className="block font-semibold">Telefone *</label>
-                      <Input id="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))} placeholder="Seu telefone" />
+                      <label htmlFor="phone" className="block font-semibold text-[#1a237e]">Telefone *</label>
+                      <Input id="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))} placeholder="Seu telefone" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="numGuests" className="block font-semibold">Nº de hóspedes</label>
-                      <Input id="numGuests" type="number" min={1} max={10} value={formData.numGuests} onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))} />
+                      <label htmlFor="numGuests" className="block font-semibold text-[#1a237e]">Nº de hóspedes</label>
+                      <Input id="numGuests" type="number" min={1} max={10} value={formData.numGuests} onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))} className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="notes" className="block font-semibold">Observações</label>
-                      <Input id="notes" value={formData.notes} onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))} placeholder="Observações" />
+                      <label htmlFor="notes" className="block font-semibold text-[#1a237e]">Observações</label>
+                      <Input id="notes" value={formData.notes} onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))} placeholder="Observações" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
                     </div>
-                    <Button type="submit" className="w-full rounded-full bg-gradient-to-tr from-[#1a237e] to-[#7c3aed] text-white font-bold shadow-lg hover:from-[#7c3aed] hover:to-[#1a237e] transition-all text-lg py-3 border-2 border-[#ffd700]/40" size="lg" disabled={isSubmitting || !dateRange?.from || !dateRange?.to} as={motion.button} whileHover={{ scale: 1.04 }}>
-                      {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{lang === 'pt' ? 'Enviando...' : 'Sending...'}</>) : (lang === 'pt' ? 'Solicitar Reserva' : 'Request Booking')}
+                    <Button type="submit" className="w-full rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-white font-bold shadow-lg hover:shadow-xl hover:from-[#5b21b6] hover:to-[#7c3aed] transition-all text-lg py-6" size="lg" disabled={isSubmitting || !dateRange?.from || !dateRange?.to} as={motion.button} whileHover={{ scale: 1.02 }}>
+                      {isSubmitting ? (<><Loader2 className="mr-2 h-5 w-5 animate-spin" />{lang === 'pt' ? 'Enviando...' : 'Sending...'}</>) : (lang === 'pt' ? 'Solicitar Reserva' : 'Request Booking')}
                     </Button>
                   </form>
                 </CardContent>
@@ -161,8 +161,8 @@ export default function Index() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-gradient-to-t from-[#1a237e]/10 to-white py-8 mt-12">
-        <div className="container text-center text-sm text-[#7c3aed]">
+      <footer className="border-t border-white/20 bg-[#1a237e]/90 backdrop-blur-sm py-8 mt-12">
+        <div className="container text-center text-sm text-white/90">
           <p>© {new Date().getFullYear()} setor g espaço vip. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}</p>
         </div>
       </footer>
