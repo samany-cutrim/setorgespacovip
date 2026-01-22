@@ -51,30 +51,28 @@ export default function Index() {
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="text-xl text-white/90 mb-8 drop-shadow-md">
           {lang === 'pt' ? 'Perfeita para suas férias em família ou com amigos' : 'Perfect for your family or friends holidays'}
         </motion.p>
-      </section>
-
-      {/* Amenities */}
-      <section className="py-8 bg-white">
-        <div className="container mx-auto flex flex-wrap justify-center gap-6">
+        
+        {/* Amenities inline */}
+        <div className="flex flex-wrap items-center justify-center gap-4 mt-8 px-4">
           {amenities.map(({ name, icon: Icon }) => (
-            <motion.div key={name} whileHover={{ scale: 1.05 }} className="flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-[#7c3aed] shadow-md border border-gray-200">
+            <div key={name} className="flex items-center gap-2 text-white">
               <Icon className="h-5 w-5" />
-              <span className="font-semibold">{name}</span>
-            </motion.div>
+              <span className="font-medium">{name}</span>
+            </div>
           ))}
-          <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-[#7c3aed] shadow-md border border-gray-200">
+          <div className="flex items-center gap-2 bg-[#ffd700] text-[#1a237e] px-4 py-2 rounded-md font-semibold">
             <Users className="h-5 w-5" />
-            <span className="font-semibold">{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
-          </motion.div>
+            <span>{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
+          </div>
         </div>
       </section>
 
       {/* Booking Section */}
-      <section className="py-20" id="booking">
-        <div className="container mx-auto max-w-3xl">
-          <div className="mb-12 text-center">
-            <h2 className="font-display text-4xl font-bold text-white drop-shadow-lg">Faça sua Reserva</h2>
-            <p className="mt-2 text-white/80 text-lg drop-shadow-md">Selecione as datas e preencha seus dados para solicitar uma reserva</p>
+      <section className="py-12" id="booking">
+        <div className="container mx-auto max-w-4xl px-4">
+          <div className="mb-8 text-center">
+            <h2 className="font-display text-3xl font-bold text-[#1a237e] drop-shadow-sm">Faça sua Reserva</h2>
+            <p className="mt-2 text-[#1a237e]/80 text-base">Selecione as datas e preencha seus dados para solicitar uma reserva</p>
           </div>
           {bookingSuccess ? (
             <Card className="mx-auto max-w-md text-center shadow-card">
@@ -99,58 +97,56 @@ export default function Index() {
             </Card>
           ) : (
             <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-              <Card className="shadow-2xl border-2 border-white/20 bg-white">
-                <CardHeader className="bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-white rounded-t-lg">
-                  <CardTitle className="flex items-center gap-2 font-display text-2xl">
-                    <CalendarDays className="h-6 w-6" />
+              <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
+                <CardHeader className="bg-[#7c3aed] text-white">
+                  <CardTitle className="flex items-center gap-2 font-display text-xl">
+                    <CalendarDays className="h-5 w-5" />
                     Escolha as Datas
                   </CardTitle>
-                  <CardDescription className="text-white/90">Selecione a data de entrada e saída</CardDescription>
+                  <CardDescription className="text-white/90 text-sm">Selecione a data de entrada e saída</CardDescription>
                 </CardHeader>
-                <CardContent className="pt-6">
-                  <div className="rounded-xl border-2 border-[#7c3aed]/20 bg-gradient-to-br from-[#7c3aed]/5 to-white p-4 shadow-inner">
-                    <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={1} className="pointer-events-auto rounded-lg border-none mx-auto" />
-                  </div>
+                <CardContent className="pt-6 pb-8">
+                  <Calendar mode="range" selected={dateRange} onSelect={setDateRange} numberOfMonths={1} className="pointer-events-auto rounded-lg border-none mx-auto" />
                   {dateRange?.from && dateRange?.to && (
-                    <div className="mt-6 space-y-3 rounded-lg bg-gradient-to-r from-[#7c3aed]/10 to-[#5b21b6]/10 p-6 shadow-md border border-[#7c3aed]/20">
-                      <div className="flex items-center justify-between text-base">
-                        <span className="text-gray-600 font-medium">Check-in</span>
+                    <div className="mt-6 space-y-3 rounded-lg bg-[#7c3aed]/5 p-4 border border-[#7c3aed]/20">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Check-in</span>
                         <span className="font-semibold text-[#1a237e]">{dateRange.from.toLocaleDateString()}</span>
                       </div>
-                      <div className="flex items-center justify-between text-base">
-                        <span className="text-gray-600 font-medium">Check-out</span>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-600">Check-out</span>
                         <span className="font-semibold text-[#1a237e]">{dateRange.to.toLocaleDateString()}</span>
                       </div>
                       <Separator />
-                      <div className="flex items-center justify-between text-base">
-                        <span className="text-gray-600 font-medium">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
-                        <span className="text-2xl font-bold text-[#7c3aed]">R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-600 text-sm">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
+                        <span className="text-xl font-bold text-[#7c3aed]">R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                       </div>
                     </div>
                   )}
-                  <form onSubmit={e => { e.preventDefault(); setIsSubmitting(true); setTimeout(() => { setBookingSuccess(true); setTrackingCode('ABC123'); setIsSubmitting(false); }, 1500); }} className="space-y-5 mt-8">
+                  <form onSubmit={e => { e.preventDefault(); setIsSubmitting(true); setTimeout(() => { setBookingSuccess(true); setTrackingCode('ABC123'); setIsSubmitting(false); }, 1500); }} className="space-y-4 mt-6">
                     <div className="space-y-2">
-                      <label htmlFor="fullName" className="block font-semibold text-[#1a237e]">Nome completo *</label>
-                      <Input id="fullName" autoComplete="name" value={formData.fullName} onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))} placeholder="Seu nome" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
+                      <label htmlFor="fullName" className="block text-sm font-semibold text-[#1a237e]">Nome completo *</label>
+                      <Input id="fullName" autoComplete="name" value={formData.fullName} onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))} placeholder="Seu nome" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="email" className="block font-semibold text-[#1a237e]">Email *</label>
-                      <Input id="email" type="email" autoComplete="email" value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} placeholder="Seu email" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
+                      <label htmlFor="email" className="block text-sm font-semibold text-[#1a237e]">Email *</label>
+                      <Input id="email" type="email" autoComplete="email" value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} placeholder="Seu email" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="phone" className="block font-semibold text-[#1a237e]">Telefone *</label>
-                      <Input id="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))} placeholder="Seu telefone" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
+                      <label htmlFor="phone" className="block text-sm font-semibold text-[#1a237e]">Telefone *</label>
+                      <Input id="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))} placeholder="Seu telefone" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="numGuests" className="block font-semibold text-[#1a237e]">Nº de hóspedes</label>
-                      <Input id="numGuests" type="number" min={1} max={10} value={formData.numGuests} onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))} className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
+                      <label htmlFor="numGuests" className="block text-sm font-semibold text-[#1a237e]">Nº de hóspedes</label>
+                      <Input id="numGuests" type="number" min={1} max={10} value={formData.numGuests} onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))} className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30" />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="notes" className="block font-semibold text-[#1a237e]">Observações</label>
-                      <Input id="notes" value={formData.notes} onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))} placeholder="Observações" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30 transition-all" />
+                      <label htmlFor="notes" className="block text-sm font-semibold text-[#1a237e]">Observações</label>
+                      <Input id="notes" value={formData.notes} onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))} placeholder="Observações" className="border-[#7c3aed]/30 focus:border-[#7c3aed] focus:ring-2 focus:ring-[#7c3aed]/30" />
                     </div>
-                    <Button type="submit" className="w-full rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] text-white font-bold shadow-lg hover:shadow-xl hover:from-[#5b21b6] hover:to-[#7c3aed] transition-all text-lg py-6" size="lg" disabled={isSubmitting || !dateRange?.from || !dateRange?.to} as={motion.button} whileHover={{ scale: 1.02 }}>
-                      {isSubmitting ? (<><Loader2 className="mr-2 h-5 w-5 animate-spin" />{lang === 'pt' ? 'Enviando...' : 'Sending...'}</>) : (lang === 'pt' ? 'Solicitar Reserva' : 'Request Booking')}
+                    <Button type="submit" className="w-full bg-[#7c3aed] hover:bg-[#5b21b6] text-white font-semibold shadow-md text-base py-5" size="lg" disabled={isSubmitting || !dateRange?.from || !dateRange?.to}>
+                      {isSubmitting ? (<><Loader2 className="mr-2 h-4 w-4 animate-spin" />{lang === 'pt' ? 'Enviando...' : 'Sending...'}</>) : (lang === 'pt' ? 'Solicitar Reserva' : 'Request Booking')}
                     </Button>
                   </form>
                 </CardContent>
