@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CalendarDays, Users, CheckCircle2, Wifi, Car, Grill, Waves, Loader2 } from 'lucide-react';
+import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Calendar } from '../components/ui/calendar';
 import { Button } from '../components/ui/button';
@@ -9,7 +9,7 @@ import { Separator } from '../components/ui/separator';
 
 const amenities = [
   { name: 'Piscina', icon: Waves },
-  { name: 'Churrasqueira', icon: Grill },
+  { name: 'Churrasqueira', icon: Flame },
   { name: 'Wi-Fi', icon: Wifi },
   { name: 'Estacionamento', icon: Car },
 ];
