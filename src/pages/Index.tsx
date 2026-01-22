@@ -54,15 +54,15 @@ export default function Index() {
       </section>
 
       {/* Amenities */}
-      <section className="py-8 bg-white/95 backdrop-blur-sm">
+      <section className="py-8 bg-white">
         <div className="container mx-auto flex flex-wrap justify-center gap-6">
           {amenities.map(({ name, icon: Icon }) => (
-            <motion.div key={name} whileHover={{ scale: 1.08 }} className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] px-6 py-3 text-white shadow-lg">
+            <motion.div key={name} whileHover={{ scale: 1.05 }} className="flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-[#7c3aed] shadow-md border border-gray-200">
               <Icon className="h-5 w-5" />
               <span className="font-semibold">{name}</span>
             </motion.div>
           ))}
-          <motion.div whileHover={{ scale: 1.08 }} className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-[#ffd700] to-[#f59e0b] px-6 py-3 text-[#1a237e] shadow-lg">
+          <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-[#7c3aed] shadow-md border border-gray-200">
             <Users className="h-5 w-5" />
             <span className="font-semibold">{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
           </motion.div>
