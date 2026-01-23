@@ -66,28 +66,28 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-background to-muted/30 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#7c3aed] via-[#5b21b6] to-[#1a237e] p-4">
       <div className="mb-8 flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <Waves className="h-6 w-6" />
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#ffd700] to-[#f59e0b] shadow-lg">
+          <Waves className="h-7 w-7 text-white" />
         </div>
-        <h1 className="font-display text-2xl font-semibold">setor g espaço vip</h1>
+        <h1 className="font-display text-3xl font-bold text-white drop-shadow-lg">setor g espaço vip</h1>
       </div>
 
-      <Card className="w-full max-w-md shadow-card">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <Lock className="h-6 w-6 text-primary" />
+      <Card className="w-full max-w-md shadow-2xl border-0 glass">
+        <CardHeader className="text-center pb-6">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#7c3aed] text-white shadow-lg">
+            <Lock className="h-8 w-8" />
           </div>
-          <CardTitle className="font-display text-2xl">Área Administrativa</CardTitle>
-          <CardDescription>
+          <CardTitle className="font-display text-3xl text-white">Área Administrativa</CardTitle>
+          <CardDescription className="text-white/80 text-base mt-2">
             Acesso restrito para administradores
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="login-email">Email</Label>
+              <Label htmlFor="login-email" className="text-white font-semibold">Email</Label>
               <Input
                 id="login-email"
                 type="email"
@@ -95,29 +95,31 @@ export default function AuthPage() {
                 autoComplete="email"
                 value={loginData.email}
                 onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-[#ffd700] focus:ring-[#ffd700]/30 h-12"
               />
-              {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              {errors.email && <p className="text-sm text-red-300">{errors.email}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="login-password">Senha</Label>
+              <Label htmlFor="login-password" className="text-white font-semibold">Senha</Label>
               <Input
                 id="login-password"
                 type="password"
                 autoComplete="current-password"
                 value={loginData.password}
                 onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/50 focus:border-[#ffd700] focus:ring-[#ffd700]/30 h-12"
               />
-              {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              {errors.password && <p className="text-sm text-red-300">{errors.password}</p>}
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+            <Button type="submit" className="w-full h-12 bg-gradient-to-r from-[#ffd700] to-[#f59e0b] hover:from-[#f59e0b] hover:to-[#ffd700] text-[#1a237e] font-bold text-lg shadow-lg transition-all duration-200" disabled={isLoading}>
+              {isLoading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : null}
               Entrar
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      <Button variant="link" className="mt-4" onClick={() => navigate('/')}>
+      <Button variant="link" className="mt-6 text-white hover:text-[#ffd700] font-semibold" onClick={() => navigate('/')}>
         ← Voltar para o site
       </Button>
     </div>
