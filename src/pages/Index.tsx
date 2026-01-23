@@ -26,72 +26,75 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b bg-white sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto flex items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-gradient-to-br from-[#7c3aed] to-[#5b21b6] p-2.5 shadow-lg">
-              <CalendarDays className="h-6 w-6 text-white" />
+      {/* Header estilo Airbnb */}
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 backdrop-blur-md bg-white/95">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            <div className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF385C] to-[#E31C5F]">
+                <Waves className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-semibold text-gray-900 hidden sm:block">setor g espaço vip</span>
             </div>
-            <span className="font-display text-xl font-bold text-gray-900">setor g espaço vip</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="border-gray-300 text-gray-700 hover:bg-gray-50" onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}>
-              🌐 {lang === 'pt' ? 'PT' : 'EN'}
-            </Button>
-            <Button variant="ghost" size="sm" className="text-gray-700 hover:text-[#7c3aed]">Área do Cliente</Button>
-            <Button variant="ghost" size="sm" className="text-gray-700 hover:text-[#7c3aed]">Área Administrativa</Button>
+            
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100 rounded-full px-4">
+                Área do Cliente
+              </Button>
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100 rounded-full px-4">
+                Administração
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="rounded-full border-gray-300 hover:bg-gray-50"
+                onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
+              >
+                🌐 {lang === 'pt' ? 'PT' : 'EN'}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#7c3aed] via-[#6d28d9] to-[#5b21b6] py-24">
-        <div className="container mx-auto px-6 text-center">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.8 }} 
-            className="font-display text-5xl md:text-6xl font-bold text-white mb-6 leading-tight"
-          >
-            setor g espaço vip
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.8, delay: 0.2 }} 
-            className="text-xl text-white/90 mb-12 max-w-2xl mx-auto"
-          >
-            {lang === 'pt' ? 'Perfeita para suas férias em família ou com amigos' : 'Perfect for your family or friends holidays'}
-          </motion.p>
+      {/* Hero Section estilo Airbnb */}
+      <section className="relative pt-8 pb-16 px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
+              setor g espaço vip
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 max-w-2xl mx-auto font-light">
+              {lang === 'pt' ? 'Espaço perfeito para suas férias em família ou com amigos' : 'Perfect space for your family or friends holidays'}
+            </p>
+          </div>
           
-          {/* Amenities */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="flex flex-wrap items-center justify-center gap-4 max-w-3xl mx-auto"
-          >
+          {/* Amenities estilo Airbnb */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
             {amenities.map(({ name, icon: Icon }) => (
-              <div key={name} className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white border border-white/20">
-                <Icon className="h-4 w-4" />
-                <span className="text-sm font-medium">{name}</span>
+              <div key={name} className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
+                <Icon className="w-4 h-4" />
+                <span>{name}</span>
               </div>
             ))}
-            <div className="flex items-center gap-2 bg-gradient-to-r from-[#ffd700] to-[#f59e0b] px-5 py-2 rounded-full text-[#1a237e] font-semibold shadow-lg">
-              <Users className="h-4 w-4" />
-              <span className="text-sm">{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-900 text-white text-sm font-medium">
+              <Users className="w-4 h-4" />
+              <span>{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Booking Section */}
-      <section className="py-16 bg-gray-50" id="booking">
-        <div className="container mx-auto max-w-5xl px-6">
-          <div className="mb-12 text-center">
-            <h2 className="font-display text-4xl font-bold text-gray-900 mb-3">Faça sua Reserva</h2>
-            <p className="text-lg text-gray-600">Selecione as datas e preencha seus dados para solicitar uma reserva</p>
+      {/* Booking Section estilo Airbnb */}
+      <section className="py-12 px-6 lg:px-8 bg-gray-50" id="booking">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3 tracking-tight">
+              Faça sua reserva
+            </h2>
+            <p className="text-lg text-gray-600 font-light">
+              Preencha seus dados e aguarde nossa confirmação
+            </p>
           </div>
           {bookingSuccess ? (
             <Card className="mx-auto max-w-md text-center shadow-card">
@@ -115,61 +118,68 @@ export default function Index() {
               </CardContent>
             </Card>
           ) : (
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <Card className="shadow-xl border-0 bg-white overflow-hidden">
-                <CardHeader className="bg-gradient-to-r from-[#7c3aed] to-[#6d28d9] text-white pb-6">
-                  <CardTitle className="flex items-center gap-2 font-display text-2xl">
-                    <CalendarDays className="h-6 w-6" />
-                    Escolha as Datas
-                  </CardTitle>
-                  <CardDescription className="text-white/90">Selecione a data de entrada e saída</CardDescription>
-                </CardHeader>
-                <CardContent className="p-8">
-                  <div className="mb-6">
-                    <Calendar 
-                      mode="range" 
-                      selected={dateRange} 
-                      onSelect={setDateRange} 
-                      numberOfMonths={1} 
-                      className="rounded-lg border border-gray-200 p-4 mx-auto"
-                    />
+            <div>
+              <Card className="border border-gray-200 rounded-3xl shadow-lg overflow-hidden">
+                <CardContent className="p-8 md:p-10">
+                  {/* Calendar Section */}
+                  <div className="mb-8">
+                    <h3 className="text-2xl font-semibold text-gray-900 mb-6">Selecione as datas</h3>
+                    <div className="flex justify-center">
+                      <Calendar 
+                        mode="range" 
+                        selected={dateRange} 
+                        onSelect={setDateRange} 
+                        numberOfMonths={1} 
+                        className="rounded-2xl border-0 p-0"
+                      />
+                    </div>
                   </div>
                   
+                  {/* Price Summary */}
                   {dateRange?.from && dateRange?.to && (
-                    <div className="mb-8 rounded-xl bg-gradient-to-br from-[#7c3aed]/5 to-[#5b21b6]/5 border border-[#7c3aed]/20 p-6">
+                    <div className="mb-8 p-6 rounded-2xl bg-gray-50 border border-gray-200">
                       <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm font-medium text-gray-600">Check-in</span>
-                        <span className="text-base font-semibold text-gray-900">{dateRange.from.toLocaleDateString('pt-BR')}</span>
+                        <span className="text-gray-600">Check-in</span>
+                        <span className="font-semibold text-gray-900">{dateRange.from.toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-medium text-gray-600">Check-out</span>
-                        <span className="text-base font-semibold text-gray-900">{dateRange.to.toLocaleDateString('pt-BR')}</span>
+                      <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+                        <span className="text-gray-600">Check-out</span>
+                        <span className="font-semibold text-gray-900">{dateRange.to.toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <Separator className="mb-4" />
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-600">{nights} {nights === 1 ? 'diária' : 'diárias'}</span>
-                        <span className="text-2xl font-bold bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] bg-clip-text text-transparent">
-                          R$ {totalPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </span>
+                        <div>
+                          <div className="text-gray-600 text-sm mb-1">Total</div>
+                          <div className="text-gray-500 text-xs">{nights} {nights === 1 ? 'diária' : 'diárias'}</div>
+                        </div>
+                        <div className="text-3xl font-semibold text-gray-900">
+                          R$ {totalPrice.toLocaleString('pt-BR')}
+                        </div>
                       </div>
                     </div>
                   )}
                   
+                  {/* Contact Form */}
                   <form onSubmit={e => { e.preventDefault(); setIsSubmitting(true); setTimeout(() => { setBookingSuccess(true); setTrackingCode('ABC123'); setIsSubmitting(false); }, 1500); }} className="space-y-5">
+                    <div>
+                      <label htmlFor="fullName" className="block text-sm font-medium text-gray-900 mb-2">
+                        Nome completo
+                      </label>
+                      <Input
+                        id="fullName"
+                        autoComplete="name"
+                        value={formData.fullName}
+                        onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                        placeholder="Digite seu nome completo"
+                        className="h-14 rounded-xl border-gray-300 text-base focus:border-gray-900 focus:ring-gray-900"
+                        required
+                      />
+                    </div>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <div className="space-y-2">
-                        <label htmlFor="fullName" className="text-sm font-semibold text-gray-700">Nome completo *</label>
-                        <Input
-                          id="fullName"
-                          autoComplete="name"
-                          value={formData.fullName}
-                          onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                          placeholder="Seu nome"
-                          className="h-11 border-gray-300 focus:border-[#7c3aed] focus:ring-[#7c3aed]/20"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor="email" className="text-sm font-semibold text-gray-700">Email *</label>
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2">
+                          Email
+                        </label>
                         <Input
                           id="email"
                           type="email"
@@ -177,14 +187,14 @@ export default function Index() {
                           value={formData.email}
                           onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                           placeholder="seu@email.com"
-                          className="h-11 border-gray-300 focus:border-[#7c3aed] focus:ring-[#7c3aed]/20"
+                          className="h-14 rounded-xl border-gray-300 text-base focus:border-gray-900 focus:ring-gray-900"
+                          required
                         />
                       </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                      <div className="space-y-2">
-                        <label htmlFor="phone" className="text-sm font-semibold text-gray-700">Telefone *</label>
+                      <div>
+                        <label htmlFor="phone" className="block text-sm font-medium text-gray-900 mb-2">
+                          Telefone
+                        </label>
                         <Input
                           id="phone"
                           type="tel"
@@ -192,62 +202,72 @@ export default function Index() {
                           value={formData.phone}
                           onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                           placeholder="(00) 00000-0000"
-                          className="h-11 border-gray-300 focus:border-[#7c3aed] focus:ring-[#7c3aed]/20"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label htmlFor="numGuests" className="text-sm font-semibold text-gray-700">Nº de hóspedes</label>
-                        <Input
-                          id="numGuests"
-                          type="number"
-                          min={1}
-                          max={10}
-                          value={formData.numGuests}
-                          onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))}
-                          className="h-11 border-gray-300 focus:border-[#7c3aed] focus:ring-[#7c3aed]/20"
+                          className="h-14 rounded-xl border-gray-300 text-base focus:border-gray-900 focus:ring-gray-900"
+                          required
                         />
                       </div>
                     </div>
                     
-                    <div className="space-y-2">
-                      <label htmlFor="notes" className="text-sm font-semibold text-gray-700">Observações</label>
+                    <div>
+                      <label htmlFor="numGuests" className="block text-sm font-medium text-gray-900 mb-2">
+                        Número de hóspedes
+                      </label>
+                      <Input
+                        id="numGuests"
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={formData.numGuests}
+                        onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))}
+                        className="h-14 rounded-xl border-gray-300 text-base focus:border-gray-900 focus:ring-gray-900"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="notes" className="block text-sm font-medium text-gray-900 mb-2">
+                        Observações <span className="text-gray-500 font-normal">(opcional)</span>
+                      </label>
                       <Input
                         id="notes"
                         value={formData.notes}
                         onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                        placeholder="Alguma observação especial?"
-                        className="h-11 border-gray-300 focus:border-[#7c3aed] focus:ring-[#7c3aed]/20"
+                        placeholder="Alguma solicitação especial?"
+                        className="h-14 rounded-xl border-gray-300 text-base focus:border-gray-900 focus:ring-gray-900"
                       />
                     </div>
                     
                     <Button 
                       type="submit" 
-                      className="w-full h-12 bg-gradient-to-r from-[#7c3aed] to-[#5b21b6] hover:from-[#6d28d9] hover:to-[#4c1d95] text-white font-semibold text-base shadow-lg transition-all duration-200" 
+                      className="w-full h-14 bg-gradient-to-r from-[#FF385C] to-[#E31C5F] hover:from-[#E31C5F] hover:to-[#D70466] text-white font-semibold text-base rounded-xl shadow-md hover:shadow-lg transition-all duration-200" 
                       disabled={isSubmitting || !dateRange?.from || !dateRange?.to}
                     >
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          {lang === 'pt' ? 'Enviando...' : 'Sending...'}
+                          Enviando...
                         </>
                       ) : (
-                        lang === 'pt' ? 'Solicitar Reserva' : 'Request Booking'
+                        'Solicitar Reserva'
                       )}
                     </Button>
+                    
+                    <p className="text-center text-sm text-gray-500 mt-4">
+                      Você não será cobrado ainda
+                    </p>
                   </form>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           )}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t bg-white py-12">
-        <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-600">
-            © {new Date().getFullYear()} setor g espaço vip. {lang === 'pt' ? 'Todos os direitos reservados.' : 'All rights reserved.'}
-          </p>
+      {/* Footer estilo Airbnb */}
+      <footer className="border-t border-gray-200 py-12 px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center text-gray-600 text-sm">
+            <p>© {new Date().getFullYear()} setor g espaço vip · {lang === 'pt' ? 'Todos os direitos reservados' : 'All rights reserved'}</p>
+          </div>
         </div>
       </footer>
     </div>
