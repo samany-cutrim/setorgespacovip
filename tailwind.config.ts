@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -9,57 +10,53 @@ export default {
       center: true,
       padding: "2rem",
       screens: {
-        colors: {
-          border: {
-            DEFAULT: "#e4e4e7"
-          },
-          input: "#e4e4e7",
-          ring: "#2563eb",
-          background: "#f8fafc",
-          foreground: "#1e293b",
-          primary: {
-            DEFAULT: "#2563eb",
-            foreground: "#ffffff",
-          },
-          secondary: {
-            DEFAULT: "#f5e9da",
-            foreground: "#1e293b",
-          },
-          destructive: {
-            DEFAULT: "#ef4444",
-            foreground: "#ffffff",
-          },
-          muted: {
-            DEFAULT: "#e0e7ef",
-            foreground: "#64748b",
-          },
-          accent: {
-            DEFAULT: "#14b8a6",
-            foreground: "#ffffff",
-          },
-          success: {
-            DEFAULT: "#22c55e",
-            foreground: "#ffffff",
-          },
-          warning: {
-            DEFAULT: "#f59e42",
-            foreground: "#ffffff",
-          },
-          popover: {
-            DEFAULT: "#ffffff",
-            foreground: "#1e293b",
-          },
-          card: {
-            DEFAULT: "#ffffff",
-            foreground: "#1e293b",
-          },
+        "2xl": "1400px",
+      },
+    },
+    extend: {
+      colors: {
+        border: {
+          DEFAULT: "#e4e4e7"
         },
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+        input: "#e4e4e7",
+        ring: "#2563eb",
+        background: "#f8fafc",
+        foreground: "#1e293b",
+        primary: {
+          DEFAULT: "#2563eb",
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "#f5e9da",
+          foreground: "#1e293b",
+        },
+        destructive: {
+          DEFAULT: "#ef4444",
+          foreground: "#ffffff",
+        },
+        muted: {
+          DEFAULT: "#e0e7ef",
+          foreground: "#64748b",
+        },
+        accent: {
+          DEFAULT: "#14b8a6",
+          foreground: "#ffffff",
+        },
+        success: {
+          DEFAULT: "#22c55e",
+          foreground: "#ffffff",
+        },
+        warning: {
+          DEFAULT: "#f59e42",
+          foreground: "#ffffff",
+        },
+        popover: {
+          DEFAULT: "#ffffff",
+          foreground: "#1e293b",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#ffffff",
+          foreground: "#1e293b",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -106,5 +103,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 } satisfies Config;

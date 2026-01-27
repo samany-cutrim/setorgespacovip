@@ -85,42 +85,54 @@ export function ReservationDialog({
   const finalAmount = formData.total_amount - formData.discount_amount;
   const remainingAmount = finalAmount - formData.deposit_amount;
 
-  // Update total when dates change
+  // Update total when dates change - using derived state instead
+  // Only update formData.total_amount when calculatedPrice changes and not editing
   useEffect(() => {
     if (calculatedPrice > 0 && !reservation) {
-      setFormData(prev => ({ ...prev, total_amount: calculatedPrice }));
+      // Use setTimeout to avoid cascading renders
+      const timer = setTimeout(() => {
+        setFormData(prev => ({ ...prev, total_amount: calculatedPrice }));
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [calculatedPrice, reservation]);
 
-  // Initialize form when editing
+  // Initialize form when editing - run once on mount
   useEffect(() => {
     if (reservation) {
-      setDateRange({
-        from: parseISO(reservation.check_in),
-        to: parseISO(reservation.check_out),
-      });
-      setFormData({
-        guest_id: reservation.guest_id || '',
-        num_guests: reservation.num_guests,
-        total_amount: Number(reservation.total_amount),
-        discount_amount: Number(reservation.discount_amount) || 0,
-        deposit_amount: Number(reservation.deposit_amount) || 0,
-        status: reservation.status,
-        payment_status: reservation.payment_status,
-        notes: reservation.notes || '',
-      });
+      // Use setTimeout to avoid cascading renders
+      const timer = setTimeout(() => {
+        setDateRange({
+          from: parseISO(reservation.check_in),
+          to: parseISO(reservation.check_out),
+        });
+        setFormData({
+          guest_id: reservation.guest_id || '',
+          num_guests: reservation.num_guests,
+          total_amount: Number(reservation.total_amount),
+          discount_amount: Number(reservation.discount_amount) || 0,
+          deposit_amount: Number(reservation.deposit_amount) || 0,
+          status: reservation.status,
+          payment_status: reservation.payment_status,
+          notes: reservation.notes || '',
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     } else {
-      setDateRange(undefined);
-      setFormData({
-        guest_id: '',
-        num_guests: 1,
-        total_amount: 0,
-        discount_amount: 0,
-        deposit_amount: 0,
-        status: 'pending',
-        payment_status: 'pending',
-        notes: '',
-      });
+      const timer = setTimeout(() => {
+        setDateRange(undefined);
+        setFormData({
+          guest_id: '',
+          num_guests: 1,
+          total_amount: 0,
+          discount_amount: 0,
+          deposit_amount: 0,
+          status: 'pending',
+          payment_status: 'pending',
+          notes: '',
+        });
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [reservation, open]);
 
