@@ -135,6 +135,7 @@ export default function ClientArea() {
 
       // Fetch reservation by tracking code and verify phone
       // TODO: Substituir por chamada à nova API REST
+      // const { data: reservation, error } = await supabase
       // .from('reservations')
       // .select(`
       //   id,
@@ -153,8 +154,10 @@ export default function ClientArea() {
       // `)
       // .eq('tracking_code', trackingCode.toUpperCase().trim())
       // .maybeSingle();
+      // if (error) throw error;
 
-      if (error) throw error;
+      // Temporary mock data for testing (remove when API is implemented)
+      const reservation = null;
 
       if (!reservation) {
         toast({
@@ -236,15 +239,16 @@ export default function ClientArea() {
     try {
 
       // TODO: Substituir por chamada à nova API REST
+      // const { error } = await supabase
       // .from('reservations')
       // .update({
       //   contract_accepted: true,
       //   contract_accepted_at: new Date().toISOString(),
       // })
       // .eq('id', currentReservation.id);
+      // if (error) throw error;
 
-      if (error) throw error;
-
+      // Temporary: Update locally (remove when API is implemented)
       setCurrentReservation({
         ...currentReservation,
         contract_accepted: true,
