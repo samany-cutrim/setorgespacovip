@@ -135,6 +135,7 @@ export default function ClientArea() {
 
       // Fetch reservation by tracking code and verify phone
       // TODO: Substituir por chamada à nova API REST
+      // NOTA: A funcionalidade de login está temporariamente desabilitada até que a API REST seja implementada
       // const { data: reservation, error } = await supabase
       // .from('reservations')
       // .select(`
@@ -156,7 +157,7 @@ export default function ClientArea() {
       // .maybeSingle();
       // if (error) throw error;
 
-      // Temporary mock data for testing (remove when API is implemented)
+      // TEMPORARY: Login functionality disabled until API is implemented
       const reservation = null;
 
       if (!reservation) {
