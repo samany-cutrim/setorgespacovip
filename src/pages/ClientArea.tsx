@@ -139,7 +139,6 @@ export default function ClientArea() {
         title: 'Funcionalidade em desenvolvimento',
         description: 'A área do cliente está em desenvolvimento. Por favor, aguarde.',
       });
-      setIsLoading(false);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -147,6 +146,7 @@ export default function ClientArea() {
         title: 'Erro',
         description: 'Não foi possível acessar a área do cliente.',
       });
+    } finally {
       setIsLoading(false);
     }
   };
