@@ -208,132 +208,157 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8 animate-fade-in">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <p className="text-base text-gray-600">
             Bem-vindo de volta! Aqui está o resumo das suas reservas.
           </p>
         </div>
         <ReportDateFilter onExport={handleExportPDF} />
       </div>
 
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Reservas Pendentes</CardTitle>
-            <Clock className="h-4 w-4 text-warning" />
+      {/* Stats Cards - Modern Design */}
+      <div className="grid gap-6 md:grid-cols-3">
+        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-orange-50 to-white">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">Reservas Pendentes</CardTitle>
+            <div className="p-2 bg-warning/10 rounded-lg">
+              <Clock className="h-5 w-5 text-warning" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{pendingCount}</div>
-            <p className="text-xs text-muted-foreground">Aguardando confirmação</p>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{pendingCount}</div>
+            <p className="text-sm text-gray-600 flex items-center gap-1">
+              Aguardando confirmação
+            </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Reservas Confirmadas</CardTitle>
-            <CheckCircle className="h-4 w-4 text-success" />
+        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-green-50 to-white">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">Reservas Confirmadas</CardTitle>
+            <div className="p-2 bg-success/10 rounded-lg">
+              <CheckCircle className="h-5 w-5 text-success" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{confirmedCount}</div>
-            <p className="text-xs text-muted-foreground">Próximas estadias</p>
+            <div className="text-4xl font-bold text-gray-900 mb-1">{confirmedCount}</div>
+            <p className="text-sm text-gray-600 flex items-center gap-1">
+              Próximas estadias
+            </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Receita do Mês</CardTitle>
-            <DollarSign className="h-4 w-4 text-accent" />
+        <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-gradient-to-br from-teal-50 to-white">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            <CardTitle className="text-sm font-semibold text-gray-700">Receita do Mês</CardTitle>
+            <div className="p-2 bg-accent/10 rounded-lg">
+              <DollarSign className="h-5 w-5 text-accent" />
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-4xl font-bold text-gray-900 mb-1">
               R$ {monthlyRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-gray-600">
               {format(now, "MMMM 'de' yyyy", { locale: ptBR })}
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Charts */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-primary" />
+      {/* Charts - Modern Placeholders */}
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="border-b border-gray-100 pb-4">
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <DollarSign className="h-5 w-5 text-primary" />
+              </div>
               Receita Mensal
             </CardTitle>
-            <CardDescription>Últimos 6 meses</CardDescription>
+            <CardDescription className="text-base">Últimos 6 meses</CardDescription>
           </CardHeader>
-          <CardContent>
-            {/* TODO: Substituir gráfico por alternativa segura (ex: chart.js, nivo, victory, apexcharts) */}
-            <div className="h-[250px] flex items-center justify-center text-muted-foreground border rounded-lg">
-              <span>Gráfico removido por CSP. Substitua por alternativa segura.</span>
+          <CardContent className="pt-6">
+            {/* Modern placeholder for chart */}
+            <div className="h-[280px] flex flex-col items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 rounded-2xl border-2 border-dashed border-gray-200">
+              <DollarSign className="h-12 w-12 text-primary/40 mb-3" />
+              <span className="text-sm font-medium text-gray-500">Gráfico de Receita</span>
+              <span className="text-xs text-gray-400 mt-1">Dados dos últimos 6 meses</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-accent" />
+        <Card className="border-0 shadow-lg">
+          <CardHeader className="border-b border-gray-100 pb-4">
+            <CardTitle className="flex items-center gap-3 text-xl font-bold text-gray-900">
+              <div className="p-2 bg-accent/10 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-accent" />
+              </div>
               Taxa de Ocupação
             </CardTitle>
-            <CardDescription>Últimos 6 meses</CardDescription>
+            <CardDescription className="text-base">Últimos 6 meses</CardDescription>
           </CardHeader>
-          <CardContent>
-            {/* TODO: Substituir gráfico por alternativa segura (ex: chart.js, nivo, victory, apexcharts) */}
-            <div className="h-[250px] flex items-center justify-center text-muted-foreground border rounded-lg">
-              <span>Gráfico removido por CSP. Substitua por alternativa segura.</span>
+          <CardContent className="pt-6">
+            {/* Modern placeholder for chart */}
+            <div className="h-[280px] flex flex-col items-center justify-center bg-gradient-to-br from-accent/5 to-success/5 rounded-2xl border-2 border-dashed border-gray-200">
+              <TrendingUp className="h-12 w-12 text-accent/40 mb-3" />
+              <span className="text-sm font-medium text-gray-500">Gráfico de Ocupação</span>
+              <span className="text-xs text-gray-400 mt-1">Dados dos últimos 6 meses</span>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Upcoming Reservations */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+      {/* Upcoming Reservations - Enhanced Design */}
+      <Card className="border-0 shadow-lg">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-5">
           <div>
-            <CardTitle className="font-display">Próximas Reservas</CardTitle>
-            <CardDescription>Chegadas e saídas agendadas</CardDescription>
+            <CardTitle className="text-2xl font-bold text-gray-900 mb-1">Próximas Reservas</CardTitle>
+            <CardDescription className="text-base">Chegadas e saídas agendadas</CardDescription>
           </div>
           <Link to="/admin/reservations">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="rounded-xl font-medium border-gray-300 hover:bg-gray-50 hover:border-gray-400">
               Ver todas
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           {upcomingReservations.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <CalendarDays className="h-12 w-12 text-muted-foreground/50" />
-              <p className="mt-2 text-muted-foreground">Nenhuma reserva agendada</p>
+            <div className="flex flex-col items-center justify-center py-12 text-center bg-gray-50 rounded-2xl">
+              <div className="p-4 bg-white rounded-full shadow-sm mb-4">
+                <CalendarDays className="h-10 w-10 text-gray-400" />
+              </div>
+              <p className="text-lg font-medium text-gray-900 mb-1">Nenhuma reserva agendada</p>
+              <p className="text-sm text-gray-500">As próximas reservas aparecerão aqui</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {upcomingReservations.map((reservation) => (
                 <div
                   key={reservation.id}
-                  className="flex items-center justify-between rounded-lg border p-4"
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 rounded-2xl border border-gray-200 p-5 hover:shadow-md hover:border-gray-300 transition-all duration-200 bg-white"
                 >
-                  <div className="space-y-1">
-                    <p className="font-medium">
+                  <div className="space-y-2">
+                    <p className="font-semibold text-lg text-gray-900">
                       {reservation.guest?.full_name || 'Hóspede não identificado'}
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(parseISO(reservation.check_in), "dd 'de' MMM", { locale: ptBR })} - {format(parseISO(reservation.check_out), "dd 'de' MMM", { locale: ptBR })}
-                    </p>
+                    <div className="flex items-center gap-2 text-sm text-gray-600">
+                      <CalendarDays className="h-4 w-4" />
+                      <span>
+                        {format(parseISO(reservation.check_in), "dd 'de' MMM", { locale: ptBR })} - {format(parseISO(reservation.check_out), "dd 'de' MMM", { locale: ptBR })}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="outline" className={statusColors[reservation.status]}>
+                  <div className="flex items-center gap-4">
+                    <Badge variant="outline" className={`${statusColors[reservation.status]} px-3 py-1 text-xs font-medium`}>
                       {statusLabels[reservation.status]}
                     </Badge>
-                    <span className="font-semibold text-primary">
+                    <span className="text-xl font-bold text-primary">
                       R$ {Number(reservation.total_amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
