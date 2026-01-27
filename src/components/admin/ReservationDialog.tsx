@@ -63,10 +63,10 @@ export function ReservationDialog({
   const { data: pricingRules = [] } = usePricingRules();
   
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [manualTotalAmount, setManualTotalAmount] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     guest_id: '',
     num_guests: 1,
-    total_amount: 0,
     discount_amount: 0,
     deposit_amount: 0,
     status: 'pending' as ReservationStatus,
@@ -74,67 +74,63 @@ export function ReservationDialog({
     notes: '',
   });
 
+  // Calculate price based on selected dates
   const calculatedPrice = dateRange?.from && dateRange?.to 
     ? calculateTotalPrice(dateRange.from, dateRange.to, pricingRules)
     : 0;
+
+  // Use manual total if editing, otherwise use calculated price
+  const totalAmount = manualTotalAmount !== null ? manualTotalAmount : calculatedPrice;
 
   const nights = dateRange?.from && dateRange?.to 
     ? differenceInDays(dateRange.to, dateRange.from)
     : 0;
 
-  const finalAmount = formData.total_amount - formData.discount_amount;
+  const finalAmount = totalAmount - formData.discount_amount;
   const remainingAmount = finalAmount - formData.deposit_amount;
 
-  // Update total when dates change - using derived state instead
-  // Only update formData.total_amount when calculatedPrice changes and not editing
+  // Initialize form when dialog opens or reservation changes
   useEffect(() => {
-    if (calculatedPrice > 0 && !reservation) {
-      // Use setTimeout to avoid cascading renders
-      const timer = setTimeout(() => {
-        setFormData(prev => ({ ...prev, total_amount: calculatedPrice }));
-      }, 0);
-      return () => clearTimeout(timer);
+    if (!open) {
+      // Reset state when dialog closes
+      return;
     }
-  }, [calculatedPrice, reservation]);
-
-  // Initialize form when editing - run once on mount
-  useEffect(() => {
-    if (reservation) {
-      // Use setTimeout to avoid cascading renders
-      const timer = setTimeout(() => {
+    
+    // Initialize state based on reservation data
+    const initializeForm = () => {
+      if (reservation) {
         setDateRange({
           from: parseISO(reservation.check_in),
           to: parseISO(reservation.check_out),
         });
+        setManualTotalAmount(Number(reservation.total_amount));
         setFormData({
           guest_id: reservation.guest_id || '',
           num_guests: reservation.num_guests,
-          total_amount: Number(reservation.total_amount),
           discount_amount: Number(reservation.discount_amount) || 0,
           deposit_amount: Number(reservation.deposit_amount) || 0,
           status: reservation.status,
           payment_status: reservation.payment_status,
           notes: reservation.notes || '',
         });
-      }, 0);
-      return () => clearTimeout(timer);
-    } else {
-      const timer = setTimeout(() => {
+      } else {
         setDateRange(undefined);
+        setManualTotalAmount(null);
         setFormData({
           guest_id: '',
           num_guests: 1,
-          total_amount: 0,
           discount_amount: 0,
           deposit_amount: 0,
           status: 'pending',
           payment_status: 'pending',
           notes: '',
         });
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [reservation, open]);
+      }
+    };
+    
+    initializeForm();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -148,7 +144,7 @@ export function ReservationDialog({
       check_in: format(dateRange.from, 'yyyy-MM-dd'),
       check_out: format(dateRange.to, 'yyyy-MM-dd'),
       num_guests: formData.num_guests,
-      total_amount: formData.total_amount,
+      total_amount: totalAmount,
       discount_amount: formData.discount_amount,
       deposit_amount: formData.deposit_amount,
       status: formData.status,
@@ -267,8 +263,8 @@ export function ReservationDialog({
                   type="number"
                   step="0.01"
                   min={0}
-                  value={formData.total_amount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, total_amount: parseFloat(e.target.value) || 0 }))}
+                  value={totalAmount}
+                  onChange={(e) => setManualTotalAmount(parseFloat(e.target.value) || 0)}
                 />
               </div>
 
@@ -304,7 +300,7 @@ export function ReservationDialog({
             <div className="rounded-lg bg-muted/50 p-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Valor total</span>
-                <span>R$ {formData.total_amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                <span>R$ {totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
               </div>
               {formData.discount_amount > 0 && (
                 <div className="flex justify-between text-sm text-success">
