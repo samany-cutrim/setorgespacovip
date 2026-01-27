@@ -26,6 +26,7 @@ import {
   Waves,
   Home,
   Settings,
+  Gavel,
 } from 'lucide-react';
 
 const menuItems = [
@@ -35,6 +36,7 @@ const menuItems = [
   { title: 'Hóspedes', url: '/admin/guests', icon: Users },
   { title: 'Financeiro', url: '/admin/finance', icon: DollarSign },
   { title: 'Preços', url: '/admin/pricing', icon: Tag },
+  { title: 'Audiências TRT', url: '/admin/audiencias-trt', icon: Gavel },
   { title: 'Configurações', url: '/admin/settings', icon: Settings },
 ];
 

@@ -38,6 +38,57 @@ export type Database = {
         }
         Relationships: []
       }
+      audiencias_trt: {
+        Row: {
+          id: string
+          numero_processo: string
+          advogado_parte: string
+          data_audiencia: string
+          hora_audiencia: string | null
+          tipo_audiencia: string | null
+          tribunal: string | null
+          vara: string | null
+          local: string | null
+          status: string
+          advogado_responsavel: string | null
+          observacoes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          numero_processo: string
+          advogado_parte: string
+          data_audiencia: string
+          hora_audiencia?: string | null
+          tipo_audiencia?: string | null
+          tribunal?: string | null
+          vara?: string | null
+          local?: string | null
+          status?: string
+          advogado_responsavel?: string | null
+          observacoes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          numero_processo?: string
+          advogado_parte?: string
+          data_audiencia?: string
+          hora_audiencia?: string | null
+          tipo_audiencia?: string | null
+          tribunal?: string | null
+          vara?: string | null
+          local?: string | null
+          status?: string
+          advogado_responsavel?: string | null
+          observacoes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       guests: {
         Row: {
           created_at: string
