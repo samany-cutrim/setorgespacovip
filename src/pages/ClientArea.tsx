@@ -132,90 +132,14 @@ export default function ClientArea() {
     setIsLoading(true);
 
     try {
-
-      // Fetch reservation by tracking code and verify phone
-      // TODO: Substituir por chamada à nova API REST
-      // .from('reservations')
-      // .select(`
-      //   id,
-      //   tracking_code,
-      //   check_in,
-      //   check_out,
-      //   num_guests,
-      //   total_amount,
-      //   status,
-      //   payment_status,
-      //   notes,
-      //   created_at,
-      //   contract_accepted,
-      //   contract_accepted_at,
-      //   guest:guests(id, full_name, phone, email)
-      // `)
-      // .eq('tracking_code', trackingCode.toUpperCase().trim())
-      // .maybeSingle();
-
-      if (error) throw error;
-
-      if (!reservation) {
-        toast({
-          variant: 'destructive',
-          title: 'Reserva não encontrada',
-          description: 'Verifique o código e tente novamente.',
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      // Verify phone matches
-      const reservationData = reservation as unknown as ReservationData;
-      const cleanPhone = phone.replace(/\D/g, '');
-      const guestPhone = reservationData.guest?.phone?.replace(/\D/g, '') || '';
-
-      if (!guestPhone.includes(cleanPhone) && !cleanPhone.includes(guestPhone)) {
-        toast({
-          variant: 'destructive',
-          title: 'Telefone não confere',
-          description: 'O telefone informado não corresponde à reserva.',
-        });
-        setIsLoading(false);
-        return;
-      }
-
-      setCurrentReservation(reservationData);
-      setIsAuthenticated(true);
-
-      // Fetch all reservations for this guest
-
-      if (reservationData.guest?.id) {
-        // TODO: Substituir por chamada à nova API REST
-        // .from('reservations')
-        // .select(`
-        //   id,
-        //   tracking_code,
-        //   check_in,
-        //   check_out,
-        //   num_guests,
-        //   total_amount,
-        //   status,
-        //   payment_status,
-        //   notes,
-        //   created_at,
-        //   contract_accepted,
-        //   contract_accepted_at,
-        //   guest:guests(id, full_name, phone, email)
-        // `)
-        // .eq('guest_id', reservationData.guest.id)
-        // .order('created_at', { ascending: false });
-
-        // if (allRes) {
-        //   setAllReservations(allRes as unknown as ReservationData[]);
-        // }
-      }
-
+      // TODO: Fetch reservation by tracking code and verify phone
+      // API integration pending
       toast({
-        title: 'Acesso autorizado',
-        description: `Bem-vindo(a), ${reservationData.guest?.full_name}!`,
+        variant: 'destructive',
+        title: 'Funcionalidade em desenvolvimento',
+        description: 'A área do cliente está em desenvolvimento. Por favor, aguarde.',
       });
+      setIsLoading(false);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -223,7 +147,6 @@ export default function ClientArea() {
         title: 'Erro',
         description: 'Não foi possível acessar a área do cliente.',
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -234,17 +157,8 @@ export default function ClientArea() {
     setIsAccepting(true);
 
     try {
-
-      // TODO: Substituir por chamada à nova API REST
-      // .from('reservations')
-      // .update({
-      //   contract_accepted: true,
-      //   contract_accepted_at: new Date().toISOString(),
-      // })
-      // .eq('id', currentReservation.id);
-
-      if (error) throw error;
-
+      // TODO: API integration pending
+      // Simulate contract acceptance
       setCurrentReservation({
         ...currentReservation,
         contract_accepted: true,
