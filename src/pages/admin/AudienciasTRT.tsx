@@ -243,6 +243,8 @@ export default function AdminAudienciasTRT() {
           <CardDescription>
             {audiencias.length} audiência(s) encontrada(s)
             {advogadoFilter && ` para o advogado ${advogadoFilter}`}
+            {' • '}
+            Atualização automática a cada 60 segundos
           </CardDescription>
         </CardHeader>
         <CardContent>

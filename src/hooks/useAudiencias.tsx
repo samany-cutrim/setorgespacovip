@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { AudienciaTRT } from '@/lib/types';
 
-export function useAudiencias(advogadoFilter?: string, refetchInterval: number = 60000) {
+export function useAudiencias(advogadoFilter?: string, refetchInterval?: number) {
   return useQuery({
     queryKey: ['audiencias', advogadoFilter],
     queryFn: async (): Promise<AudienciaTRT[]> => {
@@ -20,7 +20,7 @@ export function useAudiencias(advogadoFilter?: string, refetchInterval: number =
       if (error) throw error;
       return data || [];
     },
-    refetchInterval, // Configurable refetch interval (default: 60 seconds)
+    refetchInterval: refetchInterval ?? 60000, // Default: 60 seconds for real-time updates
   });
 }
 
