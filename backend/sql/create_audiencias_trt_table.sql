@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS audiencias_trt (
-  id SERIAL PRIMARY KEY,
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   numero_processo VARCHAR(255) NOT NULL,
   advogado_parte VARCHAR(255) NOT NULL,
   data_audiencia TIMESTAMP NOT NULL,

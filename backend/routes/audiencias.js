@@ -7,37 +7,38 @@ router.get('/', async (req, res) => {
   try {
     const { advogado_parte, status, data_inicio, data_fim } = req.query;
     
-    let query = 'SELECT * FROM audiencias_trt WHERE 1=1';
-    const params = [];
-    let paramCount = 1;
-
+    // Build filter conditions
+    const conditions = [];
+    
     if (advogado_parte) {
-      query += ` AND LOWER(advogado_parte) LIKE LOWER($${paramCount})`;
-      params.push(`%${advogado_parte}%`);
-      paramCount++;
+      conditions.push(sql`LOWER(advogado_parte) LIKE LOWER(${'%' + advogado_parte + '%'})`);
     }
 
     if (status) {
-      query += ` AND status = $${paramCount}`;
-      params.push(status);
-      paramCount++;
+      conditions.push(sql`status = ${status}`);
     }
 
     if (data_inicio) {
-      query += ` AND data_audiencia >= $${paramCount}`;
-      params.push(data_inicio);
-      paramCount++;
+      conditions.push(sql`data_audiencia >= ${data_inicio}`);
     }
 
     if (data_fim) {
-      query += ` AND data_audiencia <= $${paramCount}`;
-      params.push(data_fim);
-      paramCount++;
+      conditions.push(sql`data_audiencia <= ${data_fim}`);
     }
 
-    query += ' ORDER BY data_audiencia DESC';
+    // Combine conditions
+    let query;
+    if (conditions.length > 0) {
+      const whereClause = conditions.reduce((acc, condition, index) => {
+        if (index === 0) return condition;
+        return sql`${acc} AND ${condition}`;
+      });
+      query = sql`SELECT * FROM audiencias_trt WHERE ${whereClause} ORDER BY data_audiencia DESC`;
+    } else {
+      query = sql`SELECT * FROM audiencias_trt ORDER BY data_audiencia DESC`;
+    }
 
-    const result = await sql.unsafe(query, params);
+    const result = await query;
     res.json(result);
   } catch (error) {
     console.error('Error fetching hearings:', error);

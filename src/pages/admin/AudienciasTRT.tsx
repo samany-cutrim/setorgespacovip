@@ -86,7 +86,7 @@ export default function AdminAudienciasTRT() {
       setFormData({
         numero_processo: audiencia.numero_processo,
         advogado_parte: audiencia.advogado_parte,
-        data_audiencia: audiencia.data_audiencia.split('T')[0],
+        data_audiencia: format(parseISO(audiencia.data_audiencia), 'yyyy-MM-dd'),
         hora_audiencia: audiencia.hora_audiencia || '',
         tipo_audiencia: audiencia.tipo_audiencia || '',
         tribunal: audiencia.tribunal || '',
