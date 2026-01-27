@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Calendar } from '../components/ui/calendar';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -15,6 +16,7 @@ const amenities = [
 ];
 
 export default function Index() {
+  const navigate = useNavigate();
   const [lang, setLang] = useState('pt');
   const [dateRange, setDateRange] = useState(null);
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', numGuests: 1, notes: '' });
@@ -38,10 +40,10 @@ export default function Index() {
             </div>
             
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100 rounded-full px-4">
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100 rounded-full px-4" onClick={() => navigate('/cliente')}>
                 Área do Cliente
               </Button>
-              <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100 rounded-full px-4">
+              <Button variant="ghost" size="sm" className="text-gray-700 hover:bg-gray-100 rounded-full px-4" onClick={() => navigate('/admin')}>
                 Administração
               </Button>
               <Button 
