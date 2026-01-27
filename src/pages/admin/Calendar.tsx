@@ -37,6 +37,7 @@ import {
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import type { DateRange } from 'react-day-picker';
+import type { Reservation } from '@/lib/types';
 
 const statusColors = {
   pending: 'bg-warning text-warning-foreground',
@@ -51,7 +52,7 @@ export default function AdminCalendar() {
   const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
   const [blockRange, setBlockRange] = useState<DateRange | undefined>();
   const [blockReason, setBlockReason] = useState('');
-  const [selectedReservation, setSelectedReservation] = useState<any>(null);
+  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
   const { data: reservations = [] } = useReservationsByMonth(
     currentMonth.getFullYear(),

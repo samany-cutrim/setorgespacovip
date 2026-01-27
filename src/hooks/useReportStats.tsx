@@ -40,9 +40,9 @@ export function useReportStats(startDate: Date, endDate: Date) {
       const endStr = format(endDate, 'yyyy-MM-dd');
 
       // Fetch payments for the period
-      const payments: any[] = [];
+      const payments: Array<{ payment_date: string; amount: number }> = [];
       // Fetch reservations for occupancy
-      const reservations: any[] = [];
+      const reservations: Array<{ check_in: string; check_out: string }> = [];
       // Calculate revenue per month
       (payments || []).forEach(payment => {
         const paymentMonth = format(parseISO(payment.payment_date), 'yyyy-MM');

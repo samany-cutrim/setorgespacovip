@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGuests } from '@/hooks/useGuests';
 import { usePricingRules, calculateTotalPrice } from '@/hooks/usePricingRules';
 import { Button } from '@/components/ui/button';
@@ -62,17 +62,45 @@ export function ReservationDialog({
   const { data: guests = [] } = useGuests();
   const { data: pricingRules = [] } = usePricingRules();
   
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-  const [formData, setFormData] = useState({
-    guest_id: '',
-    num_guests: 1,
-    total_amount: 0,
-    discount_amount: 0,
-    deposit_amount: 0,
-    status: 'pending' as ReservationStatus,
-    payment_status: 'pending' as PaymentStatus,
-    notes: '',
-  });
+  // Helper to get initial form data
+  const getInitialFormData = () => {
+    if (reservation) {
+      return {
+        guest_id: reservation.guest_id || '',
+        num_guests: reservation.num_guests,
+        total_amount: Number(reservation.total_amount),
+        discount_amount: Number(reservation.discount_amount) || 0,
+        deposit_amount: Number(reservation.deposit_amount) || 0,
+        status: reservation.status,
+        payment_status: reservation.payment_status,
+        notes: reservation.notes || '',
+      };
+    }
+    return {
+      guest_id: '',
+      num_guests: 1,
+      total_amount: 0,
+      discount_amount: 0,
+      deposit_amount: 0,
+      status: 'pending' as ReservationStatus,
+      payment_status: 'pending' as PaymentStatus,
+      notes: '',
+    };
+  };
+  
+  // Helper to get initial date range
+  const getInitialDateRange = (): DateRange | undefined => {
+    if (reservation) {
+      return {
+        from: parseISO(reservation.check_in),
+        to: parseISO(reservation.check_out),
+      };
+    }
+    return undefined;
+  };
+  
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(getInitialDateRange);
+  const [formData, setFormData] = useState(getInitialFormData);
 
   const calculatedPrice = dateRange?.from && dateRange?.to 
     ? calculateTotalPrice(dateRange.from, dateRange.to, pricingRules)
@@ -85,44 +113,26 @@ export function ReservationDialog({
   const finalAmount = formData.total_amount - formData.discount_amount;
   const remainingAmount = finalAmount - formData.deposit_amount;
 
-  // Update total when dates change
-  useEffect(() => {
-    if (calculatedPrice > 0 && !reservation) {
-      setFormData(prev => ({ ...prev, total_amount: calculatedPrice }));
+  // Handle date range changes
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range);
+    // Auto-calculate price for new reservations when dates are selected
+    if (!reservation && range?.from && range?.to) {
+      const price = calculateTotalPrice(range.from, range.to, pricingRules);
+      if (price > 0) {
+        setFormData(prev => ({ ...prev, total_amount: price }));
+      }
     }
-  }, [calculatedPrice, reservation]);
+  };
 
   // Initialize form when editing
+  // This effect synchronizes local form state with the reservation prop when it changes.
   useEffect(() => {
-    if (reservation) {
-      setDateRange({
-        from: parseISO(reservation.check_in),
-        to: parseISO(reservation.check_out),
-      });
-      setFormData({
-        guest_id: reservation.guest_id || '',
-        num_guests: reservation.num_guests,
-        total_amount: Number(reservation.total_amount),
-        discount_amount: Number(reservation.discount_amount) || 0,
-        deposit_amount: Number(reservation.deposit_amount) || 0,
-        status: reservation.status,
-        payment_status: reservation.payment_status,
-        notes: reservation.notes || '',
-      });
-    } else {
-      setDateRange(undefined);
-      setFormData({
-        guest_id: '',
-        num_guests: 1,
-        total_amount: 0,
-        discount_amount: 0,
-        deposit_amount: 0,
-        status: 'pending',
-        payment_status: 'pending',
-        notes: '',
-      });
-    }
-  }, [reservation, open]);
+    // Re-initialize when reservation changes or dialog opens
+    setDateRange(getInitialDateRange());
+    setFormData(getInitialFormData());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reservation?.id, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -213,7 +223,7 @@ export function ReservationDialog({
                 <Calendar
                   mode="range"
                   selected={dateRange}
-                  onSelect={setDateRange}
+                  onSelect={handleDateRangeChange}
                   numberOfMonths={2}
                   locale={ptBR}
                 />
