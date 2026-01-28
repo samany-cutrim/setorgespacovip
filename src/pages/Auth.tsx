@@ -74,20 +74,20 @@ export default function AuthPage() {
         <h1 className="font-display text-3xl font-bold text-white drop-shadow-lg">setor g espaço vip</h1>
       </div>
 
-      <Card className="w-full max-w-md shadow-2xl border-0 glass">
-        <CardHeader className="text-center pb-6">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-600 text-white shadow-lg">
+      <Card className="w-full max-w-md shadow-2xl border-0">
+        <CardHeader className="text-center pb-6 bg-white">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-700 text-white shadow-lg">
             <Lock className="h-8 w-8" />
           </div>
-          <CardTitle className="font-display text-3xl text-slate-800">Área Administrativa</CardTitle>
+          <CardTitle className="font-display text-3xl text-slate-900">Área Administrativa</CardTitle>
           <CardDescription className="text-slate-600 text-base mt-2">
             Acesso restrito para administradores
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="bg-white">
           <form onSubmit={handleLogin} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="login-email" className="text-slate-700 font-semibold">Email</Label>
+              <Label htmlFor="login-email" className="text-slate-900 font-semibold">Email</Label>
               <Input
                 id="login-email"
                 type="email"
@@ -100,7 +100,7 @@ export default function AuthPage() {
               {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="login-password" className="text-slate-700 font-semibold">Senha</Label>
+              <Label htmlFor="login-password" className="text-slate-900 font-semibold">Senha</Label>
               <Input
                 id="login-password"
                 type="password"
