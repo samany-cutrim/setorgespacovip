@@ -7,16 +7,11 @@ import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
 import { Separator } from '../components/ui/separator';
 import { useNavigate } from 'react-router-dom';
-
-const amenities = [
-  { name: 'Piscina', icon: Waves },
-  { name: 'Churrasqueira', icon: Flame },
-  { name: 'Wi-Fi', icon: Wifi },
-  { name: 'Estacionamento', icon: Car },
-];
+import { usePropertySettings } from '../hooks/usePropertySettings';
 
 export default function Index() {
   const navigate = useNavigate();
+  const { data: property } = usePropertySettings();
   const [lang, setLang] = useState('pt');
   const [dateRange, setDateRange] = useState(null);
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', numGuests: 1, notes: '' });
@@ -25,6 +20,12 @@ export default function Index() {
   const [trackingCode, setTrackingCode] = useState(null);
   const nights = dateRange?.from && dateRange?.to ? Math.max(1, (dateRange.to - dateRange.from) / (1000 * 60 * 60 * 24)) : 0;
   const totalPrice = nights * 500; // Exemplo
+  
+  // Get property settings with fallbacks
+  const propertyName = property?.name || 'setor g espaço vip';
+  const propertyDescription = property?.description || 'Perfeita para suas férias em família ou com amigos';
+  const maxGuests = property?.max_guests || 10;
+  const propertyAmenities = property?.amenities || ['Piscina', 'Churrasqueira', 'Wi-Fi', 'Estacionamento'];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -36,7 +37,7 @@ export default function Index() {
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600 to-yellow-700">
                 <Waves className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-semibold text-gray-900 tracking-tight">setor g espaço vip</span>
+              <span className="text-xl font-semibold text-gray-900 tracking-tight">{propertyName}</span>
             </div>
             
             <div className="flex items-center gap-3">
@@ -87,23 +88,34 @@ export default function Index() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 tracking-tight leading-tight font-['Playfair_Display']">
-              Setor G Espaço VIP
+              {propertyName}
             </h1>
             <p className="text-xl md:text-2xl text-white/95 max-w-2xl mx-auto font-light mb-12">
-              {lang === 'pt' ? 'Perfeita para suas férias em família ou com amigos' : 'Perfect for your family or friends holidays'}
+              {lang === 'pt' ? propertyDescription : 'Perfect for your family or friends holidays'}
             </p>
             
             {/* Amenities sofisticadas */}
             <div className="flex flex-wrap items-center justify-center gap-3">
-              {amenities.map(({ name, icon: Icon }) => (
-                <div key={name} className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
-                  <Icon className="w-4 h-4" />
-                  <span>{name}</span>
-                </div>
-              ))}
+              {propertyAmenities.map((amenity) => {
+                // Map amenity name to icon
+                const iconMap: Record<string, any> = {
+                  'Piscina': Waves,
+                  'Churrasqueira': Flame,
+                  'Wi-Fi': Wifi,
+                  'Estacionamento': Car,
+                };
+                const Icon = iconMap[amenity] || Wifi;
+                
+                return (
+                  <div key={amenity} className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-sm font-medium">
+                    <Icon className="w-4 h-4" />
+                    <span>{amenity}</span>
+                  </div>
+                );
+              })}
               <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-600 text-white text-sm font-semibold shadow-lg">
                 <Users className="w-4 h-4" />
-                <span>{lang === 'pt' ? 'Até 10 hóspedes' : 'Up to 10 guests'}</span>
+                <span>{lang === 'pt' ? `Até ${maxGuests} hóspedes` : `Up to ${maxGuests} guests`}</span>
               </div>
             </div>
           </motion.div>
@@ -112,7 +124,7 @@ export default function Index() {
 
       {/* Booking Section */}
       <section className="py-16 px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50" id="booking">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <div className="mb-12 text-center">
             <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3 tracking-tight font-['Playfair_Display']">
               Faça sua Reserva
@@ -143,52 +155,67 @@ export default function Index() {
               </CardContent>
             </Card>
           ) : (
-            <div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Calendar Card - Left Side */}
               <Card className="border border-gray-200 rounded-3xl shadow-xl overflow-hidden bg-white">
-                <CardContent className="p-8 md:p-12">
-                  {/* Calendar Section */}
-                  <div className="mb-10">
-                    <div className="flex items-center gap-2 mb-6">
+                <CardContent className="p-8">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-4">
                       <CalendarDays className="w-6 h-6 text-amber-600" />
-                      <h3 className="text-2xl font-semibold text-gray-900">Selecione as datas</h3>
+                      <h3 className="text-2xl font-semibold text-gray-900">Calendário</h3>
                     </div>
-                    <div className="flex justify-center p-4 rounded-2xl bg-gradient-to-b from-gray-50 to-white">
-                      <Calendar 
-                        mode="range" 
-                        selected={dateRange} 
-                        onSelect={setDateRange} 
-                        numberOfMonths={2} 
-                        className="rounded-2xl"
-                        disabled={(date) => date < new Date()}
-                      />
-                    </div>
+                    <p className="text-gray-600">Selecione as datas de check-in e check-out</p>
+                  </div>
+                  
+                  <div className="flex justify-center p-4 rounded-2xl bg-gradient-to-b from-gray-50 to-white">
+                    <Calendar 
+                      mode="range" 
+                      selected={dateRange} 
+                      onSelect={setDateRange} 
+                      numberOfMonths={1} 
+                      className="rounded-2xl"
+                      disabled={(date) => date < new Date()}
+                    />
                   </div>
                   
                   {/* Price Summary */}
                   {dateRange?.from && dateRange?.to && (
-                    <div className="mb-10 p-8 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200">
-                      <div className="flex items-center justify-between mb-4">
+                    <div className="mt-6 p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200">
+                      <div className="flex items-center justify-between mb-3">
                         <span className="text-gray-700 font-medium">Check-in</span>
-                        <span className="font-semibold text-gray-900 text-lg">{dateRange.from.toLocaleDateString('pt-BR')}</span>
+                        <span className="font-semibold text-gray-900">{dateRange.from.toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <div className="flex items-center justify-between mb-6 pb-6 border-b border-amber-200/50">
+                      <div className="flex items-center justify-between mb-4 pb-4 border-b border-amber-200/50">
                         <span className="text-gray-700 font-medium">Check-out</span>
-                        <span className="font-semibold text-gray-900 text-lg">{dateRange.to.toLocaleDateString('pt-BR')}</span>
+                        <span className="font-semibold text-gray-900">{dateRange.to.toLocaleDateString('pt-BR')}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div>
                           <div className="text-gray-700 font-medium mb-1">Total</div>
                           <div className="text-gray-500 text-sm">{nights} {nights === 1 ? 'diária' : 'diárias'}</div>
                         </div>
-                        <div className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-yellow-700 bg-clip-text text-transparent">
+                        <div className="text-3xl font-bold bg-gradient-to-r from-amber-600 to-yellow-700 bg-clip-text text-transparent">
                           R$ {totalPrice.toLocaleString('pt-BR')}
                         </div>
                       </div>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+              
+              {/* Form Card - Right Side */}
+              <Card className="border border-gray-200 rounded-3xl shadow-xl overflow-hidden bg-white">
+                <CardContent className="p-8">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Users className="w-6 h-6 text-amber-600" />
+                      <h3 className="text-2xl font-semibold text-gray-900">Seus Dados</h3>
+                    </div>
+                    <p className="text-gray-600">Preencha o formulário para solicitar sua reserva</p>
+                  </div>
                   
                   {/* Contact Form */}
-                  <form onSubmit={e => { e.preventDefault(); setIsSubmitting(true); setTimeout(() => { setBookingSuccess(true); setTrackingCode('ABC123'); setIsSubmitting(false); }, 1500); }} className="space-y-6">
+                  <form onSubmit={e => { e.preventDefault(); setIsSubmitting(true); setTimeout(() => { setBookingSuccess(true); setTrackingCode('ABC123'); setIsSubmitting(false); }, 1500); }} className="space-y-5">
                     <div>
                       <label htmlFor="fullName" className="block text-sm font-semibold text-gray-900 mb-2">
                         Nome completo
@@ -199,12 +226,12 @@ export default function Index() {
                         value={formData.fullName}
                         onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                         placeholder="Digite seu nome completo"
-                        className="h-14 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
+                        className="h-12 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
                         required
                       />
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
                         <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
                           Email
@@ -216,7 +243,7 @@ export default function Index() {
                           value={formData.email}
                           onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
                           placeholder="seu@email.com"
-                          className="h-14 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
+                          className="h-12 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
                           required
                         />
                       </div>
@@ -231,7 +258,7 @@ export default function Index() {
                           value={formData.phone}
                           onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                           placeholder="(00) 00000-0000"
-                          className="h-14 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
+                          className="h-12 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
                           required
                         />
                       </div>
@@ -245,10 +272,10 @@ export default function Index() {
                         id="numGuests"
                         type="number"
                         min={1}
-                        max={10}
+                        max={maxGuests}
                         value={formData.numGuests}
                         onChange={e => setFormData(prev => ({ ...prev, numGuests: Number(e.target.value) }))}
-                        className="h-14 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
+                        className="h-12 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
                       />
                     </div>
                     
@@ -261,7 +288,7 @@ export default function Index() {
                         value={formData.notes}
                         onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                         placeholder="Alguma solicitação especial?"
-                        className="h-14 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
+                        className="h-12 rounded-xl border-gray-300 text-base focus:border-amber-600 focus:ring-amber-600/20"
                       />
                     </div>
                     
@@ -280,7 +307,7 @@ export default function Index() {
                       )}
                     </Button>
                     
-                    <p className="text-center text-sm text-gray-500 mt-4">
+                    <p className="text-center text-sm text-gray-500">
                       Você não será cobrado agora. Aguarde nossa confirmação.
                     </p>
                   </form>
@@ -295,7 +322,7 @@ export default function Index() {
       <footer className="border-t border-gray-200 py-12 px-6 lg:px-8 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center text-gray-600 text-sm">
-            <p>© {new Date().getFullYear()} setor g espaço vip · {lang === 'pt' ? 'Todos os direitos reservados' : 'All rights reserved'}</p>
+            <p>© {new Date().getFullYear()} {propertyName} · {lang === 'pt' ? 'Todos os direitos reservados' : 'All rights reserved'}</p>
           </div>
         </div>
       </footer>
