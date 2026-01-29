@@ -160,12 +160,28 @@
     color: transparent;
   }
 
+  .text-gradient-reverse {
+    background: linear-gradient(135deg, hsl(45 93% 58%), hsl(262 83% 58%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
   .shadow-glow {
     box-shadow: 0 8px 32px -8px hsl(262 83% 58% / 0.3);
   }
 
+  .shadow-glow-gold {
+    box-shadow: 0 8px 32px -8px hsl(45 93% 58% / 0.4);
+  }
+
   .shadow-card {
     box-shadow: 0 4px 24px -4px hsl(260 30% 10% / 0.1);
+  }
+
+  .shadow-luxury {
+    box-shadow: 0 10px 40px -10px hsl(262 83% 58% / 0.2), 
+                0 4px 16px -4px hsl(45 93% 58% / 0.15);
   }
 
   .gradient-primary {
@@ -174,5 +190,25 @@
 
   .gradient-accent {
     background: linear-gradient(135deg, hsl(45 93% 58%), hsl(35 95% 55%));
+  }
+
+  .gradient-luxury {
+    background: linear-gradient(135deg, hsl(262 83% 58%), hsl(45 93% 58%));
+  }
+
+  .gradient-luxury-reverse {
+    background: linear-gradient(135deg, hsl(45 93% 58%), hsl(262 83% 58%));
+  }
+
+  .gradient-subtle {
+    background: linear-gradient(180deg, hsl(var(--background)), hsl(262 50% 98%));
+  }
+
+  .border-gradient {
+    border: 2px solid transparent;
+    background-image: linear-gradient(hsl(var(--background)), hsl(var(--background))),
+                      linear-gradient(135deg, hsl(262 83% 58%), hsl(45 93% 58%));
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
   }
 }
