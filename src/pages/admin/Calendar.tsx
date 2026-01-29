@@ -175,7 +175,7 @@ export default function AdminCalendar() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-2">
             {weekDays.map((day) => (
               <div key={day} className="p-2 text-center text-sm font-medium text-muted-foreground">
                 {day}
