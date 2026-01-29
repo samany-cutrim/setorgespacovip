@@ -465,6 +465,8 @@ export default function Index() {
                     <div className="mb-4 p-4 border border-primary/20 rounded-2xl">
                       <div className="text-xs font-semibold text-primary uppercase mb-1">Hóspedes</div>
                       <Input
+                        id="numGuests"
+                        name="numGuests"
                         type="number"
                         min={1}
                         max={10}
@@ -489,6 +491,9 @@ export default function Index() {
                         }}
                       >
                         <Input
+                          id="fullName"
+                          name="fullName"
+                          autoComplete="name"
                           placeholder="Nome completo"
                           value={formData.fullName}
                           onChange={e => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
@@ -496,7 +501,10 @@ export default function Index() {
                           required
                         />
                         <Input
+                          id="email"
+                          name="email"
                           type="email"
+                          autoComplete="email"
                           placeholder="Email"
                           value={formData.email}
                           onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))}
@@ -504,7 +512,10 @@ export default function Index() {
                           required
                         />
                         <Input
+                          id="phone"
+                          name="phone"
                           type="tel"
+                          autoComplete="tel"
                           placeholder="Telefone"
                           value={formData.phone}
                           onChange={e => setFormData(prev => ({ ...prev, phone: e.target.value }))}
@@ -512,6 +523,8 @@ export default function Index() {
                           required
                         />
                         <Input
+                          id="notes"
+                          name="notes"
                           placeholder="Observações (opcional)"
                           value={formData.notes}
                           onChange={e => setFormData(prev => ({ ...prev, notes: e.target.value }))}
