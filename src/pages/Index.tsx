@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2, Search, MapPin, Star, Home, Utensils, Wind, Tv, Coffee } from 'lucide-react';
+import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2, Search, MapPin, Star, Home, Utensils, Wind, Tv, Coffee, Instagram } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Calendar } from '../components/ui/calendar';
 import { Button } from '../components/ui/button';
@@ -277,6 +277,17 @@ export default function Index() {
                   </div>
                 ))}
               </div>
+
+              {/* Google Reviews Link */}
+              <div className="mt-6">
+                <Button 
+                  variant="outline" 
+                  className="w-full rounded-xl h-12 font-semibold"
+                  onClick={() => window.open('https://share.google/O3VdkyYN50Ze8wIyB', '_blank')}
+                >
+                  Ver todas as avaliações no Google
+                </Button>
+              </div>
             </div>
 
             {/* Location */}
@@ -532,7 +543,16 @@ export default function Index() {
               <span>·</span>
               <span className="hover:underline cursor-pointer">Mapa do site</span>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
+              <a 
+                href="https://www.instagram.com/setorgespaco_vip/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:text-gray-900 transition-colors"
+              >
+                <Instagram className="w-5 h-5" />
+                <span className="hidden sm:inline">Instagram</span>
+              </a>
               <button className="hover:underline flex items-center gap-1">
                 🌐 {lang === 'pt' ? 'Português (BR)' : 'English (US)'}
               </button>
