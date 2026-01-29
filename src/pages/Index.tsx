@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2, Search, MapPin, Star, Home, Utensils, Wind, Tv, Coffee, Instagram } from 'lucide-react';
+import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2, Search, MapPin, Star, Home, Utensils, Wind, Tv, Coffee, Instagram, Sparkles, Key, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Calendar } from '../components/ui/calendar';
 import { Button } from '../components/ui/button';
@@ -54,66 +54,54 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       {/* Luxury Fixed Header */}
-      <header className="sticky top-0 z-50 glass border-b border-primary/10">
-        <div className="max-w-[1760px] mx-auto px-6 lg:px-20">
-          <div className="flex items-center justify-between h-20">
-            {/* Logo */}
-            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              <div className="relative">
-                <Waves className="w-9 h-9 text-primary transition-transform group-hover:scale-110" />
-                <div className="absolute inset-0 blur-lg bg-primary/20 rounded-full -z-10"></div>
+      <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 transition-all duration-300">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex h-20 items-center justify-between">
+            {/* Logo Ampliada e com Gradiente */}
+            <div className="group flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#7c3aed] to-[#5b21b6] shadow-lg transition-transform duration-300 group-hover:scale-105">
+                <Waves className="h-6 w-6 text-white" />
               </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="text-xl font-bold text-gradient leading-none">Setor G</span>
-                <span className="text-xs text-muted-foreground tracking-wider uppercase">Espaço VIP</span>
+              <div className="flex flex-col">
+                <span className="font-display text-2xl font-bold tracking-tight text-gray-900">setor g</span>
+                <span className="font-display text-lg font-semibold bg-gradient-to-r from-[#7c3aed] to-[#c026d3] bg-clip-text text-transparent">espaço vip</span>
               </div>
             </div>
-            
-            {/* Navigation Links */}
-            <nav className="hidden md:flex items-center gap-1">
+
+            {/* Navegação Central para Desktop */}
+            <nav className="hidden md:flex items-center gap-8">
+              {[
+                { label: 'Início', action: () => window.scrollTo({ top: 0, behavior: 'smooth' }) },
+                { label: 'Galeria', action: () => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' }) },
+                { label: 'Comodidades', action: () => document.getElementById('amenities')?.scrollIntoView({ behavior: 'smooth' }) },
+                { label: 'Localização', action: () => document.getElementById('location')?.scrollIntoView({ behavior: 'smooth' }) }
+              ].map((item) => (
+                <a 
+                  key={item.label} 
+                  href="#" 
+                  onClick={(e) => { e.preventDefault(); item.action(); }}
+                  className="text-sm font-semibold text-gray-700 hover:text-[#7c3aed] transition-colors duration-200"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+
+            {/* Ações à Direita */}
+            <div className="flex items-center gap-4">
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="text-foreground hover:text-primary font-medium"
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              >
-                Home
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-foreground hover:text-primary font-medium"
-                onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                Galeria
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-foreground hover:text-primary font-medium"
+                className="hidden sm:inline-flex text-gray-700 hover:bg-gray-100 hover:text-[#7c3aed] rounded-full px-4 font-medium transition-all"
                 onClick={() => navigate('/cliente')}
               >
                 Área do Cliente
               </Button>
-            </nav>
-
-            {/* Right side actions */}
-            <div className="flex items-center gap-3">
               <Button 
-                variant="ghost" 
-                size="sm" 
-                className="rounded-full p-2 hover:bg-primary/10"
-                onClick={() => setLang(lang === 'pt' ? 'en' : 'pt')}
-              >
-                🌐
-              </Button>
-              <Button 
-                variant="gradient"
-                size="sm" 
-                className="hidden lg:flex rounded-full px-6"
+                className="rounded-full bg-gradient-to-r from-[#7c3aed] to-[#c026d3] px-6 font-semibold text-white shadow-lg hover:shadow-xl hover:from-[#6d28d9] hover:to-[#a855f7] transition-all duration-300"
                 onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Fazer Reserva
+                Reservar Agora
               </Button>
             </div>
           </div>
@@ -122,93 +110,77 @@ export default function Index() {
 
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0">
+        {/* Vídeo ou Imagem de Fundo Dinâmico */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent z-10" />
           <img 
-            src={propertyImages[0]} 
-            alt="Setor G Espaço VIP" 
-            className="w-full h-full object-cover"
+            src="https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop"
+            alt="Vista luxuosa do Setor G Espaço VIP"
+            className="w-full h-full object-cover object-center"
+            loading="eager"
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-accent/60"></div>
-          {/* Decorative gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent"></div>
         </div>
-        
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-[1760px] mx-auto px-6 lg:px-20 py-20 text-center">
+
+        {/* Conteúdo Central */}
+        <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6"
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-4xl mx-auto"
           >
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-              <Star className="w-4 h-4 text-accent fill-accent" />
-              <span className="text-white font-medium text-sm">Classificação {PROPERTY_RATING} · {REVIEW_COUNT} avaliações</span>
+            {/* Tag de Luxo */}
+            <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+              <Sparkles className="h-4 w-4 text-amber-300" />
+              <span className="text-sm font-medium text-white">Experiência Premium</span>
             </div>
-            
-            {/* Main Title */}
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-tight tracking-tight">
-              Setor G<br />
-              <span className="text-accent">Espaço VIP</span>
+
+            {/* Título Principal */}
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight leading-[0.9]">
+              <span className="block">setor g</span>
+              <span className="block bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent">
+                espaço vip
+              </span>
             </h1>
-            
-            {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto font-light leading-relaxed">
-              {lang === 'pt' 
-                ? 'Seu refúgio exclusivo de luxo e conforto. Viva momentos inesquecíveis em um espaço projetado para você.' 
-                : 'Your exclusive luxury retreat. Live unforgettable moments in a space designed for you.'}
+
+            {/* Subtítulo */}
+            <p className="text-xl md:text-2xl text-white/90 max-w-2xl mx-auto font-light mb-10 leading-relaxed">
+              O refúgio perfeito para momentos inesquecíveis. Conforto, elegância e privacidade em um único lugar.
             </p>
-            
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Button 
-                variant="gradient-gold"
-                size="xl" 
-                className="rounded-full px-10 shadow-glow-gold"
+                size="lg"
+                className="rounded-full bg-white text-gray-900 hover:bg-gray-100 px-8 py-6 text-lg font-semibold shadow-2xl transition-all hover:scale-105 duration-300"
                 onClick={() => document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })}
               >
+                <CalendarDays className="mr-2 h-5 w-5" />
                 Reservar Agora
               </Button>
               <Button 
+                size="lg"
                 variant="outline"
-                size="xl" 
-                className="rounded-full px-10 bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20"
-                onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
+                className="rounded-full border-2 border-white text-white hover:bg-white/10 px-8 py-6 text-lg font-semibold backdrop-blur-sm transition-all"
+                onClick={() => navigate('/cliente')}
               >
-                Ver Galeria
+                <Key className="mr-2 h-5 w-5" />
+                Área do Cliente
               </Button>
-            </div>
-            
-            {/* Features */}
-            <div className="flex flex-wrap items-center justify-center gap-8 pt-8 text-white/80">
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                <span>Até 10 hóspedes</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Home className="w-5 h-5" />
-                <span>Casa inteira</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Waves className="w-5 h-5" />
-                <span>Piscina privativa</span>
-              </div>
             </div>
           </motion.div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
-            <div className="w-1 h-2 bg-white/60 rounded-full"></div>
+        {/* Indicador de Scroll */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+          <div className="animate-bounce">
+            <ChevronDown className="h-6 w-6 text-white/70" />
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-background">
+      <section id="amenities" className="py-20 bg-background">
         <div className="max-w-[1760px] mx-auto px-6 lg:px-20">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gradient mb-4">
@@ -380,57 +352,39 @@ export default function Index() {
       {/* Booking Section */}
       <section id="booking" className="py-20 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* Left Side - Info */}
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-4xl md:text-5xl font-bold text-gradient mb-4">
-                  Reserve sua experiência
-                </h2>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  {lang === 'pt' 
-                    ? 'Espaço perfeito para suas férias em família ou com amigos. Nossa propriedade oferece conforto e privacidade em um ambiente acolhedor.' 
-                    : 'Perfect space for your family vacation or with friends. Our property offers comfort and privacy in a welcoming environment.'}
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-luxury flex items-center justify-center flex-shrink-0">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Até 10 hóspedes</h3>
-                    <p className="text-sm text-muted-foreground">Casa inteira disponível para seu grupo</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-luxury flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Check-in flexível</h3>
-                    <p className="text-sm text-muted-foreground">Horários de check-in e check-out convenientes</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-luxury flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-1">Localização privilegiada</h3>
-                    <p className="text-sm text-muted-foreground">Em uma das melhores regiões do Brasil</p>
-                  </div>
-                </div>
-              </div>
+          {/* Cabeçalho da Seção de Reserva */}
+          <div className="mb-12 text-center">
+            <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-[#7c3aed]/10 to-[#c026d3]/10 border border-[#7c3aed]/20">
+              <CalendarDays className="h-4 w-4 text-[#7c3aed]" />
+              <span className="text-sm font-semibold text-[#7c3aed]">Reserva Rápida</span>
             </div>
+            <h2 className="text-4xl md:text-5xl font-semibold text-gray-900 mb-4 tracking-tight">
+              Sua <span className="bg-gradient-to-r from-[#7c3aed] to-[#c026d3] bg-clip-text text-transparent">Experiência</span> Começa Aqui
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Em poucos passos, garanta seu refúgio de luxo. Simples, rápido e seguro.
+            </p>
+          </div>
 
-            {/* Right Side - Booking Card */}
-            <div className="lg:sticky lg:top-24">
+          {/* Indicador de Passos */}
+          <div className="flex justify-center mb-10">
+            <div className="flex items-center">
+              {[1, 2, 3].map((step) => (
+                <div key={step} className="flex items-center">
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-full border-2 ${step === 1 ? 'border-[#7c3aed] bg-[#7c3aed] text-white' : 'border-gray-300'}`}>
+                    {step}
+                  </div>
+                  {step < 3 && <div className="h-0.5 w-16 bg-gray-300 mx-2"></div>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Card do Calendário (Ocupa 2 colunas) */}
+            <div className="lg:col-span-2">
               {bookingSuccess ? (
-                <Card className="border-primary/20 shadow-luxury">
+                <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
                   <CardContent className="pt-8 pb-6 text-center">
                     <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-luxury">
                       <CheckCircle2 className="h-8 w-8 text-white" />
@@ -469,46 +423,36 @@ export default function Index() {
                   </CardContent>
                 </Card>
               ) : (
-                <Card className="border-primary/20 shadow-luxury">
-                  <CardContent className="p-6">
-                    {/* Price */}
-                    <div className="mb-6 pb-6 border-b border-border">
-                      <div className="flex items-baseline gap-2 mb-1">
-                        <span className="text-3xl font-bold text-gradient">R$ {BASE_PRICE}</span>
-                        <span className="text-muted-foreground">/ noite</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <Star className="w-4 h-4 fill-accent text-accent" />
-                        <span className="font-medium">{PROPERTY_RATING}</span>
-                        <span className="text-muted-foreground">({REVIEW_COUNT} avaliações)</span>
-                      </div>
-                    </div>
-
+                <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
+                  <CardContent className="p-8">
                     {/* Date Selection */}
-                    <div className="mb-4 border border-primary/20 rounded-2xl overflow-hidden">
-                      <div className="grid grid-cols-2 divide-x divide-primary/20">
-                        <div className="p-4">
-                          <div className="text-xs font-semibold text-primary uppercase mb-1">Check-in</div>
-                          <div className="text-sm text-muted-foreground">
-                            {dateRange?.from ? dateRange.from.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Adicionar data'}
+                    <div className="mb-4">
+                      <h3 className="text-xl font-semibold mb-4">Selecione as Datas</h3>
+                      <div className="border border-primary/20 rounded-2xl overflow-hidden">
+                        <div className="grid grid-cols-2 divide-x divide-primary/20">
+                          <div className="p-4">
+                            <div className="text-xs font-semibold text-primary uppercase mb-1">Check-in</div>
+                            <div className="text-sm text-muted-foreground">
+                              {dateRange?.from ? dateRange.from.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Adicionar data'}
+                            </div>
+                          </div>
+                          <div className="p-4">
+                            <div className="text-xs font-semibold text-primary uppercase mb-1">Check-out</div>
+                            <div className="text-sm text-muted-foreground">
+                              {dateRange?.to ? dateRange.to.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Adicionar data'}
+                            </div>
                           </div>
                         </div>
-                        <div className="p-4">
-                          <div className="text-xs font-semibold text-primary uppercase mb-1">Check-out</div>
-                          <div className="text-sm text-muted-foreground">
-                            {dateRange?.to ? dateRange.to.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Adicionar data'}
-                          </div>
+                        <div className="p-4 pt-2 border-t border-primary/20">
+                          <Calendar 
+                            mode="range" 
+                            selected={dateRange} 
+                            onSelect={setDateRange} 
+                            numberOfMonths={1} 
+                            className="w-full"
+                            disabled={(date) => date < new Date()}
+                          />
                         </div>
-                      </div>
-                      <div className="p-4 pt-2 border-t border-primary/20">
-                        <Calendar 
-                          mode="range" 
-                          selected={dateRange} 
-                          onSelect={setDateRange} 
-                          numberOfMonths={1} 
-                          className="w-full"
-                          disabled={(date) => date < new Date()}
-                        />
                       </div>
                     </div>
 
@@ -524,21 +468,6 @@ export default function Index() {
                         className="border-0 p-0 h-6 text-sm focus-visible:ring-0"
                       />
                     </div>
-
-                    {/* Reserve Button */}
-                    <Button 
-                      onClick={() => {
-                        if (dateRange?.from && dateRange?.to) {
-                          setShowBookingForm(true);
-                        }
-                      }}
-                      disabled={!dateRange?.from || !dateRange?.to}
-                      variant="gradient"
-                      size="lg"
-                      className="w-full rounded-full mb-4"
-                    >
-                      Reservar
-                    </Button>
 
                     {/* Contact Form */}
                     {showBookingForm && (
@@ -601,35 +530,71 @@ export default function Index() {
                         </Button>
                       </form>
                     )}
-
-                    <p className="text-center text-xs text-muted-foreground mt-4">
-                      Você não será cobrado agora
-                    </p>
-
-                    {/* Price Breakdown */}
-                    {dateRange?.from && dateRange?.to && nights > 0 && (
-                      <div className="mt-6 pt-6 border-t border-border space-y-3">
-                        <div className="flex items-center justify-between text-muted-foreground">
-                          <span className="underline">R$ {BASE_PRICE} x {nights} {nights === 1 ? 'noite' : 'noites'}</span>
-                          <span>R$ {totalPrice.toLocaleString('pt-BR')}</span>
-                        </div>
-                        <Separator />
-                        <div className="flex items-center justify-between font-semibold text-lg">
-                          <span>Total</span>
-                          <span className="text-gradient">R$ {totalPrice.toLocaleString('pt-BR')}</span>
-                        </div>
-                      </div>
-                    )}
                   </CardContent>
                 </Card>
               )}
             </div>
+
+            {/* Card de Resumo Lateral */}
+            <Card className="border-0 shadow-2xl rounded-3xl bg-gradient-to-b from-[#7c3aed] to-[#5b21b6] text-white overflow-hidden">
+              <CardContent className="p-8 h-full flex flex-col">
+                <h3 className="text-2xl font-bold mb-6">Resumo da Reserva</h3>
+                <div className="space-y-6 flex-grow">
+                  {dateRange?.from && dateRange?.to ? (
+                    <>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center pb-4 border-b border-white/20">
+                          <span className="text-white/80">Check-in</span>
+                          <span className="font-bold text-lg">{dateRange.from.toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <div className="flex justify-between items-center pb-4 border-b border-white/20">
+                          <span className="text-white/80">Check-out</span>
+                          <span className="font-bold text-lg">{dateRange.to.toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-white/80">Diárias</span>
+                          <span className="font-bold text-xl">{nights}</span>
+                        </div>
+                      </div>
+                      <div className="pt-6 border-t border-white/20">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-white/80">Valor total</span>
+                          <span className="text-3xl font-bold">R$ {totalPrice.toLocaleString('pt-BR')}</span>
+                        </div>
+                        <p className="text-sm text-white/60">Impostos e taxas inclusos</p>
+                      </div>
+                      {!showBookingForm && (
+                        <Button 
+                          onClick={() => {
+                            if (dateRange?.from && dateRange?.to) {
+                              setShowBookingForm(true);
+                            }
+                          }}
+                          disabled={!dateRange?.from || !dateRange?.to}
+                          className="w-full rounded-full bg-white text-[#7c3aed] hover:bg-gray-100 font-semibold transition-all mt-4"
+                          size="lg"
+                        >
+                          Continuar Reserva
+                        </Button>
+                      )}
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-center">
+                      <div>
+                        <CalendarDays className="h-12 w-12 mx-auto mb-4 text-white/40" />
+                        <p className="text-white/80">Selecione as datas para ver o resumo</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* Luxury Footer */}
-      <footer className="relative bg-gradient-to-br from-primary/5 to-accent/5 border-t border-primary/10">
+      <footer id="location" className="relative bg-gradient-to-br from-primary/5 to-accent/5 border-t border-primary/10">
         <div className="max-w-[1760px] mx-auto px-6 lg:px-20 py-16">
           {/* Top Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
