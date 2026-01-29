@@ -58,13 +58,20 @@ export default function Index() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-20 items-center justify-between">
             {/* Logo Ampliada e com Gradiente */}
-            <div className="group flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div 
+              className="group flex items-center gap-3 cursor-pointer" 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
+              tabIndex={0}
+              role="button"
+              aria-label="Voltar ao topo"
+            >
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#7c3aed] to-[#5b21b6] shadow-lg transition-transform duration-300 group-hover:scale-105">
                 <Waves className="h-6 w-6 text-white" />
               </div>
               <div className="flex flex-col">
-                <span className="font-display text-2xl font-bold tracking-tight text-gray-900">setor g</span>
-                <span className="font-display text-lg font-semibold bg-gradient-to-r from-[#7c3aed] to-[#c026d3] bg-clip-text text-transparent">espaço vip</span>
+                <span className="font-display text-2xl font-bold tracking-tight text-gray-900">Setor G</span>
+                <span className="font-display text-lg font-semibold bg-gradient-to-r from-[#7c3aed] to-[#c026d3] bg-clip-text text-transparent">Espaço VIP</span>
               </div>
             </div>
 
@@ -76,14 +83,13 @@ export default function Index() {
                 { label: 'Comodidades', action: () => document.getElementById('amenities')?.scrollIntoView({ behavior: 'smooth' }) },
                 { label: 'Localização', action: () => document.getElementById('location')?.scrollIntoView({ behavior: 'smooth' }) }
               ].map((item) => (
-                <a 
+                <button 
                   key={item.label} 
-                  href="#" 
-                  onClick={(e) => { e.preventDefault(); item.action(); }}
-                  className="text-sm font-semibold text-gray-700 hover:text-[#7c3aed] transition-colors duration-200"
+                  onClick={item.action}
+                  className="text-sm font-semibold text-gray-700 hover:text-[#7c3aed] transition-colors duration-200 bg-transparent border-0 cursor-pointer"
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
             </nav>
 
@@ -110,14 +116,13 @@ export default function Index() {
 
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {/* Vídeo ou Imagem de Fundo Dinâmico */}
+        {/* Imagem de Fundo com Sobreposição */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent z-10" />
           <img 
-            src="https://images.unsplash.com/photo-1613977257363-707ba9348227?q=80&w=2070&auto=format&fit=crop"
+            src={propertyImages[0]}
             alt="Vista luxuosa do Setor G Espaço VIP"
             className="w-full h-full object-cover object-center"
-            loading="eager"
           />
         </div>
 
@@ -137,9 +142,9 @@ export default function Index() {
 
             {/* Título Principal */}
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 tracking-tight leading-[0.9]">
-              <span className="block">setor g</span>
+              <span className="block">Setor G</span>
               <span className="block bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent">
-                espaço vip
+                Espaço VIP
               </span>
             </h1>
 
