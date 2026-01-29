@@ -14,48 +14,46 @@ export default {
     },
     extend: {
       colors: {
-        border: {
-          DEFAULT: "#e4e4e7"
-        },
-        input: "#e4e4e7",
-        ring: "#2563eb",
-        background: "#f8fafc",
-        foreground: "#1e293b",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#2563eb",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#f5e9da",
-          foreground: "#1e293b",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "#ef4444",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "#e0e7ef",
-          foreground: "#64748b",
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "#14b8a6",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
         success: {
-          DEFAULT: "#22c55e",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
         },
         warning: {
-          DEFAULT: "#f59e42",
-          foreground: "#ffffff",
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
         },
         popover: {
-          DEFAULT: "#ffffff",
-          foreground: "#1e293b",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "#ffffff",
-          foreground: "#1e293b",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
