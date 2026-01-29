@@ -11,14 +11,14 @@ import { usePricingRules, calculateTotalPrice } from '../hooks/usePricingRules';
 import { useIsMobile } from '../hooks/use-mobile';
 
 const amenities = [
-  { name: 'Piscina', icon: Waves, category: 'outdoor' },
-  { name: 'Churrasqueira', icon: Flame, category: 'outdoor' },
-  { name: 'Wi-Fi', icon: Wifi, category: 'essential' },
-  { name: 'Estacionamento', icon: Car, category: 'essential' },
-  { name: 'Cozinha completa', icon: Utensils, category: 'indoor' },
-  { name: 'Ar condicionado', icon: Wind, category: 'indoor' },
-  { name: 'TV a cabo', icon: Tv, category: 'indoor' },
-  { name: 'Café da manhã', icon: Coffee, category: 'service' },
+  { name: 'Piscina', icon: Waves },
+  { name: 'Churrasqueira', icon: Flame },
+  { name: 'Wi-Fi', icon: Wifi },
+  { name: 'Estacionamento', icon: Car },
+  { name: 'Cozinha completa', icon: Utensils },
+  { name: 'Ar condicionado', icon: Wind },
+  { name: 'TV a cabo', icon: Tv },
+  { name: 'Café da manhã', icon: Coffee },
 ];
 
 const propertyImages = [
@@ -29,6 +29,10 @@ const propertyImages = [
   'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?q=80&w=2000&auto=format&fit=crop',
 ];
 
+const PROPERTY_RATING = 4.95;
+const REVIEW_COUNT = 128;
+const BASE_PRICE = 500;
+
 export default function Index() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -38,6 +42,7 @@ export default function Index() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [trackingCode, setTrackingCode] = useState(null);
+  const [showBookingForm, setShowBookingForm] = useState(false);
   const { data: pricingRules = [] } = usePricingRules();
   
   const nights = dateRange?.from && dateRange?.to ? Math.max(1, (dateRange.to - dateRange.from) / (1000 * 60 * 60 * 24)) : 0;
@@ -112,19 +117,19 @@ export default function Index() {
       <section className="max-w-[1760px] mx-auto px-6 lg:px-20 py-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 rounded-xl overflow-hidden h-[60vh]">
           {/* Main image */}
-          <div className="md:col-span-2 md:row-span-2">
+          <div className="md:col-span-2 md:row-span-2 overflow-hidden">
             <img 
               src={propertyImages[0]} 
-              alt="Property" 
+              alt="Vista principal da propriedade com piscina" 
               className="w-full h-full object-cover hover:brightness-95 transition-all cursor-pointer"
             />
           </div>
           {/* Grid images */}
           {propertyImages.slice(1).map((img, idx) => (
-            <div key={idx} className={`hidden md:block ${idx >= 2 ? 'rounded-tr-xl' : ''} ${idx === 3 ? 'rounded-br-xl' : ''}`}>
+            <div key={idx} className={`hidden md:block overflow-hidden ${idx === 2 ? 'rounded-tr-xl' : ''} ${idx === 3 ? 'rounded-br-xl' : ''}`}>
               <img 
                 src={img} 
-                alt={`Property ${idx + 2}`} 
+                alt={`Vista ${idx + 2} da propriedade`} 
                 className="w-full h-full object-cover hover:brightness-95 transition-all cursor-pointer"
               />
             </div>
@@ -146,9 +151,9 @@ export default function Index() {
                   </h1>
                   <div className="flex items-center gap-4 text-gray-700">
                     <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="font-medium">4.95</span>
-                      <span className="text-gray-500">(128 avaliações)</span>
+                      <Star className="w-4 h-4 fill-current text-gray-900" />
+                      <span className="font-medium">{PROPERTY_RATING}</span>
+                      <span className="text-gray-500">({REVIEW_COUNT} avaliações)</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <MapPin className="w-4 h-4" />
@@ -203,7 +208,7 @@ export default function Index() {
               <div className="flex items-center gap-2 mb-6">
                 <Star className="w-6 h-6 fill-current text-gray-900" />
                 <h2 className="text-2xl font-semibold text-gray-900">
-                  4.95 · 128 avaliações
+                  {PROPERTY_RATING} · {REVIEW_COUNT} avaliações
                 </h2>
               </div>
               
@@ -327,13 +332,13 @@ export default function Index() {
                   {/* Price */}
                   <div className="mb-6">
                     <div className="flex items-baseline gap-1 mb-1">
-                      <span className="text-2xl font-semibold text-gray-900">R$ 500</span>
+                      <span className="text-2xl font-semibold text-gray-900">R$ {BASE_PRICE}</span>
                       <span className="text-gray-600">/ noite</span>
                     </div>
                     <div className="flex items-center gap-1 text-sm">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="font-medium">4.95</span>
-                      <span className="text-gray-500">(128 avaliações)</span>
+                      <Star className="w-4 h-4 fill-current text-gray-900" />
+                      <span className="font-medium">{PROPERTY_RATING}</span>
+                      <span className="text-gray-500">({REVIEW_COUNT} avaliações)</span>
                     </div>
                   </div>
 
@@ -382,9 +387,7 @@ export default function Index() {
                   <Button 
                     onClick={() => {
                       if (dateRange?.from && dateRange?.to) {
-                        // Show form fields
-                        const formSection = document.getElementById('booking-form');
-                        if (formSection) formSection.classList.remove('hidden');
+                        setShowBookingForm(true);
                       }
                     }}
                     disabled={!dateRange?.from || !dateRange?.to}
@@ -393,20 +396,20 @@ export default function Index() {
                     Reservar
                   </Button>
 
-                  {/* Contact Form - Hidden initially */}
-                  <form 
-                    id="booking-form"
-                    className="hidden space-y-4 mt-4 pt-4 border-t border-gray-200"
-                    onSubmit={e => { 
-                      e.preventDefault(); 
-                      setIsSubmitting(true); 
-                      setTimeout(() => { 
-                        setBookingSuccess(true); 
-                        setTrackingCode('ABC123'); 
-                        setIsSubmitting(false); 
-                      }, 1500); 
-                    }}
-                  >
+                  {/* Contact Form */}
+                  {showBookingForm && (
+                    <form 
+                      className="space-y-4 mt-4 pt-4 border-t border-gray-200"
+                      onSubmit={e => { 
+                        e.preventDefault(); 
+                        setIsSubmitting(true); 
+                        setTimeout(() => { 
+                          setBookingSuccess(true); 
+                          setTrackingCode(`RES${Date.now()}`); 
+                          setIsSubmitting(false); 
+                        }, 1500); 
+                      }}
+                    >
                     <Input
                       placeholder="Nome completo"
                       value={formData.fullName}
@@ -451,6 +454,7 @@ export default function Index() {
                       )}
                     </Button>
                   </form>
+                  )}
 
                   <p className="text-center text-xs text-gray-500 mt-4">
                     Você não será cobrado agora
@@ -460,7 +464,7 @@ export default function Index() {
                   {dateRange?.from && dateRange?.to && nights > 0 && (
                     <div className="mt-6 pt-6 border-t border-gray-200 space-y-3">
                       <div className="flex items-center justify-between text-gray-900">
-                        <span className="underline">R$ 500 x {nights} {nights === 1 ? 'noite' : 'noites'}</span>
+                        <span className="underline">R$ {BASE_PRICE} x {nights} {nights === 1 ? 'noite' : 'noites'}</span>
                         <span>R$ {totalPrice.toLocaleString('pt-BR')}</span>
                       </div>
                       <Separator />
