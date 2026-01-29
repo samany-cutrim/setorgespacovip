@@ -175,4 +175,17 @@
   .gradient-accent {
     background: linear-gradient(135deg, hsl(45 93% 58%), hsl(35 95% 55%));
   }
+
+  .overflow-x-overlay {
+    overflow-x: overlay;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

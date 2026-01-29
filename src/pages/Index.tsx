@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../co
 import { Separator } from '../components/ui/separator';
 import { useNavigate } from 'react-router-dom';
 import { usePricingRules, calculateTotalPrice } from '../hooks/usePricingRules';
+import { useIsMobile } from '../hooks/use-mobile';
 
 const amenities = [
   { name: 'Piscina', icon: Waves },
@@ -18,6 +19,7 @@ const amenities = [
 
 export default function Index() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [lang, setLang] = useState('pt');
   const [dateRange, setDateRange] = useState(null);
   const [formData, setFormData] = useState({ fullName: '', phone: '', email: '', numGuests: 1, notes: '' });
@@ -118,7 +120,7 @@ export default function Index() {
 
       {/* Booking Section */}
       <section className="py-16 px-6 lg:px-8 bg-gradient-to-b from-white to-gray-50" id="booking">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="mb-12 text-center">
             <h2 className="text-3xl md:text-4xl font-semibold text-gray-900 mb-3 tracking-tight font-['Playfair_Display']">
               Faça sua Reserva
@@ -163,7 +165,7 @@ export default function Index() {
                         mode="range" 
                         selected={dateRange} 
                         onSelect={setDateRange} 
-                        numberOfMonths={2} 
+                        numberOfMonths={isMobile ? 1 : 2} 
                         className="rounded-2xl"
                         disabled={(date) => date < new Date()}
                       />
