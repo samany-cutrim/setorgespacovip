@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { CalendarDays, Users, CheckCircle2, Wifi, Car, Flame, Waves, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Calendar } from '../components/ui/calendar';
@@ -7,6 +7,7 @@ import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../components/ui/card';
 import { Separator } from '../components/ui/separator';
 import { useNavigate } from 'react-router-dom';
+import { usePricingRules, calculateTotalPrice } from '../hooks/usePricingRules';
 
 const amenities = [
   { name: 'Piscina', icon: Waves },
@@ -23,8 +24,13 @@ export default function Index() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [trackingCode, setTrackingCode] = useState(null);
+  const { data: pricingRules = [] } = usePricingRules();
+  
   const nights = dateRange?.from && dateRange?.to ? Math.max(1, (dateRange.to - dateRange.from) / (1000 * 60 * 60 * 24)) : 0;
-  const totalPrice = nights * 500; // Exemplo
+  const totalPrice = useMemo(() => {
+    if (!dateRange?.from || !dateRange?.to) return 0;
+    return calculateTotalPrice(dateRange.from, dateRange.to, pricingRules);
+  }, [dateRange, pricingRules]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">

@@ -109,7 +109,7 @@ export default function AdminDashboard() {
     });
 
     // Calculate occupied days per month (simplified)
-    (reservationsData || []).forEach(reservation => {
+    (reservations || []).forEach(reservation => {
       const checkIn = parseISO(reservation.check_in);
       const checkOut = parseISO(reservation.check_out);
       

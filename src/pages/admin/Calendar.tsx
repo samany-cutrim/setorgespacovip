@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useReservationsByMonth, useUpdateReservation } from '@/hooks/useReservations';
 import { useBlockedDates, useCreateBlockedDate, useDeleteBlockedDate } from '@/hooks/useBlockedDates';
+import { Reservation } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,7 +52,7 @@ export default function AdminCalendar() {
   const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
   const [blockRange, setBlockRange] = useState<DateRange | undefined>();
   const [blockReason, setBlockReason] = useState('');
-  const [selectedReservation, setSelectedReservation] = useState<any>(null);
+  const [selectedReservation, setSelectedReservation] = useState<Reservation | null>(null);
 
   const { data: reservations = [] } = useReservationsByMonth(
     currentMonth.getFullYear(),

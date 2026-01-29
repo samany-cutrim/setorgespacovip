@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 // ...supabase removido...
 import { format, eachMonthOfInterval, startOfMonth, endOfMonth, differenceInDays, parseISO, eachDayOfInterval, isWithinInterval } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { Payment, Reservation } from '@/lib/types';
 
 interface MonthlyStats {
   month: string;
@@ -40,9 +41,9 @@ export function useReportStats(startDate: Date, endDate: Date) {
       const endStr = format(endDate, 'yyyy-MM-dd');
 
       // Fetch payments for the period
-      const payments: any[] = [];
+      const payments: Payment[] = [];
       // Fetch reservations for occupancy
-      const reservations: any[] = [];
+      const reservations: Reservation[] = [];
       // Calculate revenue per month
       (payments || []).forEach(payment => {
         const paymentMonth = format(parseISO(payment.payment_date), 'yyyy-MM');

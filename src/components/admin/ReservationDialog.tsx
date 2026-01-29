@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useGuests } from '@/hooks/useGuests';
 import { usePricingRules, calculateTotalPrice } from '@/hooks/usePricingRules';
 import { Button } from '@/components/ui/button';
@@ -61,6 +61,7 @@ export function ReservationDialog({
 }: ReservationDialogProps) {
   const { data: guests = [] } = useGuests();
   const { data: pricingRules = [] } = usePricingRules();
+  const isInitializedRef = useRef(false);
   
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const [formData, setFormData] = useState({
@@ -82,45 +83,52 @@ export function ReservationDialog({
     ? differenceInDays(dateRange.to, dateRange.from)
     : 0;
 
-  const finalAmount = formData.total_amount - formData.discount_amount;
+  // Derive final amount and remaining from formData
+  const displayAmount = !reservation && calculatedPrice > 0 ? calculatedPrice : formData.total_amount;
+  const finalAmount = displayAmount - formData.discount_amount;
   const remainingAmount = finalAmount - formData.deposit_amount;
 
-  // Update total when dates change
+  // Initialize form when editing or opening new
   useEffect(() => {
-    if (calculatedPrice > 0 && !reservation) {
-      setFormData(prev => ({ ...prev, total_amount: calculatedPrice }));
+    // Only initialize when dialog state changes or reservation changes
+    if (!isInitializedRef.current || open) {
+      if (reservation) {
+        // Batch state updates during initialization
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setDateRange({
+          from: parseISO(reservation.check_in),
+          to: parseISO(reservation.check_out),
+        });
+        setFormData({
+          guest_id: reservation.guest_id || '',
+          num_guests: reservation.num_guests,
+          total_amount: Number(reservation.total_amount),
+          discount_amount: Number(reservation.discount_amount) || 0,
+          deposit_amount: Number(reservation.deposit_amount) || 0,
+          status: reservation.status,
+          payment_status: reservation.payment_status,
+          notes: reservation.notes || '',
+        });
+      } else if (open) {
+        // Reset form when opening for new reservation
+        setDateRange(undefined);
+        setFormData({
+          guest_id: '',
+          num_guests: 1,
+          total_amount: 0,
+          discount_amount: 0,
+          deposit_amount: 0,
+          status: 'pending',
+          payment_status: 'pending',
+          notes: '',
+        });
+      }
+      isInitializedRef.current = true;
     }
-  }, [calculatedPrice, reservation]);
-
-  // Initialize form when editing
-  useEffect(() => {
-    if (reservation) {
-      setDateRange({
-        from: parseISO(reservation.check_in),
-        to: parseISO(reservation.check_out),
-      });
-      setFormData({
-        guest_id: reservation.guest_id || '',
-        num_guests: reservation.num_guests,
-        total_amount: Number(reservation.total_amount),
-        discount_amount: Number(reservation.discount_amount) || 0,
-        deposit_amount: Number(reservation.deposit_amount) || 0,
-        status: reservation.status,
-        payment_status: reservation.payment_status,
-        notes: reservation.notes || '',
-      });
-    } else {
-      setDateRange(undefined);
-      setFormData({
-        guest_id: '',
-        num_guests: 1,
-        total_amount: 0,
-        discount_amount: 0,
-        deposit_amount: 0,
-        status: 'pending',
-        payment_status: 'pending',
-        notes: '',
-      });
+    
+    // Reset initialization flag when dialog closes
+    if (!open) {
+      isInitializedRef.current = false;
     }
   }, [reservation, open]);
 
@@ -136,7 +144,7 @@ export function ReservationDialog({
       check_in: format(dateRange.from, 'yyyy-MM-dd'),
       check_out: format(dateRange.to, 'yyyy-MM-dd'),
       num_guests: formData.num_guests,
-      total_amount: formData.total_amount,
+      total_amount: displayAmount,
       discount_amount: formData.discount_amount,
       deposit_amount: formData.deposit_amount,
       status: formData.status,
@@ -255,9 +263,14 @@ export function ReservationDialog({
                   type="number"
                   step="0.01"
                   min={0}
-                  value={formData.total_amount}
+                  value={displayAmount}
                   onChange={(e) => setFormData(prev => ({ ...prev, total_amount: parseFloat(e.target.value) || 0 }))}
                 />
+                {calculatedPrice > 0 && !reservation && (
+                  <p className="text-xs text-muted-foreground">
+                    Calculado automaticamente: R$ {calculatedPrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -292,7 +305,7 @@ export function ReservationDialog({
             <div className="rounded-lg bg-muted/50 p-4 space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Valor total</span>
-                <span>R$ {formData.total_amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                <span>R$ {displayAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
               </div>
               {formData.discount_amount > 0 && (
                 <div className="flex justify-between text-sm text-success">
