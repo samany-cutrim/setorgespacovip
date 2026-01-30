@@ -167,9 +167,9 @@ export default function ReservationSection() {
 
   return (
     <div className="container mx-auto py-10 px-4 -mt-20 relative z-10">
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Calendar Section */}
-        <Card className="lg:col-span-3 shadow-2xl rounded-2xl overflow-hidden border-t-4 border-primary">
+        <Card className="shadow-2xl rounded-2xl overflow-hidden border-t-4 border-primary">
           <CardHeader className="bg-gray-50 dark:bg-gray-800/50">
             <CardTitle className="text-2xl flex items-center gap-2">
               <CalendarDays className="h-6 w-6 text-primary" />
@@ -179,7 +179,7 @@ export default function ReservationSection() {
               Selecione o período de check-in e check-out desejado.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-2 sm:p-4">
+          <CardContent className="p-6 sm:p-8 flex justify-center">
             <Calendar
               mode="range"
               selected={date}
@@ -230,7 +230,7 @@ export default function ReservationSection() {
         </Card>
 
         {/* Form Section */}
-        <Card className="lg:col-span-2 shadow-2xl rounded-2xl">
+        <Card className="shadow-2xl rounded-2xl">
           <CardHeader>
             <CardTitle className="text-2xl">Solicitar Reserva</CardTitle>
              <CardDescription>
