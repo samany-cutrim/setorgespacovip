@@ -1,231 +1,263 @@
 import { useState, useMemo } from 'react';
-import { Calendar } from "@/components/ui/calendar";
+import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { useBlockedDates } from '@/hooks/useBlockedDates';
-import { useCreateReservation } from '@/hooks/useReservations';
-import { useCreateGuest } from '@/hooks/useGuests';
 import { useToast } from '@/hooks/use-toast';
-import { addDays, isBefore, startOfToday, isSameDay, format } from 'date-fns';
-import { DateRange } from "react-day-picker";
+import { useReservations } from '@/hooks/useReservations';
+import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { CheckCircle, Clock, AlertCircle, Download, FileText } from 'lucide-react';
+import { Reservation } from '@/lib/types';
 
 export default function ClientArea() {
-  const [date, setDate] = useState<DateRange | undefined>(undefined);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    guests: 1,
-    notes: '',
-  });
-
-  // Hooks
-  const { data: blockedDates, isLoading: isLoadingBlocked } = useBlockedDates();
-  const createReservation = useCreateReservation();
-  const createGuest = useCreateGuest();
+  const [searchParams] = useSearchParams();
+  const [searchCode, setSearchCode] = useState('');
+  const [foundReservation, setFoundReservation] = useState<Reservation | null>(null);
   const { toast } = useToast();
+  const { data: reservations } = useReservations();
 
-  // Determine disabled days (past + blocked)
-  const disabledDays = useMemo(() => {
-    const today = startOfToday();
-    const days: any[] = [{ before: today }]; // Disable past days
+  const reservationCode = searchParams.get('codigo') || '';
 
-    if (blockedDates) {
-      blockedDates.forEach((blocked) => {
-        // Adjust strings to Dates
-        const start = new Date(blocked.start_date);
-        // blocked.end_date might be inclusive or exclusive depending on backend. 
-        // Usually safe to assume inclusive for "blocked" visually.
-        const end = new Date(blocked.end_date);
-        
-        // Add one day to end if the calendar treats 'to' as exclusive, but usually it's inclusive.
-        // Let's assume inclusive range for DateRange type in DayPicker
-        days.push({ from: start, to: end });
-      });
-    }
-    return days;
-  }, [blockedDates]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!date?.from || !date?.to) {
+  const handleSearch = (code: string) => {
+    if (!code.trim()) {
       toast({
-        title: "Selecione uma data",
-        description: "Por favor, escolha uma data disponível no calendário.",
+        title: "Código vazio",
+        description: "Digite um código de reserva para buscar.",
         variant: "destructive",
       });
       return;
     }
 
-    try {
-      // 1. Create Guest first
-      // In a real scenario, you might search for an existing guest by email.
-      // For now, we attempt to create one. If your API handles upsert, great.
-      const newGuest = await createGuest.mutateAsync({
-        full_name: formData.name,
-        email: formData.email,
-        phone: formData.phone || '',
-        document: null,
-        notes: null
-      });
-
-      if (!newGuest?.id) throw new Error("Falha ao criar hóspede");
-
-      // 2. Create Reservation
-      // Defaulting to 1 night for an event space usually means just the date involved.
-      await createReservation.mutateAsync({
-        guest_id: newGuest.id, 
-        check_in: date.from!.toISOString().split('T')[0],
-        check_out: date.to!.toISOString().split('T')[0], 
-        num_guests: Number(formData.guests),
-        total_amount: 0, // Placeholder
-        deposit_amount: 0,
-        discount_amount: 0,
-        status: 'pending',
-        payment_status: 'pending',
-        notes: formData.notes,
-      });
-
+    const reservation = reservations?.find((r) => r.id?.substring(0, 8).toUpperCase() === code.toUpperCase());
+    
+    if (reservation) {
+      setFoundReservation(reservation);
+    } else {
       toast({
-        title: "Solicitação enviada!",
-        description: "Entraremos em contato em breve para confirmar sua reserva.",
-      });
-
-      // Reset
-      setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
-      setDate(undefined);
-
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Erro ao enviar",
-        description: "Ocorreu um erro ao processar sua solicitação. Verifique se o email já está cadastrado ou tente novamente.",
+        title: "Reserva não encontrada",
+        description: "Verifique o código e tente novamente.",
         variant: "destructive",
       });
+      setFoundReservation(null);
     }
   };
 
+  // Auto-search se houver código na URL
+  useMemo(() => {
+    if (reservationCode && reservations) {
+      const reservation = reservations.find((r) => r.id?.substring(0, 8).toUpperCase() === reservationCode.toUpperCase());
+      if (reservation) {
+        setFoundReservation(reservation);
+      }
+    }
+  }, [reservationCode, reservations]);
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'confirmed':
+        return <CheckCircle className="h-5 w-5 text-green-600" />;
+      case 'pending':
+        return <Clock className="h-5 w-5 text-yellow-600" />;
+      case 'cancelled':
+        return <AlertCircle className="h-5 w-5 text-red-600" />;
+      case 'completed':
+        return <CheckCircle className="h-5 w-5 text-blue-600" />;
+      default:
+        return <Clock className="h-5 w-5" />;
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      'pending': 'Pendente',
+      'confirmed': 'Confirmada',
+      'cancelled': 'Cancelada',
+      'completed': 'Concluída',
+    };
+    return labels[status] || status;
+  };
+
+  const getPaymentStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      'pending': 'Pendente',
+      'partial': 'Parcial',
+      'paid': 'Pago',
+    };
+    return labels[status] || status;
+  };
+
   return (
-    <div className="container mx-auto py-10 px-4 min-h-screen">
-      <h1 className="text-4xl font-bold text-center mb-2">Área do Cliente</h1>
-      <p className="text-center text-muted-foreground mb-10">
-        Verifique a disponibilidade e solicite sua reserva.
-      </p>
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <header className="bg-primary text-primary-foreground py-4 px-6 shadow-md">
+        <h1 className="text-2xl font-bold">Setor G Espaço VIP - Área do Cliente</h1>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Calendar Section */}
-        <Card className="flex flex-col items-center">
+      <main className="flex-1 container mx-auto py-10 px-4">
+        <Card className="mb-8">
           <CardHeader>
-            <CardTitle>Disponibilidade</CardTitle>
-            <CardDescription>Datas em cinza estão indisponíveis.</CardDescription>
+            <CardTitle className="text-3xl">Acompanhe sua Reserva</CardTitle>
+            <CardDescription>Digite o código da sua reserva para acompanhar o status.</CardDescription>
           </CardHeader>
           <CardContent>
-             <Calendar
-              mode="range"
-              selected={date}
-              onSelect={setDate}
-              disabled={disabledDays}
-              locale={ptBR}
-              className="rounded-md border shadow"
-            />
-            {date?.from && (
-                <p className="mt-4 text-center text-sm font-medium">
-                    Per�odo: {format(date.from!, 'dd/MM/yyyy')} {date.to ? ' - ' + format(date.to, 'dd/MM/yyyy') : ''}
-                </p>
-            )}
+            <div className="flex gap-2">
+              <div className="flex-1">
+                <Label htmlFor="code" className="text-sm">Código da Reserva</Label>
+                <Input
+                  id="code"
+                  placeholder="Ex: ABC12345"
+                  value={searchCode}
+                  onChange={(e) => setSearchCode(e.target.value.toUpperCase())}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearch(searchCode)}
+                  className="mt-1"
+                />
+              </div>
+              <Button onClick={() => handleSearch(searchCode)} className="mt-5">
+                Buscar
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Form Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Solicitar Reserva</CardTitle>
-            <CardDescription>Preencha seus dados para receber um orçamento.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Nome Completo</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder="Seu nome"
-                  required
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder="seu@email.com"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                    />
+        {foundReservation && (
+          <div className="space-y-6">
+            {/* Reservation Info */}
+            <Card>
+              <CardHeader className="bg-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Código de Reserva: {foundReservation.id?.substring(0, 8).toUpperCase()}</CardTitle>
+                    <CardDescription>Reserva de {foundReservation.guest?.full_name}</CardDescription>
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="phone">Telefone</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      placeholder="(99) 99999-9999"
-                      required
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                    />
+                  <div className="flex items-center gap-2">
+                    {getStatusIcon(foundReservation.status)}
+                    <span className="font-semibold text-lg">{getStatusLabel(foundReservation.status)}</span>
                   </div>
-              </div>
+                </div>
+              </CardHeader>
+              <CardContent className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-xs text-muted-foreground">Check-in</Label>
+                  <p className="text-lg font-semibold">
+                    {format(parseISO(foundReservation.check_in), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Check-out</Label>
+                  <p className="text-lg font-semibold">
+                    {format(parseISO(foundReservation.check_out), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Número de Hóspedes</Label>
+                  <p className="text-lg font-semibold">{foundReservation.num_guests} pessoa(s)</p>
+                </div>
+                <div>
+                  <Label className="text-xs text-muted-foreground">Pagamento</Label>
+                  <p className="text-lg font-semibold">{getPaymentStatusLabel(foundReservation.payment_status)}</p>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="grid gap-2">
-                <Label htmlFor="guests">Número de Convidados</Label>
-                <Input
-                  id="guests"
-                  name="guests"
-                  type="number"
-                  min="1"
-                  required
-                  value={formData.guests}
-                  onChange={handleInputChange}
-                />
-              </div>
+            {/* Confirmation Status */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Status da Confirmação</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className={`p-4 rounded-lg border-2 ${
+                  foundReservation.status === 'confirmed' 
+                    ? 'bg-green-50 border-green-200' 
+                    : 'bg-yellow-50 border-yellow-200'
+                }`}>
+                  <div className="flex items-center gap-2">
+                    {foundReservation.status === 'confirmed' ? (
+                      <>
+                        <CheckCircle className="h-6 w-6 text-green-600" />
+                        <div>
+                          <p className="font-semibold text-green-900">Sua reserva foi confirmada!</p>
+                          <p className="text-sm text-green-800">Enviamos um email com todos os detalhes.</p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <Clock className="h-6 w-6 text-yellow-600" />
+                        <div>
+                          <p className="font-semibold text-yellow-900">Sua reserva está em análise</p>
+                          <p className="text-sm text-yellow-800">Entraremos em contato em breve para confirmar.</p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="notes">Observações</Label>
-                <Textarea
-                  id="notes"
-                  name="notes"
-                  placeholder="Detalhes do evento..."
-                  value={formData.notes}
-                  onChange={handleInputChange}
-                />
-              </div>
+                {foundReservation.notes && (
+                  <div className="p-3 bg-gray-50 rounded-lg border">
+                    <Label className="text-xs text-muted-foreground">Observações</Label>
+                    <p className="mt-2 text-sm">{foundReservation.notes}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
-                <Button type="submit" className="w-full" disabled={createReservation.isPending || createGuest.isPending}>
-                    {createReservation.isPending || createGuest.isPending ? 'Enviando...' : 'Solicitar Reserva'}
-                </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+            {/* Contract */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Contrato e Documentos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {foundReservation.contract_url ? (
+                  <a href={foundReservation.contract_url} target="_blank" rel="noreferrer">
+                    <Button variant="outline" className="w-full justify-start gap-2">
+                      <Download className="h-4 w-4" />
+                      Baixar Contrato de Reserva
+                    </Button>
+                  </a>
+                ) : (
+                  <div className="p-4 bg-gray-50 rounded-lg border-2 border-dashed flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-gray-400" />
+                    <p className="text-sm text-gray-600">O contrato será disponibilizado após a confirmação.</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Contact Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Precisa de Ajuda?</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-4">Entre em contato conosco pelos canais abaixo:</p>
+                <div className="flex gap-3">
+                  <a href="https://www.instagram.com/setorgespaco_vip/" target="_blank" rel="noreferrer">
+                    <Button variant="outline">Instagram</Button>
+                  </a>
+                  <a href="https://wa.me/5511999999999" target="_blank" rel="noreferrer">
+                    <Button variant="outline">WhatsApp</Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {!foundReservation && searchCode && (
+          <Card className="border-red-200 bg-red-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="h-6 w-6 text-red-600" />
+                <p className="text-red-800">Nenhuma reserva encontrada com esse código.</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </main>
+
+      <footer className="bg-primary text-primary-foreground py-6 px-6 text-center mt-auto">
+        <p>&copy; 2026 Setor G Espaço VIP. Todos os direitos reservados.</p>
+      </footer>
     </div>
   );
 }
