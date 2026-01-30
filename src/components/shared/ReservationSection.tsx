@@ -186,11 +186,11 @@ export default function ReservationSection() {
               onSelect={setDate}
               disabled={disabledDays}
               locale={ptBR}
-              weekStartsOn={1}
-              numberOfMonths={2}
+              weekStartsOn={0}
+              numberOfMonths={1}
               className="p-0"
               classNames={{
-                months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                months: "flex flex-col space-y-4",
                 month: "space-y-4",
                 caption_label: 'text-lg font-bold',
                 head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
@@ -208,21 +208,21 @@ export default function ReservationSection() {
                 disabled: "text-muted-foreground opacity-50 cursor-not-allowed",
               }}
             />
-            <div className="mt-4 p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
-              <div className="flex items-center gap-2 text-sm">
-                <div className="h-4 w-4 rounded-full bg-accent" />
+            <div className="mt-4 p-4 border-t border-gray-200 dark:border-gray-700 space-y-1">
+              <div className="flex items-center gap-2 text-xs">
+                <div className="h-3 w-3 rounded-full bg-accent" />
                 <span>Hoje</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="h-4 w-4 rounded-full bg-primary" />
+              <div className="flex items-center gap-2 text-xs">
+                <div className="h-3 w-3 rounded-full bg-primary" />
                 <span>Datas Selecionadas</span>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                 <div className="h-4 w-4 rounded-full border border-red-600" />
+              <div className="flex items-center gap-2 text-xs">
+                 <div className="h-3 w-3 rounded-full border border-red-600" />
                  <span className="font-bold text-red-600">Feriados</span>
               </div>
-               <div className="flex items-center gap-2 text-sm">
-                <div className="h-4 w-4 rounded-full bg-gray-300 dark:bg-gray-600 opacity-50" />
+               <div className="flex items-center gap-2 text-xs">
+                <div className="h-3 w-3 rounded-full bg-gray-300 dark:bg-gray-600 opacity-50" />
                 <span>Datas Indisponíveis</span>
               </div>
             </div>

@@ -47,6 +47,12 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
         IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
       }}
+      formatters={{
+        formatWeekdayName: (date) => {
+          const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+          return weekdays[date.getDay()];
+        }
+      }}
       {...props}
     />
   );
