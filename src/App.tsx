@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './hooks/useAuth';
 import { Toaster } from './components/ui/toaster';
 
@@ -14,11 +15,14 @@ import NotFound from './pages/NotFound';
 import Index from './pages/Index';
 import ClientArea from './pages/ClientArea';
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Router>
+          <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/client-area" element={<ClientArea />} />
@@ -66,7 +70,8 @@ function App() {
         </Routes>
       </Router>
       <Toaster />
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

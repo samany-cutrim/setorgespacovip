@@ -1,4 +1,4 @@
-import * as React from "use-sync-external-store/shim/with-selector";
+import * as React from "react";
 import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
