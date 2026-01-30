@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function AuthPage() {
-  const { login } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +16,8 @@ export default function AuthPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password);
+      const { error } = await signIn(email, password);
+      if (error) throw error;
       navigate('/admin');
     } catch (err) {
       setError('Falha no login. Verifique suas credenciais.');
