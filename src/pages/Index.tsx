@@ -197,7 +197,7 @@ export default function Index() {
         <div className="container mx-auto py-10 px-4 -mt-20 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Calendar Section */}
-            <Card className="flex flex-col items-center shadow-xl border-t-4 border-primary">
+            <Card className="flex flex-col shadow-xl border-t-4 border-primary">
               <CardHeader>
                 <CardTitle className="text-2xl">Disponibilidade</CardTitle>
                 <CardDescription>Selecione o período de check-in e check-out. Datas em cinza estão indisponíveis.</CardDescription>
