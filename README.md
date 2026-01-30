@@ -31,14 +31,12 @@ This project is configured for deployment on **Render**. Follow these steps to d
    - **Name**: `setor-g-espaco-vip` (or your preferred name)
    - **Environment**: Node
    - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
+   - **Start Command**: `npx serve -s dist -l 3000`
    - **Plan**: Free (or choose based on your needs)
 
 3. **Set Environment Variables**:
    Go to the Environment section and add:
    - `NODE_ENV` = `production`
-   - `NODE_VERSION` = `20`
-   - `DATABASE_URL` = Your PostgreSQL connection string (e.g., from Supabase or Render Postgres)
    - `VITE_SUPABASE_URL` = Your Supabase URL
    - `VITE_SUPABASE_ANON_KEY` = Your Supabase Anonymous Key
 
@@ -56,10 +54,12 @@ Alternatively, you can use the `render.yaml` file included in the repository:
 
 #### Database Setup
 
-If using Supabase:
+Your API calls are made directly to **Supabase** from the frontend:
 1. Create a new Supabase project at https://supabase.com
 2. Run the SQL migrations from `supabase/migrations/` on your Supabase database
-3. Copy your `DATABASE_URL`, `VITE_SUPABASE_URL`, and `VITE_SUPABASE_ANON_KEY` to the Render environment variables
+3. Copy your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` to the Render environment variables
+
+This deployment strategy uses Supabase for all backend operations, keeping your Render instance lightweight and free from memory issues.
 
 ## Technologies
 
