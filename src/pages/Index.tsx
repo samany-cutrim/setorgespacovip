@@ -9,12 +9,13 @@ import { useBlockedDates } from '@/hooks/useBlockedDates';
 import { useCreateReservation } from '@/hooks/useReservations';
 import { useCreateGuest } from '@/hooks/useGuests';
 import { useToast } from '@/hooks/use-toast';
-import { addDays, startOfToday } from 'date-fns';
+import { startOfToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Link } from "react-router-dom";
+import { DateRange } from "react-day-picker";
 
 export default function Index() {
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [date, setDate] = useState<DateRange | undefined>(undefined);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -53,10 +54,10 @@ export default function Index() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!date) {
+    if (!date?.from || !date?.to) {
       toast({
         title: "Selecione uma data",
-        description: "Por favor, escolha uma data disponível no calendário.",
+        description: "Por favor, escolha um período disponível no calendário.",
         variant: "destructive",
       });
       return;
@@ -77,8 +78,8 @@ export default function Index() {
       // Create reservation
       await createReservation.mutateAsync({
         guest_id: newGuest.id,
-        check_in: date.toISOString().split('T')[0],
-        check_out: addDays(date, 1).toISOString().split('T')[0],
+        check_in: date.from.toISOString().split('T')[0],
+        check_out: date.to.toISOString().split('T')[0],
         num_guests: Number(formData.guests),
         total_amount: 0, 
         deposit_amount: 0,
@@ -111,6 +112,9 @@ export default function Index() {
       <header className="bg-primary text-primary-foreground py-4 px-6 flex justify-between items-center shadow-md">
         <h1 className="text-2xl font-bold">Setor G Espaço VIP</h1>
         <nav className="flex gap-4">
+          <Link to="/client-area">
+            <Button variant="secondary">Área do Cliente</Button>
+          </Link>
           <Link to="/login">
             <Button variant="secondary">Admin Login</Button>
           </Link>
@@ -136,25 +140,31 @@ export default function Index() {
             <Card className="flex flex-col items-center shadow-xl border-t-4 border-primary">
               <CardHeader>
                 <CardTitle className="text-2xl">Disponibilidade</CardTitle>
-                <CardDescription>Datas em cinza estão indisponíveis.</CardDescription>
+                <CardDescription>Selecione o período de check-in e check-out. Datas em cinza estão indisponíveis.</CardDescription>
               </CardHeader>
               <CardContent>
                  <Calendar
-                  mode="single"
+                  mode="range"
                   selected={date}
                   onSelect={setDate}
                   disabled={disabledDays}
                   locale={ptBR}
+                  numberOfMonths={2}
                   className="rounded-md border shadow p-4"
                   modifiersStyles={{
                     disabled: { opacity: 0.5, cursor: 'not-allowed' },
                     selected: { fontWeight: 'bold' }
                   }}
                 />
-                {date && (
-                    <p className="mt-4 text-center text-lg font-medium text-primary">
-                        Data selecionada: {date.toLocaleDateString('pt-BR')}
-                    </p>
+                {!date?.from && (
+                  <p className="mt-4 text-center text-sm text-muted-foreground">
+                    Clique no dia de entrada e depois no dia de saída.
+                  </p>
+                )}
+                {date?.from && date?.to && (
+                  <p className="mt-4 text-center text-lg font-medium text-primary">
+                    Check-in: {date.from.toLocaleDateString('pt-BR')} &nbsp;•&nbsp; Check-out: {date.to.toLocaleDateString('pt-BR')}
+                  </p>
                 )}
               </CardContent>
             </Card>
@@ -237,6 +247,44 @@ export default function Index() {
             </Card>
           </div>
         </div>
+
+        <section className="container mx-auto py-10 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-2xl">Avaliação no Google</CardTitle>
+                <CardDescription>Veja o que nossos clientes dizem.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <a
+                  href="https://share.google/MIl5tQMGF5wfBTJ3b"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center text-primary font-semibold hover:underline"
+                >
+                  Acessar avaliações
+                </a>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-2xl">Instagram</CardTitle>
+                <CardDescription>Acompanhe novidades e eventos.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <a
+                  href="https://www.instagram.com/setorgespaco_vip/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center text-primary font-semibold hover:underline"
+                >
+                  @setorgespaco_vip
+                </a>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       </main>
 
       <footer className="bg-primary text-primary-foreground py-6 px-6 text-center mt-auto">
