@@ -89,6 +89,21 @@ export default function Index() {
     return days;
   }, [blockedDates]);
 
+  const reservedDates = useMemo(() => {
+    if (!blockedDates) return [];
+    const dates: Date[] = [];
+    blockedDates.forEach((blocked) => {
+      const start = new Date(blocked.start_date);
+      const end = new Date(blocked.end_date);
+      const current = new Date(start);
+      while (current <= end) {
+        dates.push(new Date(current));
+        current.setDate(current.getDate() + 1);
+      }
+    });
+    return dates;
+  }, [blockedDates]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -200,9 +215,13 @@ export default function Index() {
                     formatWeekdayName: (day) =>
                       day.toLocaleDateString('pt-BR', { weekday: 'narrow' }).toUpperCase(),
                   }}
-                  modifiers={{ holiday: holidayDates }}
+                  modifiers={{ 
+                    holiday: holidayDates,
+                    reserved: reservedDates
+                  }}
                   modifiersClassNames={{
                     holiday: "bg-red-500 text-white",
+                    reserved: "bg-gray-400 text-gray-700 cursor-not-allowed",
                   }}
                 />
                 {!date?.from && (
