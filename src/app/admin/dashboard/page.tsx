@@ -1,5 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, BedDouble, BarChart } from "lucide-react";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { DollarSign, Users, BedDouble, BarChart, PlusCircle, Wallet, UserPlus } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -94,6 +96,32 @@ export default function Dashboard() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Ações Rápidas</h2>
+        <div className="flex flex-wrap gap-4">
+          <Link to="/admin/reservations?action=new">
+            <Button className="h-24 w-40 flex flex-col gap-2" variant="outline">
+              <PlusCircle className="h-8 w-8 text-primary" />
+              <span>Nova Reserva</span>
+            </Button>
+          </Link>
+          
+          <Link to="/admin/guests?action=new">
+            <Button className="h-24 w-40 flex flex-col gap-2" variant="outline">
+              <UserPlus className="h-8 w-8 text-blue-500" />
+              <span>Novo Hóspede</span>
+            </Button>
+          </Link>
+
+          <Link to="/admin/financial?tab=expenses&action=new">
+            <Button className="h-24 w-40 flex flex-col gap-2" variant="outline">
+              <Wallet className="h-8 w-8 text-red-500" />
+              <span>Registrar Despesa</span>
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
