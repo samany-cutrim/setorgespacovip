@@ -105,12 +105,14 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
                 value={date?.from ? format(date.from, 'yyyy-MM-dd') : ''}
                 onChange={(e) => setDate({ from: parseISO(e.target.value), to: date?.to || new Date() })}
                 className="px-3 py-1 border rounded-md"
+                aria-label="Data inicial"
               />
               <input
                 type="date"
                 value={date?.to ? format(date.to, 'yyyy-MM-dd') : ''}
                 onChange={(e) => setDate({ from: date?.from || new Date(), to: parseISO(e.target.value) })}
                 className="px-3 py-1 border rounded-md"
+                aria-label="Data final"
               />
             </div>
           </div>
@@ -324,3 +326,6 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
           </Card>
         </TabsContent>
       </Tabs>
+    </div>
+  );
+}
