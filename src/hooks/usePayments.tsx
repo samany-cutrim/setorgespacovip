@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// ...supabase removido...
+import { supabase } from '@/integrations/supabase/client';
 import { Payment } from '@/lib/types';
 
 export function usePaymentsByReservation(reservationId: string | undefined) {
@@ -8,8 +8,14 @@ export function usePaymentsByReservation(reservationId: string | undefined) {
     queryFn: async (): Promise<Payment[]> => {
       if (!reservationId) return [];
 
-      // TODO: Implementar chamada à API REST
-      return [];
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .eq('reservation_id', reservationId)
+        .order('payment_date', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     },
     enabled: !!reservationId,
   });
@@ -18,9 +24,14 @@ export function usePaymentsByReservation(reservationId: string | undefined) {
 export function useAllPayments() {
   return useQuery({
     queryKey: ['all-payments'],
-    queryFn: async (): Promise<(Payment & { reservation: { check_in: string; check_out: string; guest: { full_name: string } | null } })[]> => {
-      // TODO: Implementar chamada à API REST
-      return [];
+    queryFn: async (): Promise<Payment[]> => {
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .order('payment_date', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     },
   });
 }
@@ -30,8 +41,14 @@ export function useCreatePayment() {
 
   return useMutation({
     mutationFn: async (payment: Omit<Payment, 'id' | 'created_at'>) => {
-      // TODO: Implementar chamada à API REST
-      return null;
+      const { data, error } = await supabase
+        .from('payments')
+        .insert([payment])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['payments'] });
@@ -46,7 +63,12 @@ export function useDeletePayment() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      // TODO: Implementar chamada à API REST
+      const { error } = await supabase
+        .from('payments')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['payments'] });
@@ -62,8 +84,14 @@ export function useMonthlyRevenue(year: number, month: number) {
       const startDate = new Date(year, month, 1).toISOString().split('T')[0];
       const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
-      // TODO: Implementar chamada à API REST
-      return 0;
+      const { data, error } = await supabase
+        .from('payments')
+        .select('amount')
+        .gte('payment_date', startDate)
+        .lte('payment_date', endDate);
+      
+      if (error) throw error;
+      return (data || []).reduce((sum, p) => sum + (p.amount || 0), 0);
     },
   });
 }

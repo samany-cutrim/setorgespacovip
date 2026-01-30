@@ -1,13 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// ...supabase removido...
+import { supabase } from '@/integrations/supabase/client';
 import { Reservation, ReservationStatus, PaymentStatus } from '@/lib/types';
 
 export function useReservations() {
   return useQuery({
     queryKey: ['reservations'],
     queryFn: async (): Promise<Reservation[]> => {
-      // TODO: Implementar chamada à API REST
-      return [];
+      const { data, error } = await supabase
+        .from('reservations')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     },
   });
 }
@@ -16,8 +21,15 @@ export function useUpcomingReservations() {
   return useQuery({
     queryKey: ['upcoming-reservations'],
     queryFn: async (): Promise<Reservation[]> => {
-      // TODO: Implementar chamada à API REST
-      return [];
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error } = await supabase
+        .from('reservations')
+        .select('*')
+        .gte('check_in', today)
+        .order('check_in', { ascending: true });
+      
+      if (error) throw error;
+      return data || [];
     },
   });
 }
@@ -26,8 +38,18 @@ export function useReservationsByMonth(year: number, month: number) {
   return useQuery({
     queryKey: ['reservations-by-month', year, month],
     queryFn: async (): Promise<Reservation[]> => {
-      // TODO: Implementar chamada à API REST
-      return [];
+      const startDate = new Date(year, month, 1).toISOString().split('T')[0];
+      const endDate = new Date(year, month + 1, 0).toISOString().split('T')[0];
+      
+      const { data, error } = await supabase
+        .from('reservations')
+        .select('*')
+        .gte('check_in', startDate)
+        .lte('check_in', endDate)
+        .order('check_in', { ascending: true });
+      
+      if (error) throw error;
+      return data || [];
     },
   });
 }
@@ -44,9 +66,24 @@ export function useCreateReservation() {
       total_amount: number;
       notes?: string;
       status?: ReservationStatus;
+      payment_status?: PaymentStatus;
+      deposit_amount?: number;
+      discount_amount?: number;
     }) => {
-      // TODO: Implementar chamada à API REST
-      return null;
+      const { data, error } = await supabase
+        .from('reservations')
+        .insert([
+          {
+            ...reservation,
+            status: reservation.status || 'pending',
+            payment_status: reservation.payment_status || 'pending',
+          },
+        ])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
@@ -61,8 +98,15 @@ export function useUpdateReservation() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Reservation> & { id: string }) => {
-      // TODO: Implementar chamada à API REST
-      return null;
+      const { data, error } = await supabase
+        .from('reservations')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });
@@ -77,7 +121,12 @@ export function useDeleteReservation() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      // TODO: Implementar chamada à API REST
+      const { error } = await supabase
+        .from('reservations')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reservations'] });

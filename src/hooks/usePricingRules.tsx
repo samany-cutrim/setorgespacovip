@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-// ...supabase removido...
+import { supabase } from '@/integrations/supabase/client';
 import { PricingRule, PriceType } from '@/lib/types';
 import { eachDayOfInterval, isWeekend, parseISO, format } from 'date-fns';
 
@@ -7,8 +7,14 @@ export function usePricingRules() {
   return useQuery({
     queryKey: ['pricing-rules'],
     queryFn: async (): Promise<PricingRule[]> => {
-      // TODO: Implementar chamada à API REST
-      return [];
+      const { data, error } = await supabase
+        .from('pricing_rules')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     },
   });
 }
@@ -17,8 +23,13 @@ export function useAllPricingRules() {
   return useQuery({
     queryKey: ['all-pricing-rules'],
     queryFn: async (): Promise<PricingRule[]> => {
-      // TODO: Implementar chamada à API REST
-      return [];
+      const { data, error } = await supabase
+        .from('pricing_rules')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
     },
   });
 }
@@ -28,8 +39,14 @@ export function useCreatePricingRule() {
 
   return useMutation({
     mutationFn: async (rule: Omit<PricingRule, 'id' | 'created_at' | 'updated_at'>) => {
-      // TODO: Implementar chamada à API REST
-      return null;
+      const { data, error } = await supabase
+        .from('pricing_rules')
+        .insert([rule])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pricing-rules'] });
@@ -43,8 +60,15 @@ export function useUpdatePricingRule() {
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<PricingRule> & { id: string }) => {
-      // TODO: Implementar chamada à API REST
-      return null;
+      const { data, error } = await supabase
+        .from('pricing_rules')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pricing-rules'] });
@@ -58,7 +82,12 @@ export function useDeletePricingRule() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      // TODO: Implementar chamada à API REST
+      const { error } = await supabase
+        .from('pricing_rules')
+        .delete()
+        .eq('id', id);
+      
+      if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['pricing-rules'] });

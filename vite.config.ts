@@ -9,9 +9,9 @@ export default defineConfig({
     host: "::",
     port: 8080,
     allowedHosts: [
-      "setorgespacovip.onrender.com",
-      "localhost",
-      "127.0.0.1",
+      'setorgespacovip.onrender.com',
+      'localhost',
+      '127.0.0.1',
     ],
   },
   plugins: [react()],
