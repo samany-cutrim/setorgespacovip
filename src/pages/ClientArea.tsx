@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,7 +45,7 @@ export default function ClientArea() {
   };
 
   // Auto-search se houver código na URL
-  useMemo(() => {
+  useEffect(() => {
     if (reservationCode && reservations) {
       const reservation = reservations.find((r) => r.tracking_code?.toUpperCase() === reservationCode.toUpperCase());
       if (reservation) {

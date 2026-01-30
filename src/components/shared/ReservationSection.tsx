@@ -197,7 +197,6 @@ export default function ReservationSection() {
                 day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal aria-selected:opacity-100 text-sm",
                 day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
                 day_hidden: "invisible",
-                ...({}),
               }}
               modifiers={{ holiday: holidayDates }}
               modifiersClassNames={{
@@ -218,10 +217,10 @@ export default function ReservationSection() {
                 <span>Datas Selecionadas</span>
               </div>
               <div className="flex items-center gap-2 text-xs">
-                 <div className="h-3 w-3 rounded-full border border-red-600 flex-shrink-0" />
-                 <span className="font-bold text-red-600">Feriados</span>
+                <div className="h-3 w-3 rounded-full border border-red-600 flex-shrink-0" />
+                <span className="font-bold text-red-600">Feriados</span>
               </div>
-               <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-2 text-xs">
                 <div className="h-3 w-3 rounded-full bg-gray-300 dark:bg-gray-600 opacity-50 flex-shrink-0" />
                 <span>Datas Indisponíveis</span>
               </div>

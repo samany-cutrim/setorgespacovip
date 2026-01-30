@@ -32,6 +32,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
         size="icon" 
         className="md:hidden"
         onClick={onMenuClick}
+        aria-label="Abrir menu de navegação"
       >
         <Menu className="h-6 w-6" />
       </Button>

@@ -62,7 +62,7 @@ export default function Index() {
                   href="https://www.instagram.com/setorgespaco_vip/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center text-primary font-semibold hover:underline text-sm md:text-base break-all"
+                  className="inline-flex items-center text-primary font-semibold hover:underline text-sm md:text-base break-words"
                 >
                   @setorgespaco_vip
                 </a>
