@@ -208,23 +208,48 @@ export default function Reservations() {
           </DialogHeader>
           <div className="grid gap-3 py-4 max-h-96 overflow-y-auto">
             {isCreating && (
+              <>
                 <div className="grid gap-1">
-                  <Label htmlFor="total">Valor Total</Label>
-                  <Input id="total" type="number" step="0.01" value={formData.total_amount} onChange={(e) => setFormData({...formData, total_amount: parseFloat(e.target.value)})} />
+                  <Label htmlFor="guest">Hóspede</Label>
+                  <Select value={formData.guest_id} onValueChange={(val) => setFormData({...formData, guest_id: val})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um hóspede" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {guests?.map((guest) => (
+                        <SelectItem key={guest.id} value={guest.id}>
+                          {guest.full_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="grid gap-1">
-                  <Label htmlFor="deposit">Valor da Entrada</Label>
-                  <Input id="deposit" type="number" step="0.01" value={formData.deposit_amount} onChange={(e) => setFormData({...formData, deposit_amount: parseFloat(e.target.value)})} />
+                  <Label htmlFor="checkin">Check-in</Label>
+                  <Input id="checkin" type="date" value={formData.check_in} onChange={(e) => setFormData({...formData, check_in: e.target.value})} />
                 </div>
                 <div className="grid gap-1">
-                  <Label htmlFor="discount">Desconto</Label>
-                  <Input id="discount" type="number" step="0.01" value={formData.discount_amount} onChange={(e) => setFormData({...formData, discount_amount: parseFloat(e.target.value)})} />
+                  <Label htmlFor="checkout">Check-out</Label>
+                  <Input id="checkout" type="date" value={formData.check_out} onChange={(e) => setFormData({...formData, check_out: e.target.value})} />
                 </div>
-            )
-            }
-            <div className="grid gap-1">
-              <Label htmlFor="status" className="text-sm">Status</Label>
+                <div className="grid gap-1">
+                  <Label htmlFor="guests">Número de Hóspedes</Label>
+                  <Input id="guests" type="number" min="1" value={formData.num_guests} onChange={(e) => setFormData({...formData, num_guests: parseInt(e.target.value)})} />
+                </div>
+              </>
             )}
+            <div className="grid gap-1">
+              <Label htmlFor="total">Valor Total</Label>
+              <Input id="total" type="number" step="0.01" value={formData.total_amount} onChange={(e) => setFormData({...formData, total_amount: parseFloat(e.target.value)})} />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="deposit">Valor da Entrada</Label>
+              <Input id="deposit" type="number" step="0.01" value={formData.deposit_amount} onChange={(e) => setFormData({...formData, deposit_amount: parseFloat(e.target.value)})} />
+            </div>
+            <div className="grid gap-1">
+              <Label htmlFor="discount">Desconto</Label>
+              <Input id="discount" type="number" step="0.01" value={formData.discount_amount} onChange={(e) => setFormData({...formData, discount_amount: parseFloat(e.target.value)})} />
+            </div>
             <div className="grid gap-1">
               <Label htmlFor="status" className="text-sm">Status</Label>
               <Select value={formData.status} onValueChange={(val: ReservationStatus) => setFormData({...formData, status: val})}>
