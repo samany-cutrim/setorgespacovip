@@ -27,54 +27,14 @@ function App() {
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/client-area" element={<ClientArea />} />
-          <Route
-            path="/admin"
-            element={
-                <AdminLayout>
-                  <Dashboard />
-                </AdminLayout>
-            }
-          />
-          <Route
-            path="/admin/reservations"
-            element={
-                <AdminLayout>
-                  <Reservations />
-                </AdminLayout>
-            }
-          />
-          <Route
-            path="/admin/guests"
-            element={
-                <AdminLayout>
-                  <Guests />
-                </AdminLayout>
-            }
-          />
-          <Route
-            path="/admin/settings"
-            element={
-                <AdminLayout>
-                  <Settings />
-                </AdminLayout>
-            }
-          />
-          <Route
-            path="/admin/reports"
-            element={
-                <AdminLayout>
-                  <Reports />
-                </AdminLayout>
-            }
-          />
-          <Route
-            path="/admin/financial"
-            element={
-                <AdminLayout>
-                  <Financial />
-                </AdminLayout>
-            }
-          />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="reservations" element={<Reservations />} />
+            <Route path="guests" element={<Guests />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="financial" element={<Financial />} />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
