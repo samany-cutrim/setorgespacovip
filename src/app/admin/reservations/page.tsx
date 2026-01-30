@@ -152,7 +152,16 @@ export default function Reservations() {
             <TableBody>
               {reservations?.map((res) => (
                 <TableRow key={res.id}>
-                  <TableCell>{res.guest?.full_name || 'Hóspede desconhecido'}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>{res.guest?.full_name || 'Hóspede desconhecido'}</span>
+                      {res.tracking_code && (
+                        <span className="text-xs text-muted-foreground">
+                          Código: {res.tracking_code}
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>{format(new Date(res.check_in), 'dd/MM/yyyy')}</TableCell>
                   <TableCell>{format(new Date(res.check_out), 'dd/MM/yyyy')}</TableCell>
                   <TableCell>
