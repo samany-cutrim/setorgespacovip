@@ -167,19 +167,19 @@ export default function ReservationSection() {
 
   return (
     <div className="container mx-auto py-10 px-4 -mt-20 relative z-10">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
         {/* Calendar Section */}
         <Card className="shadow-2xl rounded-2xl overflow-hidden border-t-4 border-primary">
           <CardHeader className="bg-gray-50 dark:bg-gray-800/50">
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <CalendarDays className="h-6 w-6 text-primary" />
+            <CardTitle className="text-xl md:text-2xl flex items-center gap-2">
+              <CalendarDays className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               Verifique a Disponibilidade
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm">
               Selecione o período de check-in e check-out desejado.
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-6 sm:p-8 flex justify-center">
+          <CardContent className="p-4 sm:p-6 md:p-8 flex flex-col items-center">
             <Calendar
               mode="range"
               selected={date}
@@ -192,12 +192,11 @@ export default function ReservationSection() {
               classNames={{
                 months: "flex flex-col space-y-4",
                 month: "space-y-4",
-                caption_label: 'text-lg font-bold',
-                head_cell: "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
-                day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
+                caption_label: 'text-base md:text-lg font-bold',
+                head_cell: "text-muted-foreground rounded-md w-8 sm:w-9 font-normal text-[0.75rem] sm:text-[0.8rem]",
+                day: "h-8 w-8 sm:h-9 sm:w-9 p-0 font-normal aria-selected:opacity-100 text-sm",
                 day_range_middle: "aria-selected:bg-accent aria-selected:text-accent-foreground",
                 day_hidden: "invisible",
-                ...({}),
               }}
               modifiers={{ holiday: holidayDates }}
               modifiersClassNames={{
@@ -208,21 +207,21 @@ export default function ReservationSection() {
                 disabled: "text-muted-foreground opacity-50 cursor-not-allowed",
               }}
             />
-            <div className="mt-4 p-4 border-t border-gray-200 dark:border-gray-700 space-y-1">
+            <div className="mt-4 p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 space-y-1 w-full">
               <div className="flex items-center gap-2 text-xs">
-                <div className="h-3 w-3 rounded-full bg-accent" />
+                <div className="h-3 w-3 rounded-full bg-accent flex-shrink-0" />
                 <span>Hoje</span>
               </div>
               <div className="flex items-center gap-2 text-xs">
-                <div className="h-3 w-3 rounded-full bg-primary" />
+                <div className="h-3 w-3 rounded-full bg-primary flex-shrink-0" />
                 <span>Datas Selecionadas</span>
               </div>
               <div className="flex items-center gap-2 text-xs">
-                 <div className="h-3 w-3 rounded-full border border-red-600" />
-                 <span className="font-bold text-red-600">Feriados</span>
+                <div className="h-3 w-3 rounded-full border border-red-600 flex-shrink-0" />
+                <span className="font-bold text-red-600">Feriados</span>
               </div>
-               <div className="flex items-center gap-2 text-xs">
-                <div className="h-3 w-3 rounded-full bg-gray-300 dark:bg-gray-600 opacity-50" />
+              <div className="flex items-center gap-2 text-xs">
+                <div className="h-3 w-3 rounded-full bg-gray-300 dark:bg-gray-600 opacity-50 flex-shrink-0" />
                 <span>Datas Indisponíveis</span>
               </div>
             </div>
@@ -232,8 +231,8 @@ export default function ReservationSection() {
         {/* Form Section */}
         <Card className="shadow-2xl rounded-2xl">
           <CardHeader>
-            <CardTitle className="text-2xl">Solicitar Reserva</CardTitle>
-             <CardDescription>
+            <CardTitle className="text-xl md:text-2xl">Solicitar Reserva</CardTitle>
+             <CardDescription className="text-sm">
                 {date?.from && date.to ? 
                 `Período: ${format(date.from, 'dd/MM/yy')} a ${format(date.to, 'dd/MM/yy')}` 
                 : "Preencha seus dados para receber um orçamento."}
@@ -242,32 +241,32 @@ export default function ReservationSection() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="name">Nome Completo</Label>
-                <Input id="name" name="name" placeholder="Seu nome e sobrenome" required value={formData.name} onChange={handleInputChange} />
+                <Label htmlFor="name" className="text-sm">Nome Completo</Label>
+                <Input id="name" name="name" placeholder="Seu nome e sobrenome" required value={formData.name} onChange={handleInputChange} className="text-sm" />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" name="email" type="email" placeholder="seu@email.com" required value={formData.email} onChange={handleInputChange} />
+                    <Label htmlFor="email" className="text-sm">Email</Label>
+                    <Input id="email" name="email" type="email" placeholder="seu@email.com" required value={formData.email} onChange={handleInputChange} className="text-sm" />
                   </div>
                   <div className="grid gap-2">
-                    <Label htmlFor="phone">Whatsapp</Label>
-                    <Input id="phone" name="phone" placeholder="(99) 99999-9999" required value={formData.phone} onChange={handleInputChange} />
+                    <Label htmlFor="phone" className="text-sm">Whatsapp</Label>
+                    <Input id="phone" name="phone" placeholder="(99) 99999-9999" required value={formData.phone} onChange={handleInputChange} className="text-sm" />
                   </div>
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="guests">Número de Convidados (aprox.)</Label>
-                <Input id="guests" name="guests" type="number" min="1" required value={formData.guests} onChange={handleInputChange} />
+                <Label htmlFor="guests" className="text-sm">Número de Convidados (aprox.)</Label>
+                <Input id="guests" name="guests" type="number" min="1" required value={formData.guests} onChange={handleInputChange} className="text-sm" />
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="notes">Observações</Label>
-                <Textarea id="notes" name="notes" placeholder="Ex: Tipo de evento, necessidade de equipamentos, etc." value={formData.notes} onChange={handleInputChange} />
+                <Label htmlFor="notes" className="text-sm">Observações</Label>
+                <Textarea id="notes" name="notes" placeholder="Ex: Tipo de evento, necessidade de equipamentos, etc." value={formData.notes} onChange={handleInputChange} className="text-sm" />
               </div>
 
-              <Button type="submit" size="lg" className="w-full text-lg font-semibold" disabled={createReservation.isPending || createGuest.isPending}>
+              <Button type="submit" size="lg" className="w-full text-base md:text-lg font-semibold" disabled={createReservation.isPending || createGuest.isPending}>
                   {createReservation.isPending || createGuest.isPending ? 'Enviando...' : 'Solicitar Orçamento'}
               </Button>
                <p className="text-xs text-center text-muted-foreground pt-2">
