@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Calendar, Users, Settings, BarChart, LogOut } from 'lucide-react';
+import { Home, Calendar, Users, Settings, BarChart, LogOut, Wallet } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const Sidebar = () => {
@@ -17,6 +17,7 @@ const Sidebar = () => {
     { href: '/admin/reservations', icon: Calendar, label: 'Reservas' },
     { href: '/admin/guests', icon: Users, label: 'Hóspedes' },
     { href: '/admin/reports', icon: BarChart, label: 'Relatórios' },
+    { href: '/admin/financial', icon: Wallet, label: 'Financeiro' },
     { href: '/admin/settings', icon: Settings, label: 'Configurações' },
   ];
 
