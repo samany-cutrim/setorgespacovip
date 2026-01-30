@@ -142,7 +142,7 @@ export default function Index() {
                 <CardTitle className="text-2xl">Disponibilidade</CardTitle>
                 <CardDescription>Selecione o período de check-in e check-out. Datas em cinza estão indisponíveis.</CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="w-full p-4">
                  <Calendar
                   mode="range"
                   selected={date}
@@ -150,11 +150,6 @@ export default function Index() {
                   disabled={disabledDays}
                   locale={ptBR}
                   numberOfMonths={2}
-                  className="rounded-md border shadow p-4"
-                  modifiersStyles={{
-                    disabled: { opacity: 0.5, cursor: 'not-allowed' },
-                    selected: { fontWeight: 'bold' }
-                  }}
                 />
                 {!date?.from && (
                   <p className="mt-4 text-center text-sm text-muted-foreground">

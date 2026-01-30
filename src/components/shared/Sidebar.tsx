@@ -1,10 +1,16 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Calendar, Users, Settings, BarChart, LogOut } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 const Sidebar = () => {
   const location = useLocation();
-  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   const navItems = [
     { href: '/admin', icon: Home, label: 'Dashboard' },
@@ -35,8 +41,8 @@ const Sidebar = () => {
       </nav>
       <div className="px-4 py-4">
         <button
-          onClick={logout}
-          className="flex items-center px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 w-full"
+          onClick={handleLogout}
+          className="flex items-center px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 w-full transition"
         >
           <LogOut className="w-6 h-6" />
           <span className="mx-4 font-medium">Sair</span>

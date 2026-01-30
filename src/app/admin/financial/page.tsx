@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useExpenses, useCreateExpense, useDeleteExpense } from '@/hooks/useExpenses';
-import { useAllPayments } from '@/hooks/usePayments';
+import { useAllPayments, useCreatePayment } from '@/hooks/usePayments';
+import { useReservations } from '@/hooks/useReservations';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Trash2, ArrowUpCircle, ArrowDownCircle, DollarSign } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
@@ -19,17 +20,27 @@ export default function Financial() {
   const [searchParams] = useSearchParams();
   const { data: expenses, isLoading: loadingExpenses } = useExpenses();
   const { data: payments, isLoading: loadingPayments } = useAllPayments();
+  const { data: reservations } = useReservations();
   const createExpense = useCreateExpense();
   const deleteExpense = useDeleteExpense();
+  const createPayment = useCreatePayment();
   const { toast } = useToast();
 
   const [isExpenseDialogOpen, setIsExpenseDialogOpen] = useState(false);
+  const [isIncomeDialogOpen, setIsIncomeDialogOpen] = useState(false);
   const [expenseData, setExpenseData] = useState({
     description: '',
     amount: '',
     category: 'Manutenção',
     date: new Date().toISOString().split('T')[0],
     notes: ''
+  });
+  const [incomeData, setIncomeData] = useState({
+    reservation_id: '',
+    amount: '',
+    date: new Date().toISOString().split('T')[0],
+    notes: '',
+    source: 'presencial' // 'presencial' ou 'outro'
   });
 
   // Check for action=new param
@@ -38,6 +49,33 @@ export default function Financial() {
       setIsExpenseDialogOpen(true);
     }
   }, [searchParams]);
+
+  const handleSaveIncome = async () => {
+    try {
+      if (!incomeData.amount) {
+        toast({ title: "Insira o valor da receita", variant: "destructive" });
+        return;
+      }
+      await createPayment.mutateAsync({
+        reservation_id: incomeData.reservation_id || null,
+        amount: parseFloat(incomeData.amount),
+        status: 'received',
+        date: incomeData.date,
+        notes: incomeData.notes
+      });
+      toast({ title: "Receita registrada com sucesso" });
+      setIsIncomeDialogOpen(false);
+      setIncomeData({
+        reservation_id: '',
+        amount: '',
+        date: new Date().toISOString().split('T')[0],
+        notes: '',
+        source: 'presencial'
+      });
+    } catch (error) {
+      toast({ title: "Erro ao registrar receita", variant: "destructive" });
+    }
+  };
 
   const handleSaveExpense = async () => {
     try {
@@ -179,17 +217,20 @@ export default function Financial() {
 
         <TabsContent value="income">
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle>Histórico de Receitas</CardTitle>
+                    <Button onClick={() => setIsIncomeDialogOpen(true)} className="gap-2">
+                      <Plus className="h-4 w-4" /> Registrar Receita
+                    </Button>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Data</TableHead>
-                                <TableHead>Reserva</TableHead>
+                                <TableHead>Reserva/Origem</TableHead>
                                 <TableHead>Valor</TableHead>
-                                <TableHead>Status</TableHead>
+                                <TableHead>Observação</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -201,9 +242,9 @@ export default function Financial() {
                             {payments?.map((payment) => (
                                 <TableRow key={payment.id}>
                                     <TableCell>{new Date(payment.created_at).toLocaleDateString()}</TableCell>
-                                    <TableCell>{payment.reservation_id ? `Reserva #${payment.reservation_id.substring(0,8)}` : 'Avulso'}</TableCell>
+                                    <TableCell>{payment.reservation_id ? `Reserva #${payment.reservation_id.substring(0,8)}` : 'Receita Avulsa'}</TableCell>
                                     <TableCell className="text-green-600 font-medium">+{formatCurrency(payment.amount)}</TableCell>
-                                    <TableCell><span className="capitalize">{payment.status}</span></TableCell>
+                                    <TableCell className="text-sm text-gray-600">{payment.notes || '-'}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

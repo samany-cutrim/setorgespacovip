@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useReservations } from '@/hooks/useReservations';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { CheckCircle, Clock, AlertCircle, Download, FileText } from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, Download, FileText, ArrowLeft } from 'lucide-react';
 import { Reservation } from '@/lib/types';
 
 export default function ClientArea() {
@@ -90,8 +90,13 @@ export default function ClientArea() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <header className="bg-primary text-primary-foreground py-4 px-6 shadow-md">
+      <header className="bg-primary text-primary-foreground py-4 px-6 shadow-md flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
+          <ArrowLeft className="h-5 w-5" />
+          <span>Voltar</span>
+        </Link>
         <h1 className="text-2xl font-bold">Setor G Espaço VIP - Área do Cliente</h1>
+        <div className="w-20"></div>
       </header>
 
       <main className="flex-1 container mx-auto py-10 px-4">
