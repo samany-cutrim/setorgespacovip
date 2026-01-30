@@ -9,11 +9,12 @@ import { useBlockedDates } from '@/hooks/useBlockedDates';
 import { useCreateReservation } from '@/hooks/useReservations';
 import { useCreateGuest } from '@/hooks/useGuests';
 import { useToast } from '@/hooks/use-toast';
-import { addDays, isBefore, startOfToday, isSameDay } from 'date-fns';
+import { addDays, isBefore, startOfToday, isSameDay, format } from 'date-fns';
+import { DateRange } from "react-day-picker";
 import { ptBR } from 'date-fns/locale';
 
 export default function ClientArea() {
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [date, setDate] = useState<DateRange | undefined>(undefined);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -60,7 +61,7 @@ export default function ClientArea() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!date) {
+    if (!date?.from || !date?.to) {
       toast({
         title: "Selecione uma data",
         description: "Por favor, escolha uma data disponível no calendário.",
@@ -87,8 +88,8 @@ export default function ClientArea() {
       // Defaulting to 1 night for an event space usually means just the date involved.
       await createReservation.mutateAsync({
         guest_id: newGuest.id, 
-        check_in: date.toISOString().split('T')[0],
-        check_out: addDays(date, 1).toISOString().split('T')[0], 
+        check_in: date.from!.toISOString().split('T')[0],
+        check_out: date.to!.toISOString().split('T')[0], 
         num_guests: Number(formData.guests),
         total_amount: 0, // Placeholder
         deposit_amount: 0,
@@ -133,16 +134,16 @@ export default function ClientArea() {
           </CardHeader>
           <CardContent>
              <Calendar
-              mode="single"
+              mode="range"
               selected={date}
               onSelect={setDate}
               disabled={disabledDays}
               locale={ptBR}
               className="rounded-md border shadow"
             />
-            {date && (
+            {date?.from && (
                 <p className="mt-4 text-center text-sm font-medium">
-                    Data selecionada: {date.toLocaleDateString('pt-BR')}
+                    Per�odo: {format(date.from!, 'dd/MM/yyyy')} {date.to ? ' - ' + format(date.to, 'dd/MM/yyyy') : ''}
                 </p>
             )}
           </CardContent>
@@ -228,3 +229,10 @@ export default function ClientArea() {
     </div>
   );
 }
+
+
+
+
+
+
+

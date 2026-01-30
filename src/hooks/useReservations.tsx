@@ -8,9 +8,9 @@ export function useReservations() {
     queryFn: async (): Promise<Reservation[]> => {
       const { data, error } = await supabase
         .from('reservations')
-        .select('*')
+        .select('*, guest:guests(*)')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -24,10 +24,10 @@ export function useUpcomingReservations() {
       const today = new Date().toISOString().split('T')[0];
       const { data, error } = await supabase
         .from('reservations')
-        .select('*')
+        .select('*, guest:guests(*)')
         .gte('check_in', today)
         .order('check_in', { ascending: true });
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -43,11 +43,11 @@ export function useReservationsByMonth(year: number, month: number) {
       
       const { data, error } = await supabase
         .from('reservations')
-        .select('*')
+        .select('*, guest:guests(*)')
         .gte('check_in', startDate)
         .lte('check_in', endDate)
         .order('check_in', { ascending: true });
-      
+
       if (error) throw error;
       return data || [];
     },
@@ -59,7 +59,7 @@ export function useCreateReservation() {
 
   return useMutation({
     mutationFn: async (reservation: {
-      guest_id?: string;
+      guest_id: string;
       check_in: string;
       check_out: string;
       num_guests: number;

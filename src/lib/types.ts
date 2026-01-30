@@ -10,6 +10,7 @@ export interface Guest {
   phone: string;
   document: string | null;
   notes: string | null;
+  contract_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -26,6 +27,7 @@ export interface Reservation {
   status: ReservationStatus;
   payment_status: PaymentStatus;
   notes: string | null;
+  contract_url?: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
@@ -43,6 +45,7 @@ export interface Payment {
   payment_date: string;
   payment_method: string | null;
   notes: string | null;
+  contract_url?: string | null;
   created_at: string;
 }
 
