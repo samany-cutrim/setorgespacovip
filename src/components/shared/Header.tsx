@@ -9,8 +9,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const Header = () => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const Header = ({ onMenuClick }: HeaderProps) => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
 
@@ -20,10 +26,19 @@ const Header = () => {
   };
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-end px-6">
+    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 md:px-6">
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="md:hidden"
+        onClick={onMenuClick}
+      >
+        <Menu className="h-6 w-6" />
+      </Button>
+      <div className="flex-1 md:hidden"></div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="cursor-pointer">
+          <Avatar className="cursor-pointer h-8 w-8 md:h-10 md:w-10">
             <AvatarImage src={user?.user_metadata.avatar_url} />
             <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>

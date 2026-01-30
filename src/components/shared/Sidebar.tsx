@@ -1,8 +1,14 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Home, Calendar, Users, Settings, BarChart, LogOut, Wallet } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
-const Sidebar = () => {
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+const Sidebar = ({ isMobileOpen, onMobileClose }: SidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
@@ -21,9 +27,9 @@ const Sidebar = () => {
     { href: '/admin/settings', icon: Settings, label: 'Configurações' },
   ];
 
-  return (
-    <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
-      <div className="h-16 flex items-center justify-center font-bold text-2xl text-primary">
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full">
+      <div className="h-16 flex items-center justify-center font-bold text-xl md:text-2xl text-primary">
         Setor G VIP
       </div>
       <nav className="flex-1 px-4 py-4">
@@ -31,25 +37,45 @@ const Sidebar = () => {
           <Link
             key={item.label}
             to={item.href}
+            onClick={onMobileClose}
             className={`flex items-center px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 ${
               location.pathname === item.href ? 'bg-gray-200 dark:bg-gray-700' : ''
             }`}
           >
-            <item.icon className="w-6 h-6" />
-            <span className="mx-4 font-medium">{item.label}</span>
+            <item.icon className="w-5 h-5 md:w-6 md:h-6" />
+            <span className="mx-3 md:mx-4 font-medium text-sm md:text-base">{item.label}</span>
           </Link>
         ))}
       </nav>
       <div className="px-4 py-4">
         <button
-          onClick={handleLogout}
+          onClick={() => {
+            handleLogout();
+            onMobileClose?.();
+          }}
           className="flex items-center px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 w-full transition"
         >
-          <LogOut className="w-6 h-6" />
-          <span className="mx-4 font-medium">Sair</span>
+          <LogOut className="w-5 h-5 md:w-6 md:h-6" />
+          <span className="mx-3 md:mx-4 font-medium text-sm md:text-base">Sair</span>
         </button>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+        <SidebarContent />
+      </div>
+
+      {/* Mobile Sidebar */}
+      <Sheet open={isMobileOpen} onOpenChange={onMobileClose}>
+        <SheetContent side="left" className="w-64 p-0">
+          <SidebarContent />
+        </SheetContent>
+      </Sheet>
+    </>
   );
 };
 
