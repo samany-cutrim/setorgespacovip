@@ -188,16 +188,21 @@ export default function Index() {
                 <CardDescription>Selecione o período de check-in e check-out. Datas em cinza estão indisponíveis.</CardDescription>
               </CardHeader>
               <CardContent className="w-full p-4">
-                 <Calendar
+                <Calendar
                   mode="range"
                   selected={date}
                   onSelect={setDate}
                   disabled={disabledDays}
                   locale={ptBR}
+                  weekStartsOn={1}
                   numberOfMonths={1}
+                  formatters={{
+                    formatWeekdayName: (day) =>
+                      day.toLocaleDateString('pt-BR', { weekday: 'narrow' }).toUpperCase(),
+                  }}
                   modifiers={{ holiday: holidayDates }}
                   modifiersClassNames={{
-                    holiday: "text-red-600 font-semibold",
+                    holiday: "bg-red-500 text-white",
                   }}
                 />
                 {!date?.from && (
