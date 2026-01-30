@@ -49,8 +49,14 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
       }}
       formatters={{
         formatWeekdayName: (date) => {
+          // D = Domingo, S = Segunda, T = Terça, Q = Quarta, Q = Quinta, S = Sexta, S = Sábado
           const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
           return weekdays[date.getDay()];
+        },
+        formatCaption: (date, options) => {
+          const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
+                         'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+          return `${months[date.getMonth()]} ${date.getFullYear()}`;
         }
       }}
       {...props}
