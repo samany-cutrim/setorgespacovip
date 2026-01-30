@@ -30,7 +30,7 @@ export default function ClientArea() {
       return;
     }
 
-    const reservation = reservations?.find((r) => r.id?.substring(0, 8).toUpperCase() === code.toUpperCase());
+    const reservation = reservations?.find((r) => r.tracking_code?.toUpperCase() === code.toUpperCase());
     
     if (reservation) {
       setFoundReservation(reservation);
@@ -47,7 +47,7 @@ export default function ClientArea() {
   // Auto-search se houver código na URL
   useMemo(() => {
     if (reservationCode && reservations) {
-      const reservation = reservations.find((r) => r.id?.substring(0, 8).toUpperCase() === reservationCode.toUpperCase());
+      const reservation = reservations.find((r) => r.tracking_code?.toUpperCase() === reservationCode.toUpperCase());
       if (reservation) {
         setFoundReservation(reservation);
       }
@@ -236,10 +236,10 @@ export default function ClientArea() {
               <CardContent>
                 <p className="text-sm text-gray-600 mb-4">Entre em contato conosco pelos canais abaixo:</p>
                 <div className="flex gap-3">
-                  <a href="https://www.instagram.com/setorgespaco_vip/" target="_blank" rel="noreferrer">
+                  <a href="https://www.instagram.com/setorgespaco_vip/" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline">Instagram</Button>
                   </a>
-                  <a href="https://wa.me/5511999999999" target="_blank" rel="noreferrer">
+                  <a href="https://wa.me/5511999999999" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline">WhatsApp</Button>
                   </a>
                 </div>
