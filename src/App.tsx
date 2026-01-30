@@ -11,6 +11,7 @@ import Reservations from './app/admin/reservations/page';
 import Guests from './app/admin/guests/page';
 import Settings from './app/admin/settings/page';
 import Reports from './app/admin/reports/page';
+import Financial from './app/admin/financial/page';
 import NotFound from './pages/NotFound';
 import Index from './pages/Index';
 import ClientArea from './pages/ClientArea';
@@ -63,6 +64,14 @@ function App() {
             element={
                 <AdminLayout>
                   <Reports />
+                </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/financial"
+            element={
+                <AdminLayout>
+                  <Financial />
                 </AdminLayout>
             }
           />
