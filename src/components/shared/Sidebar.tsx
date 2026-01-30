@@ -40,6 +40,15 @@ const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={onClose}
+          role="button"
+          aria-label="Fechar menu"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && onClose) {
+              e.preventDefault();
+              onClose();
+            }
+          }}
         />
       )}
       
@@ -56,6 +65,7 @@ const Sidebar = ({ isOpen = true, onClose }: SidebarProps) => {
           <button 
             onClick={onClose}
             className="md:hidden text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            aria-label="Fechar menu"
           >
             <X className="w-6 h-6" />
           </button>

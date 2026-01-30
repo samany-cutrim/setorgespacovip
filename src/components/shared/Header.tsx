@@ -28,7 +28,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
     <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
       {/* Hamburger menu button for mobile */}
       <button
-        onClick={onMenuClick}
+        onClick={() => onMenuClick?.()}
         className="md:hidden text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-md"
         aria-label="Abrir menu"
       >
