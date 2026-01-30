@@ -7,6 +7,7 @@ const pricingRulesRouter = require('./routes/pricingRules');
 const reservationsRouter = require('./routes/reservations');
 const propertySettingsRouter = require('./routes/propertySettings');
 const paymentsRouter = require('./routes/payments');
+const audienciasRouter = require('./routes/audiencias');
 
 app.use(express.json());
 app.use('/api/blocked-dates', blockedDatesRouter);
@@ -16,6 +17,7 @@ app.use('/api/pricing-rules', pricingRulesRouter);
 app.use('/api/reservations', reservationsRouter);
 app.use('/api/property-settings', propertySettingsRouter);
 app.use('/api/payments', paymentsRouter);
+app.use('/api/audiencias', audienciasRouter);
 
 // ...outras rotas e configurações
 

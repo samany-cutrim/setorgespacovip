@@ -2,6 +2,7 @@ export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'complet
 export type PaymentStatus = 'pending' | 'partial' | 'paid';
 export type PriceType = 'base' | 'weekend' | 'holiday' | 'high_season' | 'package';
 export type AppRole = 'admin' | 'user';
+export type HearingStatus = 'agendada' | 'cancelada' | 'redesignada' | 'realizada';
 
 export interface Guest {
   id: string;
@@ -91,4 +92,21 @@ export interface UserRole {
   id: string;
   user_id: string;
   role: AppRole;
+}
+
+export interface AudienciaTRT {
+  id: string;
+  numero_processo: string;
+  advogado_parte: string;
+  data_audiencia: string;
+  hora_audiencia: string | null;
+  tipo_audiencia: string | null;
+  tribunal: string | null;
+  vara: string | null;
+  local: string | null;
+  status: HearingStatus;
+  advogado_responsavel: string | null;
+  observacoes: string | null;
+  created_at: string;
+  updated_at: string;
 }

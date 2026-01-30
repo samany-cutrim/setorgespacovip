@@ -16,6 +16,7 @@ const Calendar = lazy(() => import("./pages/admin/Calendar"));
 const Finance = lazy(() => import("./pages/admin/Finance"));
 const Pricing = lazy(() => import("./pages/admin/Pricing"));
 const Settings = lazy(() => import("./pages/admin/Settings"));
+const AudienciasTRT = lazy(() => import("./pages/admin/AudienciasTRT"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
                 <Route path="finance" element={<Finance />} />
                 <Route path="pricing" element={<Pricing />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="audiencias-trt" element={<AudienciasTRT />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
