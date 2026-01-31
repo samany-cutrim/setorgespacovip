@@ -63,6 +63,10 @@ npm install
 npm run dev
 ```
 
+#### Security Note
+
+The Supabase anonymous key is safe to use in client-side code as it's designed for public access. The actual security is enforced by Supabase's Row Level Security (RLS) policies on your database tables. The application includes fallback values for backward compatibility, but it's recommended to use environment variables in production deployments.
+
 #### Supabase Database Schema
 
 All tables and RLS policies are automatically created by running the migrations:
