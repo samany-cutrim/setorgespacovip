@@ -39,13 +39,29 @@ This project uses **Render** for static hosting and **Supabase** for the complet
    - **Publish directory**: `dist`
 
 4. **Set Environment Variables in Render**:
-   - `VITE_SUPABASE_URL` = Your Supabase URL
-   - `VITE_SUPABASE_ANON_KEY` = Your Supabase Anonymous Key
+   - Go to the Environment tab in your Render service
+   - Add these environment variables:
+     - `VITE_SUPABASE_URL` = Your Supabase URL
+     - `VITE_SUPABASE_ANON_KEY` = Your Supabase Anonymous Key
+   - Note: The application is configured to use environment variables and includes fallback values for development
 
 5. **Deploy**:
    - Click "Create Static Site"
    - Render will automatically build and deploy
    - Your app will be live at `https://<your-service-name>.onrender.com`
+
+#### Local Development
+
+For local development, copy `.env.example` to `.env` and update with your Supabase credentials:
+```bash
+cp .env.example .env
+```
+
+Then start the development server:
+```bash
+npm install
+npm run dev
+```
 
 #### Supabase Database Schema
 
