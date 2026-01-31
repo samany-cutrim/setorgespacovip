@@ -25,7 +25,7 @@ const Header = ({ onMenuClick }: HeaderProps) => {
   };
 
   return (
-    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
+    <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-end md:justify-between px-6">
       {/* Mobile menu button */}
       <button
         onClick={onMenuClick}
@@ -34,9 +34,6 @@ const Header = ({ onMenuClick }: HeaderProps) => {
       >
         <Menu className="w-6 h-6" />
       </button>
-
-      {/* Spacer for desktop */}
-      <div className="hidden md:block" />
 
       {/* User menu */}
       <DropdownMenu>
