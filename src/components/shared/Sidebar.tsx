@@ -22,7 +22,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+    <div className="hidden lg:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-col">
       <div className="h-16 flex items-center justify-center font-bold text-2xl text-primary">
         Setor G VIP
       </div>
