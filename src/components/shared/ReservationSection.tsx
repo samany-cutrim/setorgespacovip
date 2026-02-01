@@ -161,12 +161,22 @@ export default function ReservationSection() {
       // Provide more specific error messages
       let errorMessage = "Ocorreu um problema ao processar sua solicitação. Tente novamente mais tarde.";
       
-      if (error instanceof Error) {
-        if (error.message?.includes('Invalid API key') || error.message?.includes('JWTExpired')) {
-          errorMessage = "Erro de configuração do sistema. Por favor, entre em contato com o administrador.";
-        } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+      // Check for Supabase errors with proper error code checking
+      if (error && typeof error === 'object' && 'code' in error) {
+        const errorCode = (error as { code?: string }).code;
+        
+        // Supabase error codes
+        if (errorCode === 'PGRST301' || errorCode === '401') {
+          errorMessage = "Erro de autenticação. Por favor, entre em contato com o administrador.";
+        } else if (errorCode?.startsWith('23')) {
+          // PostgreSQL constraint violations (23xxx codes)
+          errorMessage = "Dados inválidos. Verifique as informações e tente novamente.";
+        }
+      } else if (error instanceof Error) {
+        // Fallback to message checking for other errors
+        if (error.message?.includes('fetch') || error.message?.includes('network')) {
           errorMessage = "Erro de conexão. Verifique sua internet e tente novamente.";
-        } else {
+        } else if (error.message) {
           errorMessage = `Erro: ${error.message}`;
         }
       }

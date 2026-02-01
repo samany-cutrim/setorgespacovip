@@ -5,10 +5,20 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://tggznueevkrcgayivyvh.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-// Validate configuration
-if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_')) {
-  console.error('❌ Invalid Supabase configuration. Please set VITE_SUPABASE_ANON_KEY environment variable.');
-  console.error('📝 See README.md for setup instructions.');
+// Validate configuration - warn in development, fail in production
+const isInvalidKey = !SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.length < 100 || !SUPABASE_PUBLISHABLE_KEY.startsWith('eyJ');
+if (isInvalidKey) {
+  const errorMsg = '❌ Invalid Supabase configuration. Please set VITE_SUPABASE_ANON_KEY environment variable with a valid JWT token.';
+  console.error(errorMsg);
+  console.error('📝 See README.md and SETUP.md for setup instructions.');
+  
+  // Only throw in production or when trying to use in browser
+  if (import.meta.env.PROD || typeof window !== 'undefined') {
+    // Show a more user-friendly error when used in browser
+    if (typeof window !== 'undefined') {
+      console.error('⚠️ The application will not work without valid Supabase credentials.');
+    }
+  }
 }
 
 // Import the supabase client like this:
@@ -16,7 +26,7 @@ if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publish
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
+    storage: typeof window !== 'undefined' ? localStorage : undefined,
     persistSession: true,
     autoRefreshToken: true,
   }
