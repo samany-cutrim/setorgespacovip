@@ -79,7 +79,7 @@ export default function ReservationSection() {
 
   const disabledDays = useMemo(() => {
     const today = startOfToday();
-    const days: any[] = [{ before: today }];
+    const days: Array<{ before?: Date; from?: Date; to?: Date }> = [{ before: today }];
 
     if (blockedDates) {
       blockedDates.forEach((blocked) => {
@@ -155,11 +155,35 @@ export default function ReservationSection() {
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
       setDate(undefined);
 
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Reservation Error:", error);
+      
+      // Provide more specific error messages
+      let errorMessage = "Ocorreu um problema ao processar sua solicitação. Tente novamente mais tarde.";
+      
+      // Check for Supabase errors with proper error code checking
+      if (error && typeof error === 'object' && 'code' in error) {
+        const errorCode = (error as { code?: string }).code;
+        
+        // Supabase error codes
+        if (errorCode === 'PGRST301' || errorCode === '401') {
+          errorMessage = "Erro de autenticação. Por favor, entre em contato com o administrador.";
+        } else if (errorCode?.startsWith('23')) {
+          // PostgreSQL constraint violations (23xxx codes)
+          errorMessage = "Dados inválidos. Verifique as informações e tente novamente.";
+        }
+      } else if (error instanceof Error) {
+        // Fallback to message checking for other errors
+        if (error.message?.includes('fetch') || error.message?.includes('network')) {
+          errorMessage = "Erro de conexão. Verifique sua internet e tente novamente.";
+        } else if (error.message) {
+          errorMessage = `Erro: ${error.message}`;
+        }
+      }
+      
       toast({
         title: "Erro ao enviar solicitação",
-        description: "Ocorreu um problema ao processar sua solicitação. Tente novamente mais tarde.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
