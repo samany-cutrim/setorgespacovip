@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useBlockedDates } from '@/hooks/useBlockedDates';
-import { useCreateReservation } from '@/hooks/useReservations';
+import { useCreateReservation, useReservations } from '@/hooks/useReservations';
 import { useCreateGuest } from '@/hooks/useGuests';
 import { useToast } from '@/hooks/use-toast';
 import { startOfToday, format } from 'date-fns';
@@ -68,6 +68,7 @@ export default function ReservationSection() {
   });
 
   const { data: blockedDates } = useBlockedDates();
+  const { data: reservations } = useReservations();
   const createReservation = useCreateReservation();
   const createGuest = useCreateGuest();
   const { toast } = useToast();
@@ -79,20 +80,37 @@ export default function ReservationSection() {
 
   const disabledDays = useMemo(() => {
     const today = startOfToday();
-    const days: any[] = [{ before: today }];
+    const days: Array<Date | { from: Date; to: Date } | { before: Date }> = [{ before: today }];
 
+    // Helper function to adjust date for timezone offset
+    const adjustForTimezone = (date: Date) => {
+      const adjusted = new Date(date);
+      adjusted.setMinutes(adjusted.getMinutes() + adjusted.getTimezoneOffset());
+      return adjusted;
+    };
+
+    // Add blocked dates
     if (blockedDates) {
       blockedDates.forEach((blocked) => {
-        const start = new Date(blocked.start_date);
-        const end = new Date(blocked.end_date);
-        // Adjust for timezone offset
-        start.setMinutes(start.getMinutes() + start.getTimezoneOffset());
-        end.setMinutes(end.getMinutes() + end.getTimezoneOffset());
+        const start = adjustForTimezone(new Date(blocked.start_date));
+        const end = adjustForTimezone(new Date(blocked.end_date));
         days.push({ from: start, to: end });
       });
     }
+
+    // Add reserved dates (confirmed and pending reservations)
+    if (reservations) {
+      reservations.forEach((reservation) => {
+        if (reservation.status === 'confirmed' || reservation.status === 'pending') {
+          const start = adjustForTimezone(new Date(reservation.check_in));
+          const end = adjustForTimezone(new Date(reservation.check_out));
+          days.push({ from: start, to: end });
+        }
+      });
+    }
+
     return days;
-  }, [blockedDates]);
+  }, [blockedDates, reservations]);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
