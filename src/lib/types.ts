@@ -40,10 +40,11 @@ export interface Reservation {
 
 export interface Payment {
   id: string;
-  reservation_id: string;
+  reservation_id: string | null;
   amount: number;
   payment_date: string;
   payment_method: string | null;
+  status: string;
   notes: string | null;
   contract_url?: string | null;
   created_at: string;

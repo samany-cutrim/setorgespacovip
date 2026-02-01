@@ -60,7 +60,7 @@ export default function Financial() {
         reservation_id: incomeData.reservation_id || null,
         amount: parseFloat(incomeData.amount),
         status: 'received',
-        date: incomeData.date,
+        payment_date: incomeData.date,
         notes: incomeData.notes
       });
       toast({ title: "Receita registrada com sucesso" });
@@ -318,6 +318,67 @@ export default function Financial() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsExpenseDialogOpen(false)}>Cancelar</Button>
             <Button onClick={handleSaveExpense}>Salvar Despesa</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isIncomeDialogOpen} onOpenChange={setIsIncomeDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Registrar Receita</DialogTitle>
+            <DialogDescription>Registre uma receita avulsa ou vinculada a uma reserva.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="income-reservation">Reserva (opcional)</Label>
+              <Select
+                value={incomeData.reservation_id}
+                onValueChange={(value) => setIncomeData({ ...incomeData, reservation_id: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma reserva (ou deixe em branco para receita avulsa)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">Nenhuma (Receita Avulsa)</SelectItem>
+                  {reservations?.map((reservation) => (
+                    <SelectItem key={reservation.id} value={reservation.id}>
+                      {reservation.guest?.full_name || 'Desconhecido'} - {new Date(reservation.check_in).toLocaleDateString()}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="income-amount">Valor (R$)</Label>
+              <Input
+                id="income-amount"
+                type="number"
+                step="0.01"
+                value={incomeData.amount}
+                onChange={(e) => setIncomeData({ ...incomeData, amount: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="income-date">Data</Label>
+              <Input
+                id="income-date"
+                type="date"
+                value={incomeData.date}
+                onChange={(e) => setIncomeData({ ...incomeData, date: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="income-notes">Observações</Label>
+              <Input
+                id="income-notes"
+                value={incomeData.notes}
+                onChange={(e) => setIncomeData({ ...incomeData, notes: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsIncomeDialogOpen(false)}>Cancelar</Button>
+            <Button onClick={handleSaveIncome}>Salvar Receita</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
