@@ -82,32 +82,31 @@ export default function ReservationSection() {
     const today = startOfToday();
     const days: Array<Date | { from: Date; to: Date } | { before: Date }> = [{ before: today }];
 
+    // Helper function to adjust date for timezone offset
+    const adjustForTimezone = (date: Date) => {
+      const adjusted = new Date(date);
+      adjusted.setMinutes(adjusted.getMinutes() + adjusted.getTimezoneOffset());
+      return adjusted;
+    };
+
     // Add blocked dates
     if (blockedDates) {
       blockedDates.forEach((blocked) => {
-        const start = new Date(blocked.start_date);
-        const end = new Date(blocked.end_date);
-        // Adjust for timezone offset
-        start.setMinutes(start.getMinutes() + start.getTimezoneOffset());
-        end.setMinutes(end.getMinutes() + end.getTimezoneOffset());
+        const start = adjustForTimezone(new Date(blocked.start_date));
+        const end = adjustForTimezone(new Date(blocked.end_date));
         days.push({ from: start, to: end });
       });
     }
 
     // Add reserved dates (confirmed and pending reservations)
     if (reservations) {
-      reservations
-        .filter(reservation => 
-          reservation.status === 'confirmed' || reservation.status === 'pending'
-        )
-        .forEach((reservation) => {
-          const start = new Date(reservation.check_in);
-          const end = new Date(reservation.check_out);
-          // Adjust for timezone offset
-          start.setMinutes(start.getMinutes() + start.getTimezoneOffset());
-          end.setMinutes(end.getMinutes() + end.getTimezoneOffset());
+      reservations.forEach((reservation) => {
+        if (reservation.status === 'confirmed' || reservation.status === 'pending') {
+          const start = adjustForTimezone(new Date(reservation.check_in));
+          const end = adjustForTimezone(new Date(reservation.check_out));
           days.push({ from: start, to: end });
-        });
+        }
+      });
     }
 
     return days;
