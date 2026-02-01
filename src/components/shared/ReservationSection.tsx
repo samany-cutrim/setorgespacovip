@@ -79,7 +79,7 @@ export default function ReservationSection() {
 
   const disabledDays = useMemo(() => {
     const today = startOfToday();
-    const days: any[] = [{ before: today }];
+    const days: Array<{ before?: Date; from?: Date; to?: Date }> = [{ before: today }];
 
     if (blockedDates) {
       blockedDates.forEach((blocked) => {
@@ -155,18 +155,20 @@ export default function ReservationSection() {
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
       setDate(undefined);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Reservation Error:", error);
       
       // Provide more specific error messages
       let errorMessage = "Ocorreu um problema ao processar sua solicitação. Tente novamente mais tarde.";
       
-      if (error?.message?.includes('Invalid API key') || error?.message?.includes('JWTExpired')) {
-        errorMessage = "Erro de configuração do sistema. Por favor, entre em contato com o administrador.";
-      } else if (error?.message?.includes('network') || error?.message?.includes('fetch')) {
-        errorMessage = "Erro de conexão. Verifique sua internet e tente novamente.";
-      } else if (error?.message) {
-        errorMessage = `Erro: ${error.message}`;
+      if (error instanceof Error) {
+        if (error.message?.includes('Invalid API key') || error.message?.includes('JWTExpired')) {
+          errorMessage = "Erro de configuração do sistema. Por favor, entre em contato com o administrador.";
+        } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+          errorMessage = "Erro de conexão. Verifique sua internet e tente novamente.";
+        } else {
+          errorMessage = `Erro: ${error.message}`;
+        }
       }
       
       toast({
