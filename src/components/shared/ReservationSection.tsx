@@ -10,10 +10,11 @@ import { useBlockedDates } from '@/hooks/useBlockedDates';
 import { useCreateReservation } from '@/hooks/useReservations';
 import { useCreateGuest } from '@/hooks/useGuests';
 import { useToast } from '@/hooks/use-toast';
-import { startOfToday, format } from 'date-fns';
+import { startOfToday, format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { DateRange } from "react-day-picker";
 import { CalendarDays, Info } from 'lucide-react';
+import { formatDateToLocalISO } from '@/lib/utils';
 
 // Helper function to calculate Brazilian holidays
 const getBrazilianHolidays = (year: number) => {
@@ -83,11 +84,9 @@ export default function ReservationSection() {
 
     if (blockedDates) {
       blockedDates.forEach((blocked) => {
-        const start = new Date(blocked.start_date);
-        const end = new Date(blocked.end_date);
-        // Adjust for timezone offset
-        start.setMinutes(start.getMinutes() + start.getTimezoneOffset());
-        end.setMinutes(end.getMinutes() + end.getTimezoneOffset());
+        // Use parseISO to correctly parse date strings without timezone issues
+        const start = parseISO(blocked.start_date);
+        const end = parseISO(blocked.end_date);
         days.push({ from: start, to: end });
       });
     }
@@ -136,8 +135,8 @@ export default function ReservationSection() {
 
       await createReservation.mutateAsync({
         guest_id: newGuest.id,
-        check_in: format(date.from, "yyyy-MM-dd"),
-        check_out: format(date.to, "yyyy-MM-dd"),
+        check_in: formatDateToLocalISO(date.from),
+        check_out: formatDateToLocalISO(date.to),
         num_guests: Number(formData.guests),
         total_amount: 0, 
         deposit_amount: 0,
