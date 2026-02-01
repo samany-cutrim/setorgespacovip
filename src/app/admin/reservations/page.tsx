@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useReservations, useUpdateReservation, useDeleteReservation, useCreateReservation } from '@/hooks/useReservations';
 import { useGuests } from '@/hooks/useGuests';
 import { Reservation, ReservationStatus, PaymentStatus } from '@/lib/types';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 
@@ -165,8 +165,8 @@ export default function Reservations() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>{format(new Date(res.check_in), 'dd/MM/yyyy')}</TableCell>
-                  <TableCell>{format(new Date(res.check_out), 'dd/MM/yyyy')}</TableCell>
+                  <TableCell>{format(parseISO(res.check_in), 'dd/MM/yyyy')}</TableCell>
+                  <TableCell>{format(parseISO(res.check_out), 'dd/MM/yyyy')}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded text-xs font-semibold
                       ${res.status === 'confirmed' ? 'bg-green-100 text-green-800' : 
