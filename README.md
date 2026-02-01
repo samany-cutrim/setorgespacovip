@@ -4,9 +4,19 @@ Simple project for managing reservations and administrative tasks for properties
 
 ## Development
 
+- Copy `.env.example` to `.env` and fill in your Supabase credentials
 - Install dependencies: `npm install`
 - Start dev server: `npm run dev`
 - Build for production: `npm run build`
+
+### Environment Variables
+
+The application requires valid Supabase credentials to function. You must set:
+
+- `VITE_SUPABASE_URL` - Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY` - Your Supabase anonymous/public key (JWT token starting with 'eyJ')
+
+These can be found in your Supabase project dashboard under Settings > API.
 
 ## Deployment
 
