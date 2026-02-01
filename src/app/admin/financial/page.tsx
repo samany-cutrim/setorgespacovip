@@ -241,7 +241,7 @@ export default function Financial() {
                               )}
                             {payments?.map((payment) => (
                                 <TableRow key={payment.id}>
-                                    <TableCell>{new Date(payment.created_at).toLocaleDateString()}</TableCell>
+                                    <TableCell>{new Date(payment.payment_date).toLocaleDateString()}</TableCell>
                                     <TableCell>{payment.reservation_id ? `Reserva #${payment.reservation_id.substring(0,8)}` : 'Receita Avulsa'}</TableCell>
                                     <TableCell className="text-green-600 font-medium">+{formatCurrency(payment.amount)}</TableCell>
                                     <TableCell className="text-sm text-gray-600">{payment.notes || '-'}</TableCell>
