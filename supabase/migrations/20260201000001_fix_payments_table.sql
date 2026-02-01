@@ -1,6 +1,7 @@
--- Add status field to payments table
+-- Add status field to payments table with constraint
 ALTER TABLE public.payments 
-ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'received';
+ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'received' 
+CHECK (status IN ('received', 'pending', 'cancelled'));
 
 -- Make reservation_id nullable to allow standalone income entries
 ALTER TABLE public.payments 
