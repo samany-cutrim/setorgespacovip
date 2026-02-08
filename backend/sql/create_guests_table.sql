@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS guests (
   phone VARCHAR(50) NOT NULL,
   document VARCHAR(50),
   notes TEXT,
+  reservation_count INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

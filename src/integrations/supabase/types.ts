@@ -58,6 +58,7 @@ export type Database = {
           id: string
           notes: string | null
           phone: string
+          reservation_count: number
           updated_at: string
         }
         Insert: {
@@ -68,6 +69,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone: string
+          reservation_count?: number
           updated_at?: string
         }
         Update: {
@@ -78,6 +80,7 @@ export type Database = {
           id?: string
           notes?: string | null
           phone?: string
+          reservation_count?: number
           updated_at?: string
         }
         Relationships: []

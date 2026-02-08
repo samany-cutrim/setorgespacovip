@@ -145,6 +145,7 @@ export default function Guests() {
               <TableRow>
                 <TableHead>Nome</TableHead>
                 <TableHead>Contato</TableHead>
+                <TableHead>Reservas</TableHead>
                 <TableHead>Observações</TableHead>
                 <TableHead>Contrato</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
@@ -165,6 +166,7 @@ export default function Guests() {
                     </div>
                   </TableCell>
                   <TableCell>{guest.phone}</TableCell>
+                  <TableCell>{guest.reservation_count}</TableCell>
                   <TableCell className="max-w-[200px] truncate">{guest.notes || '-'}</TableCell>
                   <TableCell>
                     {guest.contract_url ? (

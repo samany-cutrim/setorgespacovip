@@ -16,8 +16,8 @@ import { ptBR } from 'date-fns/locale';
 import { DateRange } from "react-day-picker";
 import { CalendarDays, Info } from 'lucide-react';
 
-// Helper function to calculate Brazilian holidays
-const getBrazilianHolidays = (year: number) => {
+// Helper function to calculate Sao Paulo/SP official holidays
+const getSaoPauloHolidays = (year: number) => {
   const easter = (() => {
     const a = year % 19;
     const b = Math.floor(year / 100);
@@ -44,15 +44,16 @@ const getBrazilianHolidays = (year: number) => {
 
   return [
     new Date(year, 0, 1),   // Confraternização Universal
-    addDays(easter, -48),  // Carnaval (segunda)
-    addDays(easter, -47),  // Carnaval (terça)
     addDays(easter, -2),   // Paixão de Cristo
     new Date(year, 3, 21), // Tiradentes
     new Date(year, 4, 1),  // Dia do Trabalho
+    new Date(year, 0, 25), // Aniversário de São Paulo (municipal)
+    new Date(year, 6, 9),  // Revolução Constitucionalista (estadual)
     addDays(easter, 60),   // Corpus Christi
     new Date(year, 8, 7),  // Independência
     new Date(year, 9, 12), // Nossa Senhora Aparecida
     new Date(year, 10, 2), // Finados
+    new Date(year, 10, 20),// Consciência Negra (municipal)
     new Date(year, 10, 15),// Proclamação da República
     new Date(year, 11, 25) // Natal
   ];
@@ -82,7 +83,7 @@ export default function ReservationSection() {
 
   const holidayDates = useMemo(() => {
     const currentYear = new Date().getFullYear();
-    return [...getBrazilianHolidays(currentYear), ...getBrazilianHolidays(currentYear + 1)];
+    return [...getSaoPauloHolidays(currentYear), ...getSaoPauloHolidays(currentYear + 1)];
   }, []);
 
   const disabledDays = useMemo(() => {

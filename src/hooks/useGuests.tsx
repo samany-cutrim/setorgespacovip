@@ -40,7 +40,7 @@ export function useCreateGuest() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (guest: Omit<Guest, 'id' | 'created_at' | 'updated_at'>) => {
+    mutationFn: async (guest: Omit<Guest, 'id' | 'created_at' | 'updated_at' | 'reservation_count'>) => {
       const { data, error } = await supabase
         .from('guests')
         .insert(guest)

@@ -11,6 +11,7 @@ export interface Guest {
   document: string | null;
   notes: string | null;
   contract_url?: string | null;
+  reservation_count: number;
   created_at: string;
   updated_at: string;
 }
