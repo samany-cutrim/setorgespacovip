@@ -14,7 +14,8 @@ import { Reservation, ReservationStatus, PaymentStatus } from '@/lib/types';
 import { parseDateOnly } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus } from 'lucide-react';
+import { Pencil, Trash2, Plus, Eye, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Reservations() {
   const { data: reservations, isLoading } = useReservations();
@@ -30,6 +31,9 @@ export default function Reservations() {
   const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+  const [contractFile, setContractFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isDeletingContract, setIsDeletingContract] = useState(false);
 
   // Form state para criar/editar
   const [formData, setFormData] = useState({
@@ -42,12 +46,14 @@ export default function Reservations() {
     discount_amount: 0,
     status: 'pending' as ReservationStatus,
     payment_status: 'pending' as PaymentStatus,
-    notes: ''
+    notes: '',
+    contract_url: ''
   });
 
   const handleNewClick = () => {
     setEditingReservation(null);
     setIsCreating(true);
+    setContractFile(null);
     setFormData({
       guest_id: '',
       check_in: '',
@@ -58,7 +64,8 @@ export default function Reservations() {
       discount_amount: 0,
       status: 'pending',
       payment_status: 'pending',
-      notes: ''
+      notes: '',
+      contract_url: ''
     });
     setIsDialogOpen(true);
   };
@@ -66,6 +73,7 @@ export default function Reservations() {
   const handleEditClick = (reservation: Reservation) => {
     setEditingReservation(reservation);
     setIsCreating(false);
+    setContractFile(null);
     setFormData({
       guest_id: reservation.guest_id || '',
       check_in: reservation.check_in,
@@ -76,7 +84,8 @@ export default function Reservations() {
       discount_amount: reservation.discount_amount,
       status: reservation.status,
       payment_status: reservation.payment_status,
-      notes: reservation.notes || ''
+      notes: reservation.notes || '',
+      contract_url: reservation.contract_url || ''
     });
     setIsDialogOpen(true);
   };
@@ -92,8 +101,69 @@ export default function Reservations() {
     }
   };
 
+  const getContractFilePath = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      const marker = '/storage/v1/object/public/contract_files/';
+      const index = parsed.pathname.indexOf(marker);
+      if (index === -1) return null;
+      return parsed.pathname.slice(index + marker.length);
+    } catch {
+      return null;
+    }
+  };
+
+  const handleDeleteContract = async () => {
+    if (!editingReservation?.id || !formData.contract_url) return;
+    if (!confirm('Tem certeza que deseja excluir este contrato?')) return;
+    try {
+      setIsDeletingContract(true);
+      const filePath = getContractFilePath(formData.contract_url);
+      if (filePath) {
+        const { error: removeError } = await supabase.storage
+          .from('contract_files')
+          .remove([filePath]);
+        if (removeError) throw removeError;
+      }
+
+      await updateReservation.mutateAsync({
+        id: editingReservation.id,
+        contract_url: null,
+      });
+
+      setFormData((prev) => ({ ...prev, contract_url: '' }));
+      toast({ title: "Contrato removido" });
+    } catch (error) {
+      toast({ title: "Erro ao remover contrato", variant: "destructive" });
+    } finally {
+      setIsDeletingContract(false);
+    }
+  };
+
   const handleSave = async () => {
     try {
+      let contractUrl = formData.contract_url;
+
+      if (contractFile) {
+        setIsUploading(true);
+        const fileExt = contractFile.name.split('.').pop();
+        const fileName = `${Math.random().toString(36).substring(7)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('contract_files')
+          .upload(filePath, contractFile);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('contract_files')
+          .getPublicUrl(filePath);
+
+        contractUrl = publicUrl;
+        setIsUploading(false);
+      }
+
       const shouldBlock = formData.status === 'confirmed' || formData.status === 'completed';
       const isPaidStatus = formData.payment_status === 'paid' || formData.payment_status === 'partial';
       const totalAfterDiscount = Math.max(0, formData.total_amount - formData.discount_amount);
@@ -114,7 +184,8 @@ export default function Reservations() {
           discount_amount: formData.discount_amount,
           status: formData.status,
           payment_status: formData.payment_status,
-          notes: formData.notes
+          notes: formData.notes,
+          contract_url: contractUrl
         });
 
         if (createdReservation?.id && shouldBlock) {
@@ -155,7 +226,8 @@ export default function Reservations() {
           discount_amount: formData.discount_amount,
           status: formData.status,
           payment_status: formData.payment_status,
-          notes: formData.notes
+          notes: formData.notes,
+          contract_url: contractUrl
         });
 
         if (shouldBlock) {
@@ -191,7 +263,9 @@ export default function Reservations() {
       }
       setIsDialogOpen(false);
       setEditingReservation(null);
+      setContractFile(null);
     } catch (error) {
+       setIsUploading(false);
        toast({ title: "Erro ao salvar", variant: "destructive" });
     }
   };
@@ -220,6 +294,7 @@ export default function Reservations() {
                 <TableHead>Check-out</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Pagamento</TableHead>
+                <TableHead>Contrato</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -255,6 +330,15 @@ export default function Reservations() {
                         {res.payment_status === 'paid' ? 'Pago' : 
                          res.payment_status === 'partial' ? 'Parcial' : 'Pendente'}
                      </span>
+                  </TableCell>
+                  <TableCell>
+                    {res.contract_url ? (
+                      <a href={res.contract_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline flex items-center gap-1">
+                        <Eye className="h-4 w-4" /> Ver
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="icon" onClick={() => handleEditClick(res)}>
@@ -352,10 +436,38 @@ export default function Reservations() {
               <Label htmlFor="notes" className="text-sm">Observações</Label>
               <Input id="notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} className="text-sm" />
             </div>
+            <div className="grid gap-1">
+              <Label htmlFor="contract" className="text-sm">Contrato Assinado (PDF/Imagem)</Label>
+              <Input
+                id="contract"
+                type="file"
+                accept="application/pdf,image/*"
+                onChange={(e) => setContractFile(e.target.files?.[0] || null)}
+              />
+              {formData.contract_url && (
+                <div className="flex items-center gap-3">
+                  <a href={formData.contract_url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline">
+                    Ver contrato atual
+                  </a>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDeleteContract}
+                    disabled={isDeletingContract}
+                  >
+                    {isDeletingContract ? 'Excluindo...' : 'Excluir contrato'}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
-            <Button onClick={handleSave}>{isCreating ? 'Criar' : 'Salvar'}</Button>
+            <Button onClick={handleSave} disabled={isUploading}>
+              {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isCreating ? 'Criar' : 'Salvar'}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

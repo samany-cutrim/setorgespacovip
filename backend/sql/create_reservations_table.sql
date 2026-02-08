@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS reservations (
   status VARCHAR(50) NOT NULL,
   payment_status VARCHAR(50) NOT NULL,
   notes TEXT,
+  contract_url TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

@@ -69,6 +69,7 @@ export function useCreateReservation() {
       payment_status?: PaymentStatus;
       deposit_amount?: number;
       discount_amount?: number;
+      contract_url?: string | null;
     }) => {
       // Gerar tracking_code único (8 caracteres maiúsculos)
       const generateTrackingCode = () => {

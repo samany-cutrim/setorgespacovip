@@ -18,11 +18,11 @@ router.get('/', async (req, res) => {
 
 // POST /api/reservations
 router.post('/', async (req, res) => {
-  const { guest_id, check_in, check_out, num_guests, total_amount, discount_amount, deposit_amount, status, payment_status, notes } = req.body;
+  const { guest_id, check_in, check_out, num_guests, total_amount, discount_amount, deposit_amount, status, payment_status, notes, contract_url } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO reservations (guest_id, check_in, check_out, num_guests, total_amount, discount_amount, deposit_amount, status, payment_status, notes, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW()) RETURNING *',
-      [guest_id, check_in, check_out, num_guests, total_amount, discount_amount, deposit_amount, status, payment_status, notes]
+      'INSERT INTO reservations (guest_id, check_in, check_out, num_guests, total_amount, discount_amount, deposit_amount, status, payment_status, notes, contract_url, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW()) RETURNING *',
+      [guest_id, check_in, check_out, num_guests, total_amount, discount_amount, deposit_amount, status, payment_status, notes, contract_url]
     );
     res.json(result.rows[0]);
   } catch (err) {

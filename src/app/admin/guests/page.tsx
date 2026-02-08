@@ -8,8 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useGuests, useUpdateGuest, useDeleteGuest, useCreateGuest } from '@/hooks/useGuests';
 import { Guest } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
-import { Pencil, Trash2, Plus, FileText, Upload, Loader2, Eye } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
+import { Pencil, Trash2, Plus } from 'lucide-react';
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Guests() {
@@ -21,39 +20,31 @@ export default function Guests() {
 
   const [editingGuest, setEditingGuest] = useState<Guest | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [contractFile, setContractFile] = useState<File | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
-
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
     phone: '',
-    notes: '',
-    contract_url: ''
+    notes: ''
   });
 
   const handleCreateClick = () => {
     setEditingGuest(null);
-    setContractFile(null);
     setFormData({
       full_name: '',
       email: '',
       phone: '',
-      notes: '',
-      contract_url: ''
+      notes: ''
     });
     setIsDialogOpen(true);
   };
 
   const handleEditClick = (guest: Guest) => {
     setEditingGuest(guest);
-    setContractFile(null);
     setFormData({
       full_name: guest.full_name,
       email: guest.email || '',
       phone: guest.phone || '',
-      notes: guest.notes || '',
-      contract_url: guest.contract_url || ''
+      notes: guest.notes || ''
     });
     setIsDialogOpen(true);
   };
@@ -71,34 +62,11 @@ export default function Guests() {
 
   const handleSave = async () => {
     try {
-      let contractUrl = formData.contract_url;
-
-      if (contractFile) {
-        setIsUploading(true);
-        const fileExt = contractFile.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(7)}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('contract_files')
-          .upload(filePath, contractFile);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('contract_files')
-          .getPublicUrl(filePath);
-
-        contractUrl = publicUrl;
-        setIsUploading(false);
-      }
-
       const guestData = {
         full_name: formData.full_name,
         email: formData.email,
         phone: formData.phone,
-        notes: formData.notes,
-        contract_url: contractUrl
+        notes: formData.notes
       };
 
       if (editingGuest) {
@@ -117,10 +85,8 @@ export default function Guests() {
 
       setIsDialogOpen(false);
       setEditingGuest(null);
-      setContractFile(null);
     } catch (error) {
        console.error(error);
-       setIsUploading(false);
        toast({ title: "Erro ao salvar", variant: "destructive" });
     }
   };
@@ -147,22 +113,12 @@ export default function Guests() {
                 <TableHead>Contato</TableHead>
                 <TableHead>Reservas</TableHead>
                 <TableHead>Observações</TableHead>
-                <TableHead>Contrato</TableHead>
                 <TableHead className="text-right">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {guests?.map((guest) => (
                 <TableRow key={guest.id}>
-                  <TableCell className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarFallback>
-                        {guest.full_name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex flex-col">
-                        <span className="font-medium">{guest.full_name}</span>
-                        <span className="text-xs text-muted-foreground">{guest.email}</span>
                     </div>
                   </TableCell>
                   <TableCell>{guest.phone}</TableCell>
@@ -236,29 +192,10 @@ export default function Guests() {
               />
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="contract">Contrato Assinado (PDF/Imagem)</Label>
-              <div className="flex items-center gap-2">
-                <Input 
-                  id="contract" 
-                  type="file"
-                  accept="application/pdf,image/*"
-                  onChange={(e) => setContractFile(e.target.files?.[0] || null)}
-                />
-              </div>
-              {formData.contract_url && (
-                <a href={formData.contract_url} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:underline">
-                  Ver contrato atual
-                </a>
-              )}
-            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancelar</Button>
-            <Button onClick={handleSave} disabled={isUploading}>
-              {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Salvar
-            </Button>
+            <Button onClick={handleSave}>Salvar</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

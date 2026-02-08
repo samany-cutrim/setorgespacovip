@@ -229,6 +229,7 @@ export type Database = {
           contract_accepted: boolean | null
           contract_accepted_at: string | null
           contract_ip: string | null
+          contract_url: string | null
           created_at: string
           created_by: string | null
           deposit_amount: number | null
@@ -249,6 +250,7 @@ export type Database = {
           contract_accepted?: boolean | null
           contract_accepted_at?: string | null
           contract_ip?: string | null
+          contract_url?: string | null
           created_at?: string
           created_by?: string | null
           deposit_amount?: number | null
@@ -269,6 +271,7 @@ export type Database = {
           contract_accepted?: boolean | null
           contract_accepted_at?: string | null
           contract_ip?: string | null
+          contract_url?: string | null
           created_at?: string
           created_by?: string | null
           deposit_amount?: number | null
