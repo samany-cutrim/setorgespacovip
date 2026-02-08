@@ -1,13 +1,18 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { DayPicker } from "react-day-picker";
+import { DayPicker, type DayPickerProps } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+export type CalendarProps = DayPickerProps;
 
-function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {
+function Calendar({
+  className,
+  classNames = {},
+  showOutsideDays = true,
+  ...props
+}: CalendarProps) {
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
@@ -30,7 +35,10 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
           "text-muted-foreground rounded-md w-12 font-normal text-[0.8rem] flex items-center justify-center",
         row: "flex w-full",
         cell: "h-12 w-12 text-center p-0 relative [&:has([aria-selected].day-range-start)]:rounded-l-md [&:has([aria-selected].day-range-end)]:rounded-r-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
-        day: cn(buttonVariants({ variant: "ghost" }), "h-12 w-12 p-0 font-normal aria-selected:opacity-100"),
+        day: cn(
+          buttonVariants({ variant: "ghost" }),
+          "h-12 w-12 p-0 font-normal aria-selected:opacity-100"
+        ),
         day_range_end: "day-range-end",
         day_selected:
           "bg-blue-600 text-white hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white rounded-none",
@@ -44,8 +52,8 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
         ...classNames,
       }}
       components={{
-        IconLeft: ({ ..._props }) => <ChevronLeft className="h-4 w-4" />,
-        IconRight: ({ ..._props }) => <ChevronRight className="h-4 w-4" />,
+        IconLeft: () => <ChevronLeft className="h-4 w-4" />,
+        IconRight: () => <ChevronRight className="h-4 w-4" />,
       }}
       formatters={{
         formatWeekdayName: (date) => {
@@ -63,7 +71,7 @@ function Calendar({ className, classNames, showOutsideDays = true, ...props }: C
     />
   );
 }
+
 Calendar.displayName = "Calendar";
 
 export { Calendar };
-
