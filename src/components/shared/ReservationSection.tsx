@@ -215,7 +215,7 @@ export default function ReservationSection() {
                 >
                   Copiar codigo Pix
                 </Button>
-                <Button asChild type="button" variant="outline" className="w-full whitespace-normal">
+                <Button asChild type="button" className="w-full whitespace-normal">
                   <a href={whatsappLink} target="_blank" rel="noreferrer">
                     Informar pagamento no WhatsApp
                   </a>
