@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useReservations, useUpdateReservation, useDeleteReservation, useCreateReservation } from '@/hooks/useReservations';
+import { useUpsertReservationBlockedDate, useDeleteBlockedDateByReservation } from '@/hooks/useBlockedDates';
 import { useGuests } from '@/hooks/useGuests';
 import { Reservation, ReservationStatus, PaymentStatus } from '@/lib/types';
 import { format } from 'date-fns';
@@ -19,6 +20,8 @@ export default function Reservations() {
   const updateReservation = useUpdateReservation();
   const deleteReservation = useDeleteReservation();
   const createReservation = useCreateReservation();
+  const upsertReservationBlockedDate = useUpsertReservationBlockedDate();
+  const deleteBlockedDateByReservation = useDeleteBlockedDateByReservation();
   const { toast } = useToast();
 
   const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
@@ -88,12 +91,14 @@ export default function Reservations() {
 
   const handleSave = async () => {
     try {
+      const shouldBlock = formData.status === 'confirmed' || formData.status === 'completed';
+
       if (isCreating) {
         if (!formData.guest_id || !formData.check_in || !formData.check_out) {
           toast({ title: "Preencha todos os campos obrigatórios", variant: "destructive" });
           return;
         }
-        await createReservation.mutateAsync({
+        const createdReservation = await createReservation.mutateAsync({
           guest_id: formData.guest_id,
           check_in: formData.check_in,
           check_out: formData.check_out,
@@ -105,8 +110,19 @@ export default function Reservations() {
           payment_status: formData.payment_status,
           notes: formData.notes
         });
+
+        if (createdReservation?.id && shouldBlock) {
+          await upsertReservationBlockedDate.mutateAsync({
+            reservation_id: createdReservation.id,
+            start_date: formData.check_in,
+            end_date: formData.check_out,
+            reason: 'Reserva confirmada',
+          });
+        }
         toast({ title: "Reserva criada com sucesso" });
       } else if (editingReservation) {
+        const wasBlocked =
+          editingReservation.status === 'confirmed' || editingReservation.status === 'completed';
         await updateReservation.mutateAsync({
           id: editingReservation.id,
           total_amount: formData.total_amount,
@@ -116,6 +132,17 @@ export default function Reservations() {
           payment_status: formData.payment_status,
           notes: formData.notes
         });
+
+        if (shouldBlock) {
+          await upsertReservationBlockedDate.mutateAsync({
+            reservation_id: editingReservation.id,
+            start_date: editingReservation.check_in,
+            end_date: editingReservation.check_out,
+            reason: 'Reserva confirmada',
+          });
+        } else if (wasBlocked && !shouldBlock) {
+          await deleteBlockedDateByReservation.mutateAsync(editingReservation.id);
+        }
         toast({ title: "Reserva atualizada com sucesso" });
       }
       setIsDialogOpen(false);

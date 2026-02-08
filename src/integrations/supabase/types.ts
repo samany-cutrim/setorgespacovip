@@ -20,6 +20,7 @@ export type Database = {
           end_date: string
           id: string
           reason: string | null
+          reservation_id: string | null
           start_date: string
         }
         Insert: {
@@ -27,6 +28,7 @@ export type Database = {
           end_date: string
           id?: string
           reason?: string | null
+          reservation_id?: string | null
           start_date: string
         }
         Update: {
@@ -34,9 +36,18 @@ export type Database = {
           end_date?: string
           id?: string
           reason?: string | null
+          reservation_id?: string | null
           start_date?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "blocked_dates_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: true
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       guests: {
         Row: {

@@ -52,3 +52,39 @@ export function useDeleteBlockedDate() {
     },
   });
 }
+
+export function useUpsertReservationBlockedDate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (blockedDate: Omit<BlockedDate, 'id' | 'created_at'> & { reservation_id: string }) => {
+      const { data, error } = await supabase
+        .from('blocked_dates')
+        .upsert(blockedDate, { onConflict: 'reservation_id' })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blocked-dates'] });
+    },
+  });
+}
+
+export function useDeleteBlockedDateByReservation() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (reservationId: string) => {
+      const { error } = await supabase
+        .from('blocked_dates')
+        .delete()
+        .eq('reservation_id', reservationId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blocked-dates'] });
+    },
+  });
+}

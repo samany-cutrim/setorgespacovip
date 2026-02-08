@@ -75,6 +75,7 @@ export interface PricingRule {
 
 export interface BlockedDate {
   id: string;
+  reservation_id?: string | null;
   start_date: string;
   end_date: string;
   reason: string | null;
