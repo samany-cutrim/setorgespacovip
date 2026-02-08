@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 // ...supabase removido...
 import { format, eachMonthOfInterval, startOfMonth, endOfMonth, differenceInDays, parseISO, eachDayOfInterval, isWithinInterval } from 'date-fns';
+import { parseDateOnly } from '@/lib/utils';
 import { ptBR } from 'date-fns/locale';
 import { Payment, Reservation } from '@/lib/types';
 
@@ -46,7 +47,7 @@ export function useReportStats(startDate: Date, endDate: Date) {
       const reservations: Reservation[] = [];
       // Calculate revenue per month
       (payments || []).forEach(payment => {
-        const paymentMonth = format(parseISO(payment.payment_date), 'yyyy-MM');
+        const paymentMonth = format(parseDateOnly(payment.payment_date), 'yyyy-MM');
         const monthData = months.find(m => m.month === paymentMonth);
         if (monthData) {
           monthData.revenue += Number(payment.amount);
@@ -55,14 +56,14 @@ export function useReportStats(startDate: Date, endDate: Date) {
 
       // Calculate occupied days per month
       (reservations || []).forEach(reservation => {
-        const checkIn = parseISO(reservation.check_in);
-        const checkOut = parseISO(reservation.check_out);
+        const checkIn = parseDateOnly(reservation.check_in);
+        const checkOut = parseDateOnly(reservation.check_out);
         
         // Get all days of the reservation
         const reservationDays = eachDayOfInterval({ start: checkIn, end: checkOut });
         
         months.forEach(monthData => {
-          const monthStart = startOfMonth(parseISO(`${monthData.month}-01`));
+          const monthStart = startOfMonth(parseDateOnly(`${monthData.month}-01`));
           const monthEnd = endOfMonth(monthStart);
           
           // Count days that fall within this month

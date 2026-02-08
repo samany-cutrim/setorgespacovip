@@ -7,9 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useReservations, useUpdateReservation, useDeleteReservation, useCreateReservation } from '@/hooks/useReservations';
+import { useCreatePayment } from '@/hooks/usePayments';
 import { useUpsertReservationBlockedDate, useDeleteBlockedDateByReservation } from '@/hooks/useBlockedDates';
 import { useGuests } from '@/hooks/useGuests';
 import { Reservation, ReservationStatus, PaymentStatus } from '@/lib/types';
+import { parseDateOnly } from '@/lib/utils';
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { Pencil, Trash2, Plus } from 'lucide-react';
@@ -20,6 +22,7 @@ export default function Reservations() {
   const updateReservation = useUpdateReservation();
   const deleteReservation = useDeleteReservation();
   const createReservation = useCreateReservation();
+  const createPayment = useCreatePayment();
   const upsertReservationBlockedDate = useUpsertReservationBlockedDate();
   const deleteBlockedDateByReservation = useDeleteBlockedDateByReservation();
   const { toast } = useToast();
@@ -92,6 +95,9 @@ export default function Reservations() {
   const handleSave = async () => {
     try {
       const shouldBlock = formData.status === 'confirmed' || formData.status === 'completed';
+      const isPaidStatus = formData.payment_status === 'paid' || formData.payment_status === 'partial';
+      const totalAfterDiscount = Math.max(0, formData.total_amount - formData.discount_amount);
+      const depositAmount = Math.max(0, formData.deposit_amount || 0);
 
       if (isCreating) {
         if (!formData.guest_id || !formData.check_in || !formData.check_out) {
@@ -119,10 +125,29 @@ export default function Reservations() {
             reason: 'Reserva confirmada',
           });
         }
+
+        if (createdReservation?.id && isPaidStatus) {
+          const amount = formData.payment_status === 'partial'
+            ? (depositAmount || totalAfterDiscount)
+            : totalAfterDiscount;
+          if (amount > 0) {
+            await createPayment.mutateAsync({
+              reservation_id: createdReservation.id,
+              amount,
+              payment_date: new Date().toISOString().split('T')[0],
+              payment_method: 'manual',
+              notes: formData.payment_status === 'partial'
+                ? 'Pagamento parcial confirmado no cadastro'
+                : 'Pagamento confirmado no cadastro',
+            });
+          }
+        }
         toast({ title: "Reserva criada com sucesso" });
       } else if (editingReservation) {
         const wasBlocked =
           editingReservation.status === 'confirmed' || editingReservation.status === 'completed';
+        const wasPaidStatus =
+          editingReservation.payment_status === 'paid' || editingReservation.payment_status === 'partial';
         await updateReservation.mutateAsync({
           id: editingReservation.id,
           total_amount: formData.total_amount,
@@ -142,6 +167,25 @@ export default function Reservations() {
           });
         } else if (wasBlocked && !shouldBlock) {
           await deleteBlockedDateByReservation.mutateAsync(editingReservation.id);
+        }
+
+        if (isPaidStatus && (!wasPaidStatus || formData.payment_status !== editingReservation.payment_status)) {
+          const remainingAmount = Math.max(0, totalAfterDiscount - depositAmount);
+          const amount = formData.payment_status === 'partial'
+            ? (depositAmount || totalAfterDiscount)
+            : (editingReservation.payment_status === 'partial' ? remainingAmount : totalAfterDiscount);
+
+          if (amount > 0) {
+            await createPayment.mutateAsync({
+              reservation_id: editingReservation.id,
+              amount,
+              payment_date: new Date().toISOString().split('T')[0],
+              payment_method: 'manual',
+              notes: formData.payment_status === 'partial'
+                ? 'Pagamento parcial confirmado no cadastro'
+                : 'Pagamento confirmado no cadastro',
+            });
+          }
         }
         toast({ title: "Reserva atualizada com sucesso" });
       }
@@ -192,8 +236,8 @@ export default function Reservations() {
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>{format(new Date(res.check_in), 'dd/MM/yyyy')}</TableCell>
-                  <TableCell>{format(new Date(res.check_out), 'dd/MM/yyyy')}</TableCell>
+                  <TableCell>{format(parseDateOnly(res.check_in), 'dd/MM/yyyy')}</TableCell>
+                  <TableCell>{format(parseDateOnly(res.check_out), 'dd/MM/yyyy')}</TableCell>
                   <TableCell>
                     <span className={`px-2 py-1 rounded text-xs font-semibold
                       ${res.status === 'confirmed' ? 'bg-green-100 text-green-800' : 

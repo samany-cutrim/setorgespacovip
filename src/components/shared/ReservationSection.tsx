@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -58,6 +59,7 @@ const getBrazilianHolidays = (year: number) => {
 
 export default function ReservationSection() {
   const [date, setDate] = useState<DateRange | undefined>(undefined);
+  const [isPixOpen, setIsPixOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -69,6 +71,8 @@ export default function ReservationSection() {
   const { data: blockedDates } = useBlockedDates();
   const createReservationWithGuest = useCreateReservationWithGuest();
   const { toast } = useToast();
+  const pixCopyPasteCode =
+    '00020126580014BR.GOV.BCB.PIX01369f3c442f-4aa5-49f6-acf6-181e91abd0cd5204000053039865802BR5923Rosilena Santana Cutrim6009SAO PAULO62140510z2qdiRrSOO63047385';
 
   const holidayDates = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -146,6 +150,7 @@ export default function ReservationSection() {
 
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
       setDate(undefined);
+      setIsPixOpen(true);
 
     } catch (error) {
       console.error("Reservation Error:", error);
@@ -159,6 +164,69 @@ export default function ReservationSection() {
 
   return (
     <div className="container mx-auto py-10 px-4 -mt-20 relative z-10">
+      <Dialog open={isPixOpen} onOpenChange={setIsPixOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Pagamento do sinal via Pix</DialogTitle>
+            <DialogDescription>
+              Escaneie o QR Code ou use o codigo copia e cola para pagar o sinal.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-6">
+            <div className="rounded-2xl bg-gradient-to-br from-fuchsia-600 via-purple-600 to-indigo-600 p-6 text-white shadow-lg">
+              <p className="text-lg font-semibold">Use o QR Code do Pix para pagar</p>
+              <p className="text-sm text-white/80">
+                Abra o app do seu banco, escaneie a imagem ou cole o codigo abaixo.
+              </p>
+              <div className="mt-5 flex justify-center">
+                <img
+                  src="/pix-qrcode.png"
+                  alt="QR Code Pix"
+                  className="h-48 w-48 rounded-xl bg-white p-3"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <Label>Codigo Pix (copia e cola)</Label>
+              <Textarea readOnly value={pixCopyPasteCode} className="min-h-[120px]" />
+              <Button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(pixCopyPasteCode);
+                    toast({ title: 'Codigo Pix copiado!' });
+                  } catch {
+                    toast({ title: 'Nao foi possivel copiar', variant: 'destructive' });
+                  }
+                }}
+              >
+                Copiar codigo Pix
+              </Button>
+            </div>
+
+            <div className="grid gap-2 rounded-2xl border border-border bg-muted/40 p-4 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Nome</span>
+                <span className="font-medium">Rosilena Santana Cutrim</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">CPF</span>
+                <span className="font-medium">•••.062.628-••</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Banco</span>
+                <span className="font-medium">260 - Nu Pagamentos S.A.</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Identificador</span>
+                <span className="font-medium">z2qdiRrSOO</span>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Calendar Section */}
         <Card className="shadow-2xl rounded-2xl overflow-hidden border-t-4 border-primary">
@@ -197,7 +265,7 @@ export default function ReservationSection() {
                 today: 'bg-accent text-accent-foreground',
                 outside: "text-muted-foreground opacity-50",
                 holiday: "text-red-600 dark:text-red-400 font-bold",
-                disabled: "text-muted-foreground opacity-50 cursor-not-allowed",
+                disabled: "bg-blue-100 text-blue-700 opacity-80 cursor-not-allowed",
               }}
             />
             <div className="mt-4 p-4 border-t border-gray-200 dark:border-gray-700 space-y-1">
@@ -214,7 +282,7 @@ export default function ReservationSection() {
                  <span className="font-bold text-red-600">Feriados</span>
               </div>
                <div className="flex items-center gap-2 text-xs">
-                <div className="h-3 w-3 rounded-full bg-gray-300 dark:bg-gray-600 opacity-50" />
+                <div className="h-3 w-3 rounded-full bg-blue-500" />
                 <span>Datas Indisponíveis</span>
               </div>
             </div>

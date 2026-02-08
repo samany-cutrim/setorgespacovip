@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from '@/hooks/use-toast';
 import { useReservations } from '@/hooks/useReservations';
 import { format, parseISO } from 'date-fns';
+import { parseDateOnly } from '@/lib/utils';
 import { ptBR } from 'date-fns/locale';
 import { CheckCircle, Clock, AlertCircle, Download, FileText, ArrowLeft } from 'lucide-react';
 import { Reservation } from '@/lib/types';
@@ -145,13 +146,13 @@ export default function ClientArea() {
                 <div>
                   <Label className="text-xs text-muted-foreground">Check-in</Label>
                   <p className="text-lg font-semibold">
-                    {format(parseISO(foundReservation.check_in), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                    {format(parseDateOnly(foundReservation.check_in), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                   </p>
                 </div>
                 <div>
                   <Label className="text-xs text-muted-foreground">Check-out</Label>
                   <p className="text-lg font-semibold">
-                    {format(parseISO(foundReservation.check_out), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                    {format(parseDateOnly(foundReservation.check_out), "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
                   </p>
                 </div>
                 <div>

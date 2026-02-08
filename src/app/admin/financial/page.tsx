@@ -59,8 +59,8 @@ export default function Financial() {
       await createPayment.mutateAsync({
         reservation_id: incomeData.reservation_id || null,
         amount: parseFloat(incomeData.amount),
-        status: 'received',
-        date: incomeData.date,
+        payment_date: incomeData.date,
+        payment_method: incomeData.source,
         notes: incomeData.notes
       });
       toast({ title: "Receita registrada com sucesso" });
@@ -241,7 +241,7 @@ export default function Financial() {
                               )}
                             {payments?.map((payment) => (
                                 <TableRow key={payment.id}>
-                                    <TableCell>{new Date(payment.created_at).toLocaleDateString()}</TableCell>
+                                    <TableCell>{new Date(payment.payment_date).toLocaleDateString()}</TableCell>
                                     <TableCell>{payment.reservation_id ? `Reserva #${payment.reservation_id.substring(0,8)}` : 'Receita Avulsa'}</TableCell>
                                     <TableCell className="text-green-600 font-medium">+{formatCurrency(payment.amount)}</TableCell>
                                     <TableCell className="text-sm text-gray-600">{payment.notes || '-'}</TableCell>

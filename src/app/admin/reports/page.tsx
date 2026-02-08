@@ -6,9 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useReservations } from '@/hooks/useReservations';
 import { useAllPayments } from '@/hooks/usePayments';
 import { useExpenses } from '@/hooks/useExpenses';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, parseDateOnly } from '@/lib/utils';
 import { Download, BarChart3 } from 'lucide-react';
-import { format, startOfMonth, endOfMonth, isWithinInterval, parseISO } from 'date-fns';
+import { format, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { DateRange } from "react-day-picker";
 
@@ -24,7 +24,7 @@ export default function Reports() {
   const filteredReservations = useMemo(() => {
     if (!reservations || !date?.from || !date?.to) return [];
     return reservations.filter(res => {
-      const checkIn = parseISO(res.check_in);
+      const checkIn = parseDateOnly(res.check_in);
       return isWithinInterval(checkIn, { start: date.from!, end: date.to! });
     });
   }, [reservations, date]);
@@ -32,7 +32,7 @@ export default function Reports() {
   const filteredPayments = useMemo(() => {
     if (!payments || !date?.from || !date?.to) return [];
     return payments.filter(payment => {
-      const paymentDate = parseISO(payment.created_at);
+      const paymentDate = parseDateOnly(payment.payment_date);
       return isWithinInterval(paymentDate, { start: date.from!, end: date.to! });
     });
   }, [payments, date]);
@@ -40,7 +40,7 @@ export default function Reports() {
   const filteredExpenses = useMemo(() => {
     if (!expenses || !date?.from || !date?.to) return [];
     return expenses.filter(expense => {
-      const expenseDate = parseISO(expense.date);
+      const expenseDate = parseDateOnly(expense.date);
       return isWithinInterval(expenseDate, { start: date.from!, end: date.to! });
     });
   }, [expenses, date]);
@@ -77,11 +77,11 @@ Valor Médio por Reserva,"R$ ${formatCurrency(reportData.avgReservationValue)}"
 
 DETALHES DE RECEITAS
 Data,Reserva,Valor,Status
-${filteredPayments.map(p => `${format(parseISO(p.created_at), 'dd/MM/yyyy')},${p.reservation_id ? `#${p.reservation_id.substring(0, 8)}` : 'Avulsa'},"R$ ${formatCurrency(p.amount)}",${p.status}`).join('\n')}
+${filteredPayments.map(p => `${format(parseDateOnly(p.payment_date), 'dd/MM/yyyy')},${p.reservation_id ? `#${p.reservation_id.substring(0, 8)}` : 'Avulsa'},"R$ ${formatCurrency(p.amount)}",Recebido`).join('\n')}
 
 DETALHES DE DESPESAS
 Data,Descrição,Categoria,Valor
-${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.description},${e.category},"R$ ${formatCurrency(e.amount)}"`).join('\n')}`;
+${filteredExpenses.map(e => `${format(parseDateOnly(e.date), 'dd/MM/yyyy')},${e.description},${e.category},"R$ ${formatCurrency(e.amount)}"`).join('\n')}`;
 
     // Download CSV
     const element = document.createElement('a');
@@ -103,14 +103,14 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
               <input
                 type="date"
                 value={date?.from ? format(date.from, 'yyyy-MM-dd') : ''}
-                onChange={(e) => setDate({ from: parseISO(e.target.value), to: date?.to || new Date() })}
+                onChange={(e) => setDate({ from: parseDateOnly(e.target.value), to: date?.to || new Date() })}
                 className="px-3 py-1 border rounded-md"
                 aria-label="Data inicial"
               />
               <input
                 type="date"
                 value={date?.to ? format(date.to, 'yyyy-MM-dd') : ''}
-                onChange={(e) => setDate({ from: date?.from || new Date(), to: parseISO(e.target.value) })}
+                onChange={(e) => setDate({ from: date?.from || new Date(), to: parseDateOnly(e.target.value) })}
                 className="px-3 py-1 border rounded-md"
                 aria-label="Data final"
               />
@@ -228,7 +228,7 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
                   ) : (
                     filteredReservations.map((res) => (
                       <TableRow key={res.id}>
-                        <TableCell>{format(parseISO(res.check_in), 'dd/MM/yyyy')}</TableCell>
+                        <TableCell>{format(parseDateOnly(res.check_in), 'dd/MM/yyyy')}</TableCell>
                         <TableCell>{res.guest?.full_name || 'Desconhecido'}</TableCell>
                         <TableCell>
                           <span className={`px-2 py-1 rounded text-xs font-semibold ${
@@ -275,9 +275,9 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
                   ) : (
                     filteredPayments.map((payment) => (
                       <TableRow key={payment.id}>
-                        <TableCell>{format(parseISO(payment.created_at), 'dd/MM/yyyy')}</TableCell>
+                        <TableCell>{format(parseDateOnly(payment.payment_date), 'dd/MM/yyyy')}</TableCell>
                         <TableCell>{payment.reservation_id ? `#${payment.reservation_id.substring(0, 8)}` : 'Avulsa'}</TableCell>
-                        <TableCell className="capitalize">{payment.status}</TableCell>
+                        <TableCell className="capitalize">Recebido</TableCell>
                         <TableCell className="text-right font-medium text-green-600">+{formatCurrency(payment.amount)}</TableCell>
                       </TableRow>
                     ))
@@ -313,7 +313,7 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
                   ) : (
                     filteredExpenses.map((expense) => (
                       <TableRow key={expense.id}>
-                        <TableCell>{format(parseISO(expense.date), 'dd/MM/yyyy')}</TableCell>
+                        <TableCell>{format(parseDateOnly(expense.date), 'dd/MM/yyyy')}</TableCell>
                         <TableCell>{expense.description}</TableCell>
                         <TableCell>{expense.category}</TableCell>
                         <TableCell className="text-right font-medium text-red-600">-{formatCurrency(expense.amount)}</TableCell>

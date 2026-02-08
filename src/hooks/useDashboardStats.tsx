@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { startOfMonth, endOfMonth, subMonths, format, differenceInDays, parseISO, eachDayOfInterval, isWithinInterval } from 'date-fns';
+import { parseDateOnly } from '@/lib/utils';
 
 interface MonthlyStats {
   month: string;
@@ -53,7 +54,7 @@ export function useDashboardStats() {
 
       // Calculate revenue per month
       (payments || []).forEach(payment => {
-        const paymentMonth = format(parseISO(payment.payment_date), 'yyyy-MM');
+        const paymentMonth = format(parseDateOnly(payment.payment_date), 'yyyy-MM');
         const monthData = months.find(m => m.month === paymentMonth);
         if (monthData) {
           monthData.revenue += Number(payment.amount);
@@ -62,14 +63,14 @@ export function useDashboardStats() {
 
       // Calculate occupied days per month
       (reservations || []).forEach(reservation => {
-        const checkIn = parseISO(reservation.check_in);
-        const checkOut = parseISO(reservation.check_out);
+        const checkIn = parseDateOnly(reservation.check_in);
+        const checkOut = parseDateOnly(reservation.check_out);
         
         // Get all days of the reservation
         const reservationDays = eachDayOfInterval({ start: checkIn, end: checkOut });
         
         months.forEach(monthData => {
-          const monthStart = startOfMonth(parseISO(`${monthData.month}-01`));
+          const monthStart = startOfMonth(parseDateOnly(`${monthData.month}-01`));
           const monthEnd = endOfMonth(monthStart);
           
           // Count days that fall within this month
