@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useBlockedDates } from '@/hooks/useBlockedDates';
 import { useCreateReservationWithGuest } from '@/hooks/useReservations';
 import { useToast } from '@/hooks/use-toast';
+import { formatPhoneForWhatsApp, generateWhatsAppLink } from '@/lib/whatsapp';
 import { startOfToday, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { DateRange } from "react-day-picker";
@@ -74,9 +75,10 @@ export default function ReservationSection() {
   const { toast } = useToast();
   const pixCopyPasteCode =
     '00020126580014BR.GOV.BCB.PIX01369f3c442f-4aa5-49f6-acf6-181e91abd0cd5204000053039865802BR5923Rosilena Santana Cutrim6009SAO PAULO62140510z2qdiRrSOO63047385';
+  const whatsappNumber = '5511954351722';
   const whatsappLink = whatsappMessage
-    ? `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(whatsappMessage)}`
-    : 'https://wa.me/message/IHJSYV4FYDSUB1';
+    ? generateWhatsAppLink(whatsappNumber, whatsappMessage)
+    : `https://wa.me/${formatPhoneForWhatsApp(whatsappNumber)}`;
 
   const holidayDates = useMemo(() => {
     const currentYear = new Date().getFullYear();
