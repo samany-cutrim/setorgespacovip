@@ -215,10 +215,22 @@ export default function ReservationSection() {
                 >
                   Copiar codigo Pix
                 </Button>
-                <Button asChild type="button" className="w-full whitespace-normal">
-                  <a href={whatsappLink} target="_blank" rel="noreferrer">
-                    Informar pagamento no WhatsApp
-                  </a>
+                <Button
+                  type="button"
+                  className="w-full whitespace-normal"
+                  onClick={async () => {
+                    try {
+                      if (whatsappMessage) {
+                        await navigator.clipboard.writeText(whatsappMessage);
+                        toast({ title: 'Mensagem copiada para o WhatsApp' });
+                      }
+                    } catch {
+                      toast({ title: 'Nao foi possivel copiar a mensagem', variant: 'destructive' });
+                    }
+                    window.open(whatsappLink, '_blank');
+                  }}
+                >
+                  Informar pagamento no WhatsApp
                 </Button>
               </div>
             </div>
