@@ -20,17 +20,16 @@ function Calendar({
       classNames={{
         months: "flex flex-col gap-6 w-full",
         month: "w-full",
-        caption: "flex items-center justify-center pt-1 pb-4 relative",
-        caption_label: "text-base font-semibold flex-1 text-center",
-        nav: "flex gap-1 absolute -top-1 right-0",
+        caption: "flex items-center justify-between pt-1 pb-4 relative px-1",
+        caption_label: "text-base font-semibold text-center",
+        nav: "flex gap-1",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-8 w-8 bg-transparent p-0 hover:bg-gray-100 border border-gray-300"
         ),
-        nav_button_previous: "absolute left-1",
-        nav_button_next: "absolute right-1",
+        nav_button_previous: "",
+        nav_button_next: "",
         table: "w-full border-collapse space-y-1",
-<<<<<<< HEAD
         head_row: "flex w-full mb-1",
         head_cell:
           "text-muted-foreground rounded-md w-12 font-normal text-[0.8rem] flex items-center justify-center",
@@ -55,6 +54,18 @@ function Calendar({
       components={{
         IconLeft: () => <ChevronLeft className="h-4 w-4" />,
         IconRight: () => <ChevronRight className="h-4 w-4" />,
+      }}
+      formatters={{
+        formatWeekdayName: (date) => {
+          // D = Domingo, S = Segunda, T = Terça, Q = Quarta, Q = Quinta, S = Sexta, S = Sábado
+          const weekdays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
+          return weekdays[date.getDay()];
+        },
+        formatCaption: (date, options) => {
+          const months = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 
+                         'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+          return `${months[date.getMonth()]} ${date.getFullYear()}`;
+        }
       }}
       {...props}
     />
