@@ -152,15 +152,23 @@ export default function ReservationSection() {
         description: "Sua solicitação foi recebida. Entraremos em contato em breve para confirmar.",
       });
 
-      const submittedMessage = `Olá, gostaria de informar que reservei a data ${format(
-        date.from,
-        'dd/MM/yyyy'
-      )} a ${format(date.to, 'dd/MM/yyyy')} e já fiz o pagamento do meu sinal.`;
+      const submittedMessage = `Olá! Seguem os dados da minha solicitação de reserva:
+
+Nome: ${formData.name}
+Email: ${formData.email}
+WhatsApp: ${formData.phone}
+Período: ${format(date.from, 'dd/MM/yyyy')} a ${format(date.to, 'dd/MM/yyyy')}
+Convidados: ${formData.guests}
+Observações: ${formData.notes || 'Sem observações'}
+
+Se precisar de mais alguma informação, fico à disposição.`;
+      const submittedLink = `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(submittedMessage)}`;
 
       setWhatsappMessage(submittedMessage);
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
       setDate(undefined);
       setIsPixOpen(true);
+      window.open(submittedLink, '_blank', 'noopener');
 
     } catch (error) {
       console.error("Reservation Error:", error);
@@ -219,18 +227,10 @@ export default function ReservationSection() {
                   type="button"
                   className="w-full whitespace-normal"
                   onClick={async () => {
-                    try {
-                      if (whatsappMessage) {
-                        await navigator.clipboard.writeText(whatsappMessage);
-                        toast({ title: 'Mensagem copiada para o WhatsApp' });
-                      }
-                    } catch {
-                      toast({ title: 'Nao foi possivel copiar a mensagem', variant: 'destructive' });
-                    }
                     window.open(whatsappLink, '_blank');
                   }}
                 >
-                  Informar pagamento no WhatsApp
+                  Enviar dados no WhatsApp
                 </Button>
               </div>
             </div>
