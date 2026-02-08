@@ -359,7 +359,7 @@ Se precisar de mais alguma informação, fico à disposição.`;
               </div>
 
                 <Button type="submit" size="lg" className="w-full text-lg font-semibold" disabled={createReservationWithGuest.isPending}>
-                  {createReservationWithGuest.isPending ? 'Enviando...' : 'Solicitar Orçamento'}
+                  {createReservationWithGuest.isPending ? 'Enviando...' : 'Solicitar Reserva'}
               </Button>
                <p className="text-xs text-center text-muted-foreground pt-2">
                 <Info className="inline h-3 w-3 mr-1" />
