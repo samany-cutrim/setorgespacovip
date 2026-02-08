@@ -22,12 +22,31 @@ export function useUpdatePropertySettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (updates: Partial<PropertySettings> & { id: string }) => {
-      const { id, ...data } = updates;
+    mutationFn: async (updates: Partial<PropertySettings>) => {
+      // First, get the current settings to get the ID
+      const { data: currentSettings } = await supabase
+        .from('property_settings')
+        .select('id')
+        .limit(1)
+        .single();
+      
+      if (!currentSettings) {
+        // If no settings exist, create them
+        const { data: newSettings, error: createError } = await supabase
+          .from('property_settings')
+          .insert([updates])
+          .select()
+          .single();
+        
+        if (createError) throw createError;
+        return newSettings;
+      }
+      
+      // Update existing settings
       const { data: result, error } = await supabase
         .from('property_settings')
-        .update(data)
-        .eq('id', id)
+        .update(updates)
+        .eq('id', currentSettings.id)
         .select()
         .single();
       

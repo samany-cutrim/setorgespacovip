@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 export default function AuthPage() {
   const { signIn } = useAuth();
@@ -25,7 +26,12 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900">
+      <Link to="/" className="absolute top-4 left-4 flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition">
+        <ArrowLeft className="h-5 w-5" />
+        <span>Voltar</span>
+      </Link>
+      <div className="w-full flex items-center justify-center">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -50,6 +56,7 @@ export default function AuthPage() {
           </CardFooter>
         </form>
       </Card>
+      </div>
     </div>
   );
 }

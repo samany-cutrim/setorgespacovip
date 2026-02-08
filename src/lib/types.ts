@@ -49,6 +49,17 @@ export interface Payment {
   created_at: string;
 }
 
+export interface Expense {
+  id: string;
+  description: string;
+  amount: number;
+  category: string;
+  date: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface PricingRule {
   id: string;
   name: string;

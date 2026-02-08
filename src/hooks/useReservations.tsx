@@ -70,11 +70,22 @@ export function useCreateReservation() {
       deposit_amount?: number;
       discount_amount?: number;
     }) => {
+      // Gerar tracking_code único (8 caracteres maiúsculos)
+      const generateTrackingCode = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+          code += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return code;
+      };
+
       const { data, error } = await supabase
         .from('reservations')
         .insert([
           {
             ...reservation,
+            tracking_code: generateTrackingCode(),
             status: reservation.status || 'pending',
             payment_status: reservation.payment_status || 'pending',
           },
