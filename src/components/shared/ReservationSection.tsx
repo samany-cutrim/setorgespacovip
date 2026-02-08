@@ -60,6 +60,7 @@ const getBrazilianHolidays = (year: number) => {
 export default function ReservationSection() {
   const [date, setDate] = useState<DateRange | undefined>(undefined);
   const [isPixOpen, setIsPixOpen] = useState(false);
+  const [whatsappMessage, setWhatsappMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -73,6 +74,9 @@ export default function ReservationSection() {
   const { toast } = useToast();
   const pixCopyPasteCode =
     '00020126580014BR.GOV.BCB.PIX01369f3c442f-4aa5-49f6-acf6-181e91abd0cd5204000053039865802BR5923Rosilena Santana Cutrim6009SAO PAULO62140510z2qdiRrSOO63047385';
+  const whatsappLink = whatsappMessage
+    ? `https://wa.me/5511958462009?text=${encodeURIComponent(whatsappMessage)}`
+    : 'https://wa.me/5511958462009';
 
   const holidayDates = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -148,11 +152,12 @@ export default function ReservationSection() {
         description: "Sua solicitação foi recebida. Entraremos em contato em breve para confirmar.",
       });
 
+      const submittedMessage = `Pagamento do sinal realizado\nNome: ${formData.name}\nEmail: ${formData.email}\nWhatsapp: ${formData.phone}\nConvidados: ${formData.guests}\nCheck-in: ${format(date.from, 'dd/MM/yyyy')}\nCheck-out: ${format(date.to, 'dd/MM/yyyy')}\nObservacoes: ${formData.notes || '-'}`;
+
+      setWhatsappMessage(submittedMessage);
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
       setDate(undefined);
       setIsPixOpen(true);
-
-      const whatsappMessage = `Pagamento do sinal realizado\nNome: ${formData.name}\nEmail: ${formData.email}\nWhatsapp: ${formData.phone}\nConvidados: ${formData.guests}\nCheck-in: ${format(date.from, 'dd/MM/yyyy')}\nCheck-out: ${format(date.to, 'dd/MM/yyyy')}\nObservacoes: ${formData.notes || '-'}`;
 
     } catch (error) {
       console.error("Reservation Error:", error);
@@ -195,6 +200,7 @@ export default function ReservationSection() {
               <div className="grid gap-2 sm:grid-cols-2">
                 <Button
                   type="button"
+                  className="w-full whitespace-normal"
                   onClick={async () => {
                     try {
                       await navigator.clipboard.writeText(pixCopyPasteCode);
@@ -206,17 +212,10 @@ export default function ReservationSection() {
                 >
                   Copiar codigo Pix
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() =>
-                    window.open(
-                      `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`,
-                      '_blank'
-                    )
-                  }
-                >
-                  Informar pagamento no WhatsApp
+                <Button asChild type="button" variant="outline" className="w-full whitespace-normal">
+                  <a href={whatsappLink} target="_blank" rel="noreferrer">
+                    Informar pagamento no WhatsApp
+                  </a>
                 </Button>
               </div>
             </div>
