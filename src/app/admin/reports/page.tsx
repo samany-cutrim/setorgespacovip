@@ -32,7 +32,7 @@ export default function Reports() {
   const filteredPayments = useMemo(() => {
     if (!payments || !date?.from || !date?.to) return [];
     return payments.filter(payment => {
-      const paymentDate = parseISO(payment.created_at);
+      const paymentDate = parseISO(payment.payment_date);
       return isWithinInterval(paymentDate, { start: date.from!, end: date.to! });
     });
   }, [payments, date]);
@@ -77,7 +77,7 @@ Valor Médio por Reserva,"R$ ${formatCurrency(reportData.avgReservationValue)}"
 
 DETALHES DE RECEITAS
 Data,Reserva,Valor,Status
-${filteredPayments.map(p => `${format(parseISO(p.created_at), 'dd/MM/yyyy')},${p.reservation_id ? `#${p.reservation_id.substring(0, 8)}` : 'Avulsa'},"R$ ${formatCurrency(p.amount)}",${p.status}`).join('\n')}
+${filteredPayments.map(p => `${format(parseISO(p.payment_date), 'dd/MM/yyyy')},${p.reservation_id ? `#${p.reservation_id.substring(0, 8)}` : 'Avulsa'},"R$ ${formatCurrency(p.amount)}",${p.status}`).join('\n')}
 
 DETALHES DE DESPESAS
 Data,Descrição,Categoria,Valor
@@ -275,7 +275,7 @@ ${filteredExpenses.map(e => `${format(parseISO(e.date), 'dd/MM/yyyy')},${e.descr
                   ) : (
                     filteredPayments.map((payment) => (
                       <TableRow key={payment.id}>
-                        <TableCell>{format(parseISO(payment.created_at), 'dd/MM/yyyy')}</TableCell>
+                        <TableCell>{format(parseISO(payment.payment_date), 'dd/MM/yyyy')}</TableCell>
                         <TableCell>{payment.reservation_id ? `#${payment.reservation_id.substring(0, 8)}` : 'Avulsa'}</TableCell>
                         <TableCell className="capitalize">{payment.status}</TableCell>
                         <TableCell className="text-right font-medium text-green-600">+{formatCurrency(payment.amount)}</TableCell>
