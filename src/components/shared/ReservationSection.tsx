@@ -7,8 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useBlockedDates } from '@/hooks/useBlockedDates';
-import { useCreateReservation } from '@/hooks/useReservations';
-import { useCreateGuest } from '@/hooks/useGuests';
+import { useCreateReservationWithGuest } from '@/hooks/useReservations';
 import { useToast } from '@/hooks/use-toast';
 import { startOfToday, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -68,8 +67,7 @@ export default function ReservationSection() {
   });
 
   const { data: blockedDates } = useBlockedDates();
-  const createReservation = useCreateReservation();
-  const createGuest = useCreateGuest();
+  const createReservationWithGuest = useCreateReservationWithGuest();
   const { toast } = useToast();
 
   const holidayDates = useMemo(() => {
@@ -124,27 +122,21 @@ export default function ReservationSection() {
     }
 
     try {
-      const newGuest = await createGuest.mutateAsync({
+      await createReservationWithGuest.mutateAsync({
         full_name: formData.name,
         email: formData.email,
         phone: formData.phone,
         document: null,
-        notes: null
-      });
-
-      if (!newGuest?.id) throw new Error("Falha ao criar hóspede");
-
-      await createReservation.mutateAsync({
-        guest_id: newGuest.id,
+        guest_notes: null,
         check_in: format(date.from, "yyyy-MM-dd"),
         check_out: format(date.to, "yyyy-MM-dd"),
         num_guests: Number(formData.guests),
-        total_amount: 0, 
+        total_amount: 0,
         deposit_amount: 0,
         discount_amount: 0,
         status: 'pending',
         payment_status: 'pending',
-        notes: formData.notes,
+        reservation_notes: formData.notes,
       });
 
       toast({
@@ -267,8 +259,8 @@ export default function ReservationSection() {
                 <Textarea id="notes" name="notes" placeholder="Ex: Tipo de evento, necessidade de equipamentos, etc." value={formData.notes} onChange={handleInputChange} />
               </div>
 
-              <Button type="submit" size="lg" className="w-full text-lg font-semibold" disabled={createReservation.isPending || createGuest.isPending}>
-                  {createReservation.isPending || createGuest.isPending ? 'Enviando...' : 'Solicitar Orçamento'}
+                <Button type="submit" size="lg" className="w-full text-lg font-semibold" disabled={createReservationWithGuest.isPending}>
+                  {createReservationWithGuest.isPending ? 'Enviando...' : 'Solicitar Orçamento'}
               </Button>
                <p className="text-xs text-center text-muted-foreground pt-2">
                 <Info className="inline h-3 w-3 mr-1" />

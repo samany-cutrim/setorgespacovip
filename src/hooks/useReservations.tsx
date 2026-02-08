@@ -104,6 +104,54 @@ export function useCreateReservation() {
   });
 }
 
+export function useCreateReservationWithGuest() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      full_name: string;
+      email: string;
+      phone: string;
+      document?: string | null;
+      guest_notes?: string | null;
+      check_in: string;
+      check_out: string;
+      num_guests: number;
+      total_amount: number;
+      discount_amount?: number;
+      deposit_amount?: number;
+      status?: ReservationStatus;
+      payment_status?: PaymentStatus;
+      reservation_notes?: string | null;
+    }) => {
+      const { data, error } = await supabase.rpc('create_reservation_with_guest', {
+        p_full_name: payload.full_name,
+        p_email: payload.email,
+        p_phone: payload.phone,
+        p_document: payload.document ?? null,
+        p_guest_notes: payload.guest_notes ?? null,
+        p_check_in: payload.check_in,
+        p_check_out: payload.check_out,
+        p_num_guests: payload.num_guests,
+        p_total_amount: payload.total_amount,
+        p_discount_amount: payload.discount_amount ?? 0,
+        p_deposit_amount: payload.deposit_amount ?? 0,
+        p_status: payload.status ?? 'pending',
+        p_payment_status: payload.payment_status ?? 'pending',
+        p_reservation_notes: payload.reservation_notes ?? null,
+      });
+
+      if (error) throw error;
+      return data as Reservation;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['upcoming-reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['reservations-by-month'] });
+    },
+  });
+}
+
 export function useUpdateReservation() {
   const queryClient = useQueryClient();
 
