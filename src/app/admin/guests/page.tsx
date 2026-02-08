@@ -119,20 +119,20 @@ export default function Guests() {
             <TableBody>
               {guests?.map((guest) => (
                 <TableRow key={guest.id}>
+                  <TableCell className="flex items-center gap-3">
+                    <Avatar>
+                      <AvatarFallback>
+                        {guest.full_name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{guest.full_name}</span>
+                      <span className="text-xs text-muted-foreground">{guest.email}</span>
                     </div>
                   </TableCell>
                   <TableCell>{guest.phone}</TableCell>
                   <TableCell>{guest.reservation_count}</TableCell>
                   <TableCell className="max-w-[200px] truncate">{guest.notes || '-'}</TableCell>
-                  <TableCell>
-                    {guest.contract_url ? (
-                      <a href={guest.contract_url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline flex items-center gap-1">
-                        <Eye className="h-4 w-4" /> Ver
-                      </a>
-                    ) : (
-                      <span className="text-muted-foreground">-</span>
-                    )}
-                  </TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="icon" onClick={() => handleEditClick(guest)}>
                       <Pencil className="h-4 w-4" />
