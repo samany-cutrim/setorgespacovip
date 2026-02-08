@@ -4,13 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useReservations } from '@/hooks/useReservations';
-import { useAllPayments } from '@/hooks/usePayments';
-import { useExpenses } from '@/hooks/useExpenses';
+import { useAllPayments, useDeletePayment } from '@/hooks/usePayments';
+import { useExpenses, useDeleteExpense } from '@/hooks/useExpenses';
 import { formatCurrency, parseDateOnly } from '@/lib/utils';
-import { Download, BarChart3 } from 'lucide-react';
+import { Download, BarChart3, Trash2 } from 'lucide-react';
 import { format, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { DateRange } from "react-day-picker";
+import { useToast } from '@/hooks/use-toast';
 
 export default function Reports() {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -20,6 +21,9 @@ export default function Reports() {
   const { data: reservations } = useReservations();
   const { data: payments } = useAllPayments();
   const { data: expenses } = useExpenses();
+  const deletePayment = useDeletePayment();
+  const deleteExpense = useDeleteExpense();
+  const { toast } = useToast();
 
   const filteredReservations = useMemo(() => {
     if (!reservations || !date?.from || !date?.to) return [];
@@ -49,6 +53,26 @@ export default function Reports() {
   const totalExpenses = filteredExpenses.reduce((acc, curr) => acc + Number(curr.amount), 0) || 0;
   const balance = totalIncome - totalExpenses;
   const avgReservationValue = filteredReservations.length > 0 ? totalIncome / filteredReservations.length : 0;
+
+  const handleDeletePayment = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir esta receita?')) return;
+    try {
+      await deletePayment.mutateAsync(id);
+      toast({ title: 'Receita excluída com sucesso' });
+    } catch (error) {
+      toast({ title: 'Erro ao excluir receita', variant: 'destructive' });
+    }
+  };
+
+  const handleDeleteExpense = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir esta despesa?')) return;
+    try {
+      await deleteExpense.mutateAsync(id);
+      toast({ title: 'Despesa excluída com sucesso' });
+    } catch (error) {
+      toast({ title: 'Erro ao excluir despesa', variant: 'destructive' });
+    }
+  };
 
   const handleGenerateReport = () => {
     if (!date?.from || !date?.to) return;
@@ -263,12 +287,13 @@ ${filteredExpenses.map(e => `${format(parseDateOnly(e.date), 'dd/MM/yyyy')},${e.
                     <TableHead>Reserva</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Valor</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredPayments.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
+                      <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
                         Nenhuma receita no período
                       </TableCell>
                     </TableRow>
@@ -279,6 +304,16 @@ ${filteredExpenses.map(e => `${format(parseDateOnly(e.date), 'dd/MM/yyyy')},${e.
                         <TableCell>{payment.reservation_id ? `#${payment.reservation_id.substring(0, 8)}` : 'Avulsa'}</TableCell>
                         <TableCell className="capitalize">Recebido</TableCell>
                         <TableCell className="text-right font-medium text-green-600">+{formatCurrency(payment.amount)}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeletePayment(payment.id)}
+                            aria-label="Excluir receita"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))
                   )}
@@ -301,12 +336,13 @@ ${filteredExpenses.map(e => `${format(parseDateOnly(e.date), 'dd/MM/yyyy')},${e.
                     <TableHead>Descrição</TableHead>
                     <TableHead>Categoria</TableHead>
                     <TableHead className="text-right">Valor</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredExpenses.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="text-center py-4 text-muted-foreground">
+                      <TableCell colSpan={5} className="text-center py-4 text-muted-foreground">
                         Nenhuma despesa no período
                       </TableCell>
                     </TableRow>
@@ -317,6 +353,16 @@ ${filteredExpenses.map(e => `${format(parseDateOnly(e.date), 'dd/MM/yyyy')},${e.
                         <TableCell>{expense.description}</TableCell>
                         <TableCell>{expense.category}</TableCell>
                         <TableCell className="text-right font-medium text-red-600">-{formatCurrency(expense.amount)}</TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteExpense(expense.id)}
+                            aria-label="Excluir despesa"
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))
                   )}
