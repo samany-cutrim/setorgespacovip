@@ -152,7 +152,7 @@ export default function ReservationSection() {
         description: "Sua solicitação foi recebida. Entraremos em contato em breve para confirmar.",
       });
 
-      const submittedMessage = `Olá! Seguem os dados da minha solicitação de reserva:
+      const submittedMessage = `Olá! Seguem os dados da minha solicitação de reserva (sinal já pago):
 
 Nome: ${formData.name}
 Email: ${formData.email}
@@ -161,14 +161,13 @@ Período: ${format(date.from, 'dd/MM/yyyy')} a ${format(date.to, 'dd/MM/yyyy')}
 Convidados: ${formData.guests}
 Observações: ${formData.notes || 'Sem observações'}
 
-Se precisar de mais alguma informação, fico à disposição.`;
-      const submittedLink = `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(submittedMessage)}`;
+O pagamento do sinal já foi realizado.
 
+Se precisar de mais alguma informação, fico à disposição.`;
       setWhatsappMessage(submittedMessage);
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
       setDate(undefined);
       setIsPixOpen(true);
-      window.open(submittedLink, '_blank', 'noopener');
 
     } catch (error) {
       console.error("Reservation Error:", error);
