@@ -20,7 +20,7 @@ export default function Index() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-no-repeat relative bg-[url('/piscina.jpeg')] bg-[position:50%_30%]">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-no-repeat relative bg-[url('/piscina.jpeg')] bg-[position:50%_75%]">
           <div className="absolute inset-0 bg-black/60"></div>
           <div className="container relative px-4 md:px-6 mx-auto text-center text-white">
              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">

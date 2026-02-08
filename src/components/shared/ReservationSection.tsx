@@ -152,11 +152,7 @@ export default function ReservationSection() {
       setDate(undefined);
       setIsPixOpen(true);
 
-      const whatsappMessage = `Nova solicitacao de reserva\nNome: ${formData.name}\nEmail: ${formData.email}\nWhatsapp: ${formData.phone}\nConvidados: ${formData.guests}\nCheck-in: ${format(date.from, 'dd/MM/yyyy')}\nCheck-out: ${format(date.to, 'dd/MM/yyyy')}\nObservacoes: ${formData.notes || '-'}`;
-      window.open(
-        `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(whatsappMessage)}`,
-        '_blank'
-      );
+      const whatsappMessage = `Pagamento do sinal realizado\nNome: ${formData.name}\nEmail: ${formData.email}\nWhatsapp: ${formData.phone}\nConvidados: ${formData.guests}\nCheck-in: ${format(date.from, 'dd/MM/yyyy')}\nCheck-out: ${format(date.to, 'dd/MM/yyyy')}\nObservacoes: ${formData.notes || '-'}`;
 
     } catch (error) {
       console.error("Reservation Error:", error);
@@ -208,6 +204,18 @@ export default function ReservationSection() {
                 }}
               >
                 Copiar codigo Pix
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  window.open(
+                    `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(whatsappMessage)}`,
+                    '_blank'
+                  )
+                }
+              >
+                Informar pagamento no WhatsApp
               </Button>
             </div>
 
