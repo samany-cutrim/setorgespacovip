@@ -35,6 +35,17 @@ export default function Reservations() {
   const [isUploading, setIsUploading] = useState(false);
   const [isDeletingContract, setIsDeletingContract] = useState(false);
 
+  const getPaidTotal = async (reservationId: string) => {
+    const { data, error } = await supabase
+      .from('payments')
+      .select('amount')
+      .eq('reservation_id', reservationId);
+
+    if (error) throw error;
+
+    return (data || []).reduce((sum, payment) => sum + Number(payment.amount || 0), 0);
+  };
+
   // Form state para criar/editar
   const [formData, setFormData] = useState({
     guest_id: '',
@@ -242,10 +253,13 @@ export default function Reservations() {
         }
 
         if (isPaidStatus && (!wasPaidStatus || formData.payment_status !== editingReservation.payment_status)) {
-          const remainingAmount = Math.max(0, totalAfterDiscount - depositAmount);
+          const paidSoFar = await getPaidTotal(editingReservation.id);
+          const partialTarget = depositAmount || totalAfterDiscount;
+          const remainingAmount = Math.max(0, totalAfterDiscount - paidSoFar);
+          const partialRemaining = Math.max(0, partialTarget - paidSoFar);
           const amount = formData.payment_status === 'partial'
-            ? (depositAmount || totalAfterDiscount)
-            : (editingReservation.payment_status === 'partial' ? remainingAmount : totalAfterDiscount);
+            ? partialRemaining
+            : remainingAmount;
 
           if (amount > 0) {
             await createPayment.mutateAsync({
