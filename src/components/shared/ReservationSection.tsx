@@ -75,8 +75,8 @@ export default function ReservationSection() {
   const pixCopyPasteCode =
     '00020126580014BR.GOV.BCB.PIX01369f3c442f-4aa5-49f6-acf6-181e91abd0cd5204000053039865802BR5923Rosilena Santana Cutrim6009SAO PAULO62140510z2qdiRrSOO63047385';
   const whatsappLink = whatsappMessage
-    ? `https://wa.me/5511958462009?text=${encodeURIComponent(whatsappMessage)}`
-    : 'https://wa.me/5511958462009';
+    ? `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(whatsappMessage)}`
+    : 'https://wa.me/message/IHJSYV4FYDSUB1';
 
   const holidayDates = useMemo(() => {
     const currentYear = new Date().getFullYear();
@@ -152,7 +152,10 @@ export default function ReservationSection() {
         description: "Sua solicitação foi recebida. Entraremos em contato em breve para confirmar.",
       });
 
-      const submittedMessage = `Pagamento do sinal realizado\nNome: ${formData.name}\nEmail: ${formData.email}\nWhatsapp: ${formData.phone}\nConvidados: ${formData.guests}\nCheck-in: ${format(date.from, 'dd/MM/yyyy')}\nCheck-out: ${format(date.to, 'dd/MM/yyyy')}\nObservacoes: ${formData.notes || '-'}`;
+      const submittedMessage = `Olá, gostaria de informar que reservei a data ${format(
+        date.from,
+        'dd/MM/yyyy'
+      )} a ${format(date.to, 'dd/MM/yyyy')} e já fiz o pagamento do meu sinal.`;
 
       setWhatsappMessage(submittedMessage);
       setFormData({ name: '', email: '', phone: '', guests: 1, notes: '' });
