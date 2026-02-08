@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Instagram, Linkedin } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import ReservationSection from "@/components/shared/ReservationSection";
@@ -20,7 +20,7 @@ export default function Index() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-no-repeat relative bg-[url('/piscina.jpeg')] bg-[position:50%_75%]">
+        <section className="w-full py-8 md:py-16 lg:py-20 bg-cover bg-no-repeat relative bg-[url('/piscina.jpeg')] bg-[position:50%_75%]">
           <div className="absolute inset-0 bg-black/60"></div>
           <div className="container relative px-4 md:px-6 mx-auto text-center text-white">
              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">
@@ -74,7 +74,39 @@ export default function Index() {
       </main>
 
       <footer className="bg-primary text-primary-foreground py-6 px-6 text-center mt-auto">
-        <p>&copy; {new Date().getFullYear()} Setor G Espaço VIP. Todos os direitos reservados.</p>
+        <div className="container mx-auto flex flex-col items-center gap-3 text-sm">
+          <p>&copy; {new Date().getFullYear()} Setor G Espaço VIP. Todos os direitos reservados.</p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span>Desenvolvido por Samany Cutrim</span>
+            <a
+              href="https://wa.me/5511958462009"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 hover:text-white/90"
+            >
+              <MessageCircle className="h-4 w-4" />
+              (11) 95846-2009
+            </a>
+            <a
+              href="https://www.instagram.com/samanycutrim/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 hover:text-white/90"
+            >
+              <Instagram className="h-4 w-4" />
+              @samanycutrim
+            </a>
+            <a
+              href="https://www.linkedin.com/in/samanycutrim/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 hover:text-white/90"
+            >
+              <Linkedin className="h-4 w-4" />
+              LinkedIn
+            </a>
+          </div>
+        </div>
       </footer>
 
       <a

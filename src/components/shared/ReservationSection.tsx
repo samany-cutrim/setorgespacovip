@@ -167,59 +167,61 @@ export default function ReservationSection() {
   return (
     <div className="container mx-auto py-10 px-4 -mt-20 relative z-10">
       <Dialog open={isPixOpen} onOpenChange={setIsPixOpen}>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Pagamento do sinal via Pix</DialogTitle>
             <DialogDescription>
               Escaneie o QR Code ou use o codigo copia e cola para pagar o sinal.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-6">
-            <div className="rounded-2xl bg-gradient-to-br from-fuchsia-600 via-purple-600 to-indigo-600 p-6 text-white shadow-lg">
+          <div className="grid gap-5 md:grid-cols-[1.1fr_0.9fr]">
+            <div className="rounded-2xl bg-gradient-to-br from-fuchsia-600 via-purple-600 to-indigo-600 p-5 text-white shadow-lg">
               <p className="text-lg font-semibold">Use o QR Code do Pix para pagar</p>
               <p className="text-sm text-white/80">
                 Abra o app do seu banco, escaneie a imagem ou cole o codigo abaixo.
               </p>
-              <div className="mt-5 flex justify-center">
+              <div className="mt-4 flex justify-center">
                 <img
                   src="/pix-qrcode.png"
                   alt="QR Code Pix"
-                  className="h-48 w-48 rounded-xl bg-white p-3"
+                  className="h-40 w-40 rounded-xl bg-white p-2"
                 />
               </div>
             </div>
 
             <div className="space-y-3">
               <Label>Codigo Pix (copia e cola)</Label>
-              <Textarea readOnly value={pixCopyPasteCode} className="min-h-[120px]" />
-              <Button
-                type="button"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(pixCopyPasteCode);
-                    toast({ title: 'Codigo Pix copiado!' });
-                  } catch {
-                    toast({ title: 'Nao foi possivel copiar', variant: 'destructive' });
+              <Textarea readOnly value={pixCopyPasteCode} className="min-h-[90px]" />
+              <div className="grid gap-2 sm:grid-cols-2">
+                <Button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(pixCopyPasteCode);
+                      toast({ title: 'Codigo Pix copiado!' });
+                    } catch {
+                      toast({ title: 'Nao foi possivel copiar', variant: 'destructive' });
+                    }
+                  }}
+                >
+                  Copiar codigo Pix
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    window.open(
+                      `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`,
+                      '_blank'
+                    )
                   }
-                }}
-              >
-                Copiar codigo Pix
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() =>
-                  window.open(
-                    `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(whatsappMessage)}`,
-                    '_blank'
-                  )
-                }
-              >
-                Informar pagamento no WhatsApp
-              </Button>
+                >
+                  Informar pagamento no WhatsApp
+                </Button>
+              </div>
             </div>
 
-            <div className="grid gap-2 rounded-2xl border border-border bg-muted/40 p-4 text-sm">
+            <div className="grid gap-2 rounded-2xl border border-border bg-muted/40 p-4 text-sm md:col-span-2">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Nome</span>
                 <span className="font-medium">Rosilena Santana Cutrim</span>
