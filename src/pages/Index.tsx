@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { MessageCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import ReservationSection from "@/components/shared/ReservationSection";
@@ -19,7 +20,7 @@ export default function Index() {
       </header>
 
       <main className="flex-1">
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center bg-no-repeat relative bg-[url('/piscina.jpg')]">
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center bg-no-repeat relative bg-[url('/piscina.jpeg')]">
           <div className="absolute inset-0 bg-black/60"></div>
           <div className="container relative px-4 md:px-6 mx-auto text-center text-white">
              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">
@@ -75,6 +76,18 @@ export default function Index() {
       <footer className="bg-primary text-primary-foreground py-6 px-6 text-center mt-auto">
         <p>&copy; {new Date().getFullYear()} Setor G Espaço VIP. Todos os direitos reservados.</p>
       </footer>
+
+      <a
+        href="https://wa.me/message/IHJSYV4FYDSUB1"
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 z-50"
+        aria-label="WhatsApp"
+      >
+        <Button className="h-14 w-14 rounded-full bg-green-500 hover:bg-green-600 shadow-lg">
+          <MessageCircle className="h-6 w-6" />
+        </Button>
+      </a>
     </div>
   );
 }

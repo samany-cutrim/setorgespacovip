@@ -152,6 +152,12 @@ export default function ReservationSection() {
       setDate(undefined);
       setIsPixOpen(true);
 
+      const whatsappMessage = `Nova solicitacao de reserva\nNome: ${formData.name}\nEmail: ${formData.email}\nWhatsapp: ${formData.phone}\nConvidados: ${formData.guests}\nCheck-in: ${format(date.from, 'dd/MM/yyyy')}\nCheck-out: ${format(date.to, 'dd/MM/yyyy')}\nObservacoes: ${formData.notes || '-'}`;
+      window.open(
+        `https://wa.me/message/IHJSYV4FYDSUB1?text=${encodeURIComponent(whatsappMessage)}`,
+        '_blank'
+      );
+
     } catch (error) {
       console.error("Reservation Error:", error);
       toast({
